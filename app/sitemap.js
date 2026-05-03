@@ -10,7 +10,6 @@ export default function sitemap() {
     "/testimonials",
     "/pricing",
     "/contact-us",
-    "/search",
     "/why-a-facebook-page-is-not-a-substitute-for-a-website",
     "/7-signs-you-need-a-new-website-for-your-business",
     "/why-diy-site-builders-are-bad-for-small-businesses",
