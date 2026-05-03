@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Script from "next/script";
 import Link from "next/link";
+import SiteHeader from "@/components/SiteHeader";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -244,34 +245,7 @@ export default function HomePage() {
         strategy="afterInteractive"
       />
 
-      <header className="site-header">
-        <div className="logo-wrap">
-          <Link href="/" className="logo-link">
-            <img
-              src={images.logo}
-              alt="matthew-web logo"
-              className="site-logo"
-            />
-          </Link>
-        </div>
-
-        <nav className="main-nav">
-          <div className="nav-inner">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={link.href === "/" ? "nav-link active" : "nav-link"}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <Link href="/search" className="nav-link search-link">
-              🔍 Search
-            </Link>
-          </div>
-        </nav>
-      </header>
+      <SiteHeader />
 
       <section className="hero-section" id="home-hero">
         <div className="hero-overlay">
