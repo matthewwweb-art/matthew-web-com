@@ -1,44 +1,40 @@
 import "./globals.css";
-
-const siteUrl = "https://matthew-web.com";
-
-const logoUrl =
-  "https://d14tal8bchn59o.cloudfront.net/pD8SMCm46GE9kXJfrsm-3pOgtGU_bUZ6M378zAftc-g/w:1920/plain/https://02f0a56ef46d93f03c90-22ac5f107621879d5667e0d7ed595bdb.ssl.cf2.rackcdn.com/sites/115347/photos/23501021/Screenshot_2025-12-19_174653_original.png";
-
-const faviconUrl =
-  "https://cdn.imageurlgenerator.com/uploads/ce1bc88c-4c08-4df9-82ea-eaba13563fd9.png";
+import Script from "next/script";
 
 export const metadata = {
-  metadataBase: new URL(siteUrl),
-
-  title: "matthew-web | Website Design & Digital Agency",
+  metadataBase: new URL("https://matthew-web.com"),
+  title: {
+    default: "matthew-web | Website Design & Custom Software Coding",
+    template: "%s | matthew-web",
+  },
   description:
-    "Affordable website design and custom software coding for small businesses in Maine and beyond. Start with a free website demo.",
+    "Affordable website design, SEO, Google indexing help, custom software coding, CRM tools, AI tools, and digital services for small businesses in Maine and beyond.",
   keywords: [
     "matthew-web",
+    "Matthew Web",
     "website design Maine",
     "affordable websites",
     "small business websites",
     "custom software coding",
+    "custom CRM",
+    "AI tools for business",
     "web designer Madison Maine",
     "SEO website design",
+    "website indexing",
+    "digital agency Maine",
   ],
-
-  icons: {
-    icon: faviconUrl,
-    shortcut: faviconUrl,
-    apple: faviconUrl,
+  alternates: {
+    canonical: "https://matthew-web.com",
   },
-
   openGraph: {
-    title: "matthew-web | Website Design & Digital Agency",
+    title: "matthew-web | Website Design & Custom Software Coding",
     description:
-      "High-quality, affordable websites and custom software coding for small businesses.",
-    url: siteUrl,
+      "High-quality, affordable websites, SEO help, Google indexing, and custom software coding for small businesses.",
+    url: "https://matthew-web.com",
     siteName: "matthew-web",
     images: [
       {
-        url: logoUrl,
+        url: "https://cdn.imageurlgenerator.com/uploads/ce1bc88c-4c08-4df9-82ea-eaba13563fd9.png",
         width: 1200,
         height: 630,
         alt: "matthew-web",
@@ -47,20 +43,45 @@ export const metadata = {
     locale: "en_US",
     type: "website",
   },
-
   twitter: {
     card: "summary_large_image",
-    title: "matthew-web | Website Design & Digital Agency",
+    title: "matthew-web | Website Design & Custom Software Coding",
     description:
-      "Affordable website design and custom software coding for small businesses.",
-    images: [logoUrl],
+      "Affordable website design, SEO, Google indexing help, and custom software coding for small businesses.",
+    images: [
+      "https://cdn.imageurlgenerator.com/uploads/ce1bc88c-4c08-4df9-82ea-eaba13563fd9.png",
+    ],
+  },
+  icons: {
+    icon: "https://cdn.imageurlgenerator.com/uploads/ce1bc88c-4c08-4df9-82ea-eaba13563fd9.png",
+    shortcut:
+      "https://cdn.imageurlgenerator.com/uploads/ce1bc88c-4c08-4df9-82ea-eaba13563fd9.png",
+    apple:
+      "https://cdn.imageurlgenerator.com/uploads/ce1bc88c-4c08-4df9-82ea-eaba13563fd9.png",
   },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-4HBVKXBRL2"
+          strategy="afterInteractive"
+        />
+
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            window.gtag = gtag;
+            gtag('js', new Date());
+            gtag('config', 'G-4HBVKXBRL2');
+          `}
+        </Script>
+
+        {children}
+      </body>
     </html>
   );
 }
