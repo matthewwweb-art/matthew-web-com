@@ -84,6 +84,11 @@ export default function RootLayout({ children }) {
           content="P4hEKwe7pRsMn2kYuOQzHjSk8vFiu7bkoifMpSmUl_c"
         />
 
+        <meta
+          name="msvalidate.01"
+          content="F82B7759D5310D537004D976955519D3"
+        />
+
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link
           rel="icon"
