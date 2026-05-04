@@ -9,20 +9,29 @@ export const metadata = {
     template: "%s | matthew-web",
   },
   description:
-    "Affordable website design, SEO, Google indexing help, custom software coding, CRM tools, AI tools, and digital services for small businesses in Maine and beyond.",
+    "Affordable website design, SEO, Google indexing help, custom software coding, CRM dashboards, AI tools, lead forms, and digital services for small businesses across the United States.",
   keywords: [
     "matthew-web",
     "Matthew Web",
-    "website design Maine",
-    "affordable websites",
+    "website design",
+    "website design United States",
+    "affordable website design",
     "small business websites",
     "custom software coding",
+    "custom website coding",
     "custom CRM",
+    "business dashboards",
     "AI tools for business",
-    "web designer Madison Maine",
     "SEO website design",
+    "Google indexing help",
     "website indexing",
-    "digital agency Maine",
+    "digital agency",
+    "web designer for small business",
+    "custom code for business",
+    "lead form website",
+    "business automation tools",
+    "website designer Maine",
+    "Maine web designer",
   ],
   alternates: {
     canonical: "https://matthew-web.com",
@@ -30,12 +39,12 @@ export const metadata = {
   openGraph: {
     title: "matthew-web | Website Design & Custom Software Coding",
     description:
-      "High-quality, affordable websites, SEO help, Google indexing, and custom software coding for small businesses.",
+      "High-quality, affordable websites, SEO help, Google indexing, custom software coding, CRM dashboards, AI tools, and digital services for small businesses across the United States.",
     url: "https://matthew-web.com",
     siteName: "matthew-web",
     images: [
       {
-        url: "https://cdn.imageurlgenerator.com/uploads/ce1bc88c-4c08-4df9-82ea-eaba13563fd9.png",
+        url: "/apple-touch-icon.png",
         width: 1200,
         height: 630,
         alt: "matthew-web",
@@ -48,23 +57,30 @@ export const metadata = {
     card: "summary_large_image",
     title: "matthew-web | Website Design & Custom Software Coding",
     description:
-      "Affordable website design, SEO, Google indexing help, and custom software coding for small businesses.",
-    images: [
-      "https://cdn.imageurlgenerator.com/uploads/ce1bc88c-4c08-4df9-82ea-eaba13563fd9.png",
-    ],
+      "Affordable website design, SEO, Google indexing help, and custom software coding for small businesses across the United States.",
+    images: ["/apple-touch-icon.png"],
   },
   icons: {
-    icon: "https://cdn.imageurlgenerator.com/uploads/ce1bc88c-4c08-4df9-82ea-eaba13563fd9.png",
-    shortcut:
-      "https://cdn.imageurlgenerator.com/uploads/ce1bc88c-4c08-4df9-82ea-eaba13563fd9.png",
-    apple:
-      "https://cdn.imageurlgenerator.com/uploads/ce1bc88c-4c08-4df9-82ea-eaba13563fd9.png",
+    icon: [
+      {
+        url: "/favicon.png",
+        type: "image/png",
+      },
+    ],
+    shortcut: "/favicon.png",
+    apple: "/apple-touch-icon.png",
   },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.png" type="image/png" />
+        <link rel="shortcut icon" href="/favicon.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+      </head>
+
       <body>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-4HBVKXBRL2"
