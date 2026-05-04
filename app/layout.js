@@ -2,6 +2,7 @@ import "./globals.css";
 import Script from "next/script";
 import ImageLightbox from "@/components/ImageLightbox";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata = {
   metadataBase: new URL("https://matthew-web.com"),
@@ -118,6 +119,7 @@ export default function RootLayout({ children }) {
         {children}
         <ImageLightbox />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
