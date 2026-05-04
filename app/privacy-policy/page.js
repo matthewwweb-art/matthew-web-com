@@ -154,6 +154,11 @@ export default function PrivacyPolicyPage() {
           </p>
 
           <p>
+            Please note: client walk-ins are not accepted at our listed location.
+            Please contact us by phone, email, or website message to get started.
+          </p>
+
+          <p>
             <strong>matthew-web</strong>
             <br />
             973 River Road
