@@ -13,9 +13,6 @@ const navLinks = [
 ];
 
 const images = {
-  logo:
-    "https://d14tal8bchn59o.cloudfront.net/pD8SMCm46GE9kXJfrsm-3pOgtGU_bUZ6M378zAftc-g/w:1920/plain/https://02f0a56ef46d93f03c90-22ac5f107621879d5667e0d7ed595bdb.ssl.cf2.rackcdn.com/sites/115347/photos/23501021/Screenshot_2025-12-19_174653_original.png",
-
   blog1:
     "https://d14tal8bchn59o.cloudfront.net/hMzPEeAuWkrzqgPOVpoPrV0ZZ6z8vVaOYUuRcQHhIbQ/rs:fill:400:266:1/plain/https://02f0a56ef46d93f03c90-22ac5f107621879d5667e0d7ed595bdb.ssl.cf2.rackcdn.com/sites/115347/photos/23374753/web-design-g0095d4467_1920_original.jpg",
 
@@ -138,58 +135,6 @@ export default function BlogPage() {
   return (
     <main>
       <style>{`
-        .site-header {
-          background: #ffffff;
-        }
-
-        .logo-wrap {
-          padding: 35px 0 35px 7%;
-          background: #ffffff;
-        }
-
-        .logo-link {
-          display: inline-block;
-        }
-
-        .site-logo {
-          display: block;
-          width: 520px;
-          max-width: 90%;
-          height: auto;
-        }
-
-        .main-nav {
-          background: #0f83a6;
-        }
-
-        .nav-inner {
-          display: flex;
-          justify-content: center;
-          align-items: stretch;
-          flex-wrap: wrap;
-        }
-
-        .nav-link {
-          color: #ff7900;
-          text-decoration: none;
-          font-size: 18px;
-          padding: 18px 15px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: 0.2s ease;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-          background: #f57c00;
-          color: #ffffff;
-        }
-
-        .search-link {
-          gap: 5px;
-        }
-
         .blog-page-title {
           background: #f57c00;
           padding: 52px 20px 78px;
@@ -352,17 +297,25 @@ export default function BlogPage() {
           margin-top: 24px;
         }
 
-        .social-row span {
-          width: 40px;
-          height: 40px;
+        .social-row a {
+          width: 46px;
+          height: 46px;
           border-radius: 50%;
           background: #ffffff;
           color: #f57c00;
-          display: flex;
+          display: inline-flex;
           align-items: center;
           justify-content: center;
-          font-size: 25px;
-          font-weight: 800;
+          font-size: 26px;
+          font-weight: 900;
+          text-decoration: none;
+          line-height: 1;
+          transition: 0.2s ease;
+        }
+
+        .social-row a:hover {
+          transform: translateY(-2px);
+          opacity: 0.9;
         }
 
         .footer-nav {
@@ -391,21 +344,6 @@ export default function BlogPage() {
         }
 
         @media (max-width: 900px) {
-          .logo-wrap {
-            padding: 30px 24px;
-            text-align: center;
-          }
-
-          .site-logo {
-            width: min(520px, 92vw);
-            margin: 0 auto;
-          }
-
-          .nav-link {
-            font-size: 18px;
-            padding: 14px 12px;
-          }
-
           .blog-page-title {
             padding: 44px 18px 62px;
           }
@@ -447,10 +385,6 @@ export default function BlogPage() {
         }
 
         @media (max-width: 520px) {
-          .logo-wrap {
-            padding: 24px 18px;
-          }
-
           .blog-page-title {
             padding: 38px 18px;
           }
@@ -552,42 +486,42 @@ export default function BlogPage() {
             <Link href="/privacy-policy">Privacy Policy</Link>
 
             <div className="social-row">
-  <a
-    href="https://www.facebook.com/profile.php?id=61585865428354"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Facebook"
-  >
-    f
-  </a>
+              <a
+                href="https://www.facebook.com/profile.php?id=61585865428354"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+              >
+                f
+              </a>
 
-  <a
-    href="https://www.instagram.com"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Instagram"
-  >
-    ◎
-  </a>
+              <a
+                href="https://www.instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+              >
+                ◎
+              </a>
 
-  <a
-    href="https://biz.yelp.com/home/8nSjBZ9xpnEGgb5i4RAQrA"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Yelp"
-  >
-    y
-  </a>
+              <a
+                href="https://biz.yelp.com/home/8nSjBZ9xpnEGgb5i4RAQrA"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Yelp"
+              >
+                y
+              </a>
 
-  <a
-    href="https://www.google.com/maps/place/matthew-web/@44.835119,-69.805476,12z/data=!3m1!4b1!4m6!3m5!1s0xafa28749f39516d3:0xa868970605ad7855!8m2!3d44.835119!4d-69.805476!16s%2Fg%2F11ytxf9y2w?entry=ttu&g_ep=EgoyMDI2MDQyOS4wIKXMDSoASAFQAw%3D%3D"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Google Business Profile"
-  >
-    G
-  </a>
-</div>
+              <a
+                href="https://www.google.com/maps/place/matthew-web/@44.835119,-69.805476,12z/data=!3m1!4b1!4m6!3m5!1s0xafa28749f39516d3:0xa868970605ad7855!8m2!3d44.835119!4d-69.805476!16s%2Fg%2F11ytxf9y2w?entry=ttu&g_ep=EgoyMDI2MDQyOS4wIKXMDSoASAFQAw%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Google Business Profile"
+              >
+                G
+              </a>
+            </div>
           </div>
 
           <div>
