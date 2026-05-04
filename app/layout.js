@@ -5,31 +5,33 @@ import ImageLightbox from "@/components/ImageLightbox";
 export const metadata = {
   metadataBase: new URL("https://matthew-web.com"),
   title: {
-    default: "matthew-web | Website Design & Custom Software Coding",
+    default: "Affordable Website Design & Custom Software Coding | matthew-web",
     template: "%s | matthew-web",
   },
   description:
-    "Affordable website design, SEO, Google indexing help, custom software coding, CRM dashboards, AI tools, lead forms, and digital services for small businesses across the United States.",
+    "matthew-web builds affordable websites, SEO-ready pages, custom software, CRM dashboards, lead forms, AI tools, and business automation for small businesses across the United States.",
   keywords: [
     "matthew-web",
     "Matthew Web",
-    "website design",
-    "website design United States",
     "affordable website design",
+    "website design United States",
+    "nationwide website design",
     "small business websites",
     "custom software coding",
     "custom website coding",
-    "custom CRM",
+    "custom CRM development",
+    "CRM dashboards",
     "business dashboards",
+    "lead forms",
     "AI tools for business",
+    "business automation tools",
     "SEO website design",
     "Google indexing help",
     "website indexing",
     "digital agency",
     "web designer for small business",
     "custom code for business",
-    "lead form website",
-    "business automation tools",
+    "remote website design services",
     "website designer Maine",
     "Maine web designer",
   ],
@@ -37,9 +39,9 @@ export const metadata = {
     canonical: "https://matthew-web.com",
   },
   openGraph: {
-    title: "matthew-web | Website Design & Custom Software Coding",
+    title: "Affordable Website Design & Custom Software Coding | matthew-web",
     description:
-      "High-quality, affordable websites, SEO help, Google indexing, custom software coding, CRM dashboards, AI tools, and digital services for small businesses across the United States.",
+      "matthew-web builds affordable websites, SEO-ready pages, custom software, CRM dashboards, lead forms, AI tools, and business automation for small businesses across the United States.",
     url: "https://matthew-web.com",
     siteName: "matthew-web",
     images: [
@@ -55,9 +57,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "matthew-web | Website Design & Custom Software Coding",
+    title: "Affordable Website Design & Custom Software Coding | matthew-web",
     description:
-      "Affordable website design, SEO, Google indexing help, and custom software coding for small businesses across the United States.",
+      "Affordable websites, SEO-ready pages, custom software, CRM dashboards, lead forms, AI tools, and business automation for small businesses across the United States.",
     images: ["/apple-touch-icon.png"],
   },
   icons: {
