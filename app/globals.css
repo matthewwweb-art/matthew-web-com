@@ -1965,16 +1965,15 @@ img:not(.mw-logo):not(.site-logo):not(.blog-article-hero):not(.no-lightbox) {
   cursor: zoom-out;
 }
 
-.image-lightbox-img {
-  max-width: min(92vw, 1050px);
-  max-height: 82vh;
+.image-lightbox-image {
+  max-width: 98vw;
+  max-height: 94vh;
   width: auto;
   height: auto;
   object-fit: contain;
-  border-radius: 14px;
-  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.45);
+  border-radius: 8px;
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.45);
   cursor: default;
-  background: #ffffff;
 }
 
 .image-lightbox-close {
@@ -2002,9 +2001,9 @@ img:not(.mw-logo):not(.site-logo):not(.blog-article-hero):not(.no-lightbox) {
     padding: 16px;
   }
 
-  .image-lightbox-img {
-    max-width: 94vw;
-    max-height: 76vh;
+  .image-lightbox-image {
+    max-width: 99vw;
+    max-height: 90vh;
   }
 
   .image-lightbox-close {
