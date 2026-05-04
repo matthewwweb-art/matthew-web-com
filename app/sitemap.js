@@ -20,6 +20,7 @@ export default function sitemap() {
     "/website-traffic-stats-explained",
     "/8-marketing-mistakes-small-businesses-make",
     "/how-often-should-you-redesign-your-website",
+    "/privacy-policy",
   ];
 
   return routes.map((route) => ({
