@@ -1,6 +1,7 @@
 import "./globals.css";
 import Script from "next/script";
 import ImageLightbox from "@/components/ImageLightbox";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata = {
   metadataBase: new URL("https://matthew-web.com"),
@@ -101,6 +102,7 @@ export default function RootLayout({ children }) {
 
         {children}
         <ImageLightbox />
+        <Analytics />
       </body>
     </html>
   );
