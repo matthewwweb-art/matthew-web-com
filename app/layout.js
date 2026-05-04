@@ -1,5 +1,6 @@
 import "./globals.css";
 import Script from "next/script";
+import ImageLightbox from "@/components/ImageLightbox";
 
 export const metadata = {
   metadataBase: new URL("https://matthew-web.com"),
@@ -81,6 +82,7 @@ export default function RootLayout({ children }) {
         </Script>
 
         {children}
+        <ImageLightbox />
       </body>
     </html>
   );

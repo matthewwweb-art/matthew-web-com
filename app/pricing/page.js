@@ -886,11 +886,42 @@ export default function PricingPage() {
             <Link href="/privacy-policy">Privacy Policy</Link>
 
             <div className="social-row">
-              <span>f</span>
-              <span>◎</span>
-              <span>✹</span>
-              <span>G</span>
-            </div>
+  <a
+    href="https://www.facebook.com/profile.php?id=61585865428354"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Facebook"
+  >
+    f
+  </a>
+
+  <a
+    href="https://www.instagram.com"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Instagram"
+  >
+    ◎
+  </a>
+
+  <a
+    href="https://biz.yelp.com/home/8nSjBZ9xpnEGgb5i4RAQrA"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Yelp"
+  >
+    y
+  </a>
+
+  <a
+    href="https://www.google.com/maps/place/matthew-web/@44.835119,-69.805476,12z/data=!3m1!4b1!4m6!3m5!1s0xafa28749f39516d3:0xa868970605ad7855!8m2!3d44.835119!4d-69.805476!16s%2Fg%2F11ytxf9y2w?entry=ttu&g_ep=EgoyMDI2MDQyOS4wIKXMDSoASAFQAw%3D%3D"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Google Business Profile"
+  >
+    G
+  </a>
+</div>
           </div>
 
           <div>

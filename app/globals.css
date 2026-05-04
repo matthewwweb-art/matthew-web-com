@@ -729,16 +729,23 @@ main {
   gap: 14px;
 }
 
-.social-row span {
-  width: 38px;
-  height: 38px;
+.social-row a {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: #f26f00;
-  color: #ffffff;
+  background: #ffffff;
+  color: #f5821f;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  font-size: 25px;
   font-weight: 900;
+  text-decoration: none;
+}
+
+.social-row a:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
 }
 
 .footer-nav {
@@ -1939,5 +1946,69 @@ main {
   .blog-article-content ul {
     font-size: 18px;
     line-height: 1.55;
+  }
+}
+
+img:not(.mw-logo):not(.site-logo):not(.blog-article-hero):not(.no-lightbox) {
+  cursor: zoom-in;
+}
+
+.image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: rgba(0, 0, 0, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  cursor: zoom-out;
+}
+
+.image-lightbox-img {
+  max-width: min(92vw, 1050px);
+  max-height: 82vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 14px;
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.45);
+  cursor: default;
+  background: #ffffff;
+}
+
+.image-lightbox-close {
+  position: fixed;
+  top: 18px;
+  right: 20px;
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 50%;
+  background: #f57c00;
+  color: #ffffff;
+  font-size: 34px;
+  line-height: 1;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.image-lightbox-close:hover {
+  background: #d96d00;
+}
+
+@media (max-width: 700px) {
+  .image-lightbox {
+    padding: 16px;
+  }
+
+  .image-lightbox-img {
+    max-width: 94vw;
+    max-height: 76vh;
+  }
+
+  .image-lightbox-close {
+    top: 12px;
+    right: 12px;
   }
 }
