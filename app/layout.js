@@ -85,6 +85,11 @@ export default function RootLayout({ children }) {
         />
 
         <meta
+          name="google-adsense-account"
+          content="ca-pub-3247864013895587"
+        />
+
+        <meta
           name="msvalidate.01"
           content="F82B7759D5310D537004D976955519D3"
         />
