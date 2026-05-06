@@ -724,6 +724,10 @@ const upcomingFollowUps = useMemo(() => {
             Quick Import
           </Link>
 
+          <Link href="/admin/lead-finder/search" className="secondary-btn">
+            Google Search
+          </Link>
+
           <button type="button" onClick={loadLeads}>
             Refresh
           </button>
