@@ -720,6 +720,10 @@ const upcomingFollowUps = useMemo(() => {
             Main Admin
           </Link>
 
+          <Link href="/admin/lead-finder/import" className="secondary-btn">
+            Quick Import
+          </Link>
+
           <button type="button" onClick={loadLeads}>
             Refresh
           </button>
