@@ -44,17 +44,27 @@ const categoryOptions = [
 function calculateLeadScore(form) {
   let score = 0;
 
-  const problemText = `${form.problem_summary || ""} ${form.notes || ""}`.toLowerCase();
+  const problemText = `${form.problem_summary || ""} ${
+    form.notes || ""
+  }`.toLowerCase();
   const category = (form.category || "").toLowerCase();
   const rating = Number(form.rating || 0);
   const reviews = Number(form.review_count || 0);
 
   if (!form.website_url) score += 30;
   if (problemText.includes("no website")) score += 30;
-  if (problemText.includes("bad website") || problemText.includes("old website")) score += 25;
+  if (
+    problemText.includes("bad website") ||
+    problemText.includes("old website")
+  )
+    score += 25;
   if (problemText.includes("no booking")) score += 15;
   if (problemText.includes("no contact form")) score += 15;
-  if (problemText.includes("facebook only") || problemText.includes("only facebook")) score += 15;
+  if (
+    problemText.includes("facebook only") ||
+    problemText.includes("only facebook")
+  )
+    score += 15;
   if (rating >= 4) score += 15;
   if (reviews >= 25) score += 15;
   if (reviews >= 75) score += 10;
@@ -86,7 +96,9 @@ function calculateLeadScore(form) {
 }
 
 function buildOfferIdea(form, score) {
-  const problemText = `${form.problem_summary || ""} ${form.notes || ""}`.toLowerCase();
+  const problemText = `${form.problem_summary || ""} ${
+    form.notes || ""
+  }`.toLowerCase();
 
   if (!form.website_url || problemText.includes("no website")) {
     return "Offer a $1,500–$3,500 starter website with lead form, SEO setup, mobile layout, Google indexing, and hosting support.";
@@ -109,6 +121,85 @@ function buildOfferIdea(form, score) {
   }
 
   return "Offer a free website audit first, then pitch website improvements, lead forms, SEO cleanup, or custom software based on their needs.";
+}
+
+function getFirstProblem(problemSummary) {
+  const text = problemSummary || "";
+
+  if (!text.trim()) {
+    return "I noticed a few areas where your online presence could potentially be improved";
+  }
+
+  const clean = text.replaceAll("\n", " ").replace("Website audit:", "").trim();
+
+  if (clean.length > 160) {
+    return clean.slice(0, 160) + "...";
+  }
+
+  return clean;
+}
+
+function buildOutreachMessages(lead) {
+  const businessName = lead.business_name || "your business";
+  const category = lead.category || "business";
+  const problem = getFirstProblem(lead.problem_summary);
+  const offerIdea =
+    lead.offer_idea ||
+    "I help small businesses improve their websites, lead forms, SEO, booking systems, and follow-up process.";
+  const cityState = [lead.city, lead.state].filter(Boolean).join(", ");
+  const locationLine = cityState ? ` in ${cityState}` : "";
+
+  const facebookDm = `Hey ${businessName}, I came across your ${category.toLowerCase()} business${locationLine} and wanted to reach out. ${problem}. I build affordable websites, lead forms, SEO-ready pages, and simple business tools that help small businesses get more leads and look more professional online. Would you want me to send over a quick free website audit or a few ideas for improving your online presence?`;
+
+  const emailSubject = `Quick website idea for ${businessName}`;
+
+  const emailMessage = `Hi ${businessName},
+
+I came across your ${category.toLowerCase()} business${locationLine} and wanted to reach out.
+
+${problem}.
+
+${offerIdea}
+
+I build affordable websites, lead forms, SEO-ready pages, CRM dashboards, booking systems, and custom software tools for small businesses.
+
+Would you be open to me sending over a quick free website audit or a few simple ideas that could help your business get more leads online?
+
+Thanks,
+Adam
+matthew-web
+https://matthew-web.com`;
+
+  const phoneScript = `Hi, this is Adam from matthew-web. I help small businesses with websites, lead forms, SEO, booking tools, and simple custom software.
+
+I came across ${businessName} and noticed ${problem}.
+
+I was calling to see if you’d be interested in a free quick website audit or a few ideas to help bring in more leads online. Is that something you’d want me to send over?`;
+
+  const followUpMessage = `Hey ${businessName}, just following up on my last message. I help small businesses improve their websites, lead forms, SEO, booking systems, and follow-up tools. I noticed ${problem}. Would you like me to send over a quick free audit or a few ideas?`;
+
+  return [
+    {
+      channel: "facebook dm",
+      message: facebookDm,
+      status: "draft",
+    },
+    {
+      channel: "email",
+      message: `Subject: ${emailSubject}\n\n${emailMessage}`,
+      status: "draft",
+    },
+    {
+      channel: "phone script",
+      message: phoneScript,
+      status: "draft",
+    },
+    {
+      channel: "follow up",
+      message: followUpMessage,
+      status: "draft",
+    },
+  ];
 }
 
 const emptyForm = {
@@ -141,6 +232,7 @@ export default function LeadFinderPage() {
   const [loadingLeads, setLoadingLeads] = useState(false);
   const [saving, setSaving] = useState(false);
   const [auditingId, setAuditingId] = useState(null);
+  const [generatingId, setGeneratingId] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [leads, setLeads] = useState([]);
@@ -182,7 +274,19 @@ export default function LeadFinderPage() {
 
     const { data, error: leadError } = await supabase
       .from("lead_finder_leads")
-      .select("*")
+      .select(
+        `
+        *,
+        lead_finder_outreach (
+          id,
+          channel,
+          message,
+          status,
+          sent_at,
+          created_at
+        )
+      `
+      )
       .order("created_at", { ascending: false });
 
     if (leadError) {
@@ -199,6 +303,7 @@ export default function LeadFinderPage() {
     setForm((current) => {
       const updated = { ...current, [field]: value };
       const score = calculateLeadScore(updated);
+
       return {
         ...updated,
         lead_score: score,
@@ -242,6 +347,7 @@ export default function LeadFinderPage() {
         ? lead.next_followup_at.slice(0, 16)
         : "",
     });
+
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -253,6 +359,7 @@ export default function LeadFinderPage() {
     setSuccess("");
 
     const score = calculateLeadScore(form);
+
     const payload = {
       business_name: form.business_name.trim(),
       category: form.category || null,
@@ -332,103 +439,133 @@ export default function LeadFinderPage() {
     );
   }
 
-async function runWebsiteAudit(lead) {
-  setError("");
-  setSuccess("");
+  async function runWebsiteAudit(lead) {
+    setError("");
+    setSuccess("");
 
-  if (!lead.website_url) {
-    setError("This lead does not have a website URL to audit.");
-    return;
-  }
+    if (!lead.website_url) {
+      setError("This lead does not have a website URL to audit.");
+      return;
+    }
 
-  setAuditingId(lead.id);
+    setAuditingId(lead.id);
 
-  const { data: sessionData } = await supabase.auth.getSession();
-  const accessToken = sessionData?.session?.access_token;
+    const { data: sessionData } = await supabase.auth.getSession();
+    const accessToken = sessionData?.session?.access_token;
 
-  if (!accessToken) {
-    setError("You need to sign in again before running an audit.");
-    setAuditingId(null);
-    return;
-  }
+    if (!accessToken) {
+      setError("You need to sign in again before running an audit.");
+      setAuditingId(null);
+      return;
+    }
 
-  const response = await fetch("/api/lead-finder/audit", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: JSON.stringify({
-      website_url: lead.website_url,
-    }),
-  });
-
-  const result = await response.json();
-
-  if (!response.ok || !result.ok) {
-    setError(result.error || "Website audit failed.");
-    setAuditingId(null);
-    return;
-  }
-
-  const audit = result.audit;
-
-  const { error: auditInsertError } = await supabase
-    .from("lead_finder_audits")
-    .insert({
-      lead_id: lead.id,
-      has_website: audit.has_website,
-      has_https: audit.has_https,
-      has_contact_form: audit.has_contact_form,
-      has_booking: audit.has_booking,
-      has_phone_number: audit.has_phone_number,
-      has_meta_title: audit.has_meta_title,
-      has_meta_description: audit.has_meta_description,
-      has_favicon: audit.has_favicon,
-      mobile_issue: audit.mobile_issue,
-      speed_issue: audit.speed_issue,
-      outdated_design: audit.outdated_design,
-      issues_json: audit.issues_json,
-      audit_summary: audit.audit_summary,
+    const response = await fetch("/api/lead-finder/audit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        website_url: lead.website_url,
+      }),
     });
 
-  if (auditInsertError) {
-    setError(auditInsertError.message);
-    setAuditingId(null);
-    return;
-  }
+    const result = await response.json();
 
-  const newProblemSummary = lead.problem_summary
-    ? `${lead.problem_summary}\n\nWebsite audit: ${audit.audit_summary}`
-    : `Website audit: ${audit.audit_summary}`;
+    if (!response.ok || !result.ok) {
+      setError(result.error || "Website audit failed.");
+      setAuditingId(null);
+      return;
+    }
 
-  const updatedLeadForScore = {
-    ...lead,
-    problem_summary: newProblemSummary,
-  };
+    const audit = result.audit;
 
-  const newScore = calculateLeadScore(updatedLeadForScore);
+    const { error: auditInsertError } = await supabase
+      .from("lead_finder_audits")
+      .insert({
+        lead_id: lead.id,
+        has_website: audit.has_website,
+        has_https: audit.has_https,
+        has_contact_form: audit.has_contact_form,
+        has_booking: audit.has_booking,
+        has_phone_number: audit.has_phone_number,
+        has_meta_title: audit.has_meta_title,
+        has_meta_description: audit.has_meta_description,
+        has_favicon: audit.has_favicon,
+        mobile_issue: audit.mobile_issue,
+        speed_issue: audit.speed_issue,
+        outdated_design: audit.outdated_design,
+        issues_json: audit.issues_json,
+        audit_summary: audit.audit_summary,
+      });
 
-  const { error: leadUpdateError } = await supabase
-    .from("lead_finder_leads")
-    .update({
+    if (auditInsertError) {
+      setError(auditInsertError.message);
+      setAuditingId(null);
+      return;
+    }
+
+    const newProblemSummary = lead.problem_summary
+      ? `${lead.problem_summary}\n\nWebsite audit: ${audit.audit_summary}`
+      : `Website audit: ${audit.audit_summary}`;
+
+    const updatedLeadForScore = {
+      ...lead,
       problem_summary: newProblemSummary,
-      lead_score: newScore,
-      offer_idea: lead.offer_idea || buildOfferIdea(updatedLeadForScore, newScore),
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", lead.id);
+    };
 
-  if (leadUpdateError) {
-    setError(leadUpdateError.message);
+    const newScore = calculateLeadScore(updatedLeadForScore);
+
+    const { error: leadUpdateError } = await supabase
+      .from("lead_finder_leads")
+      .update({
+        problem_summary: newProblemSummary,
+        lead_score: newScore,
+        offer_idea:
+          lead.offer_idea || buildOfferIdea(updatedLeadForScore, newScore),
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", lead.id);
+
+    if (leadUpdateError) {
+      setError(leadUpdateError.message);
+      setAuditingId(null);
+      return;
+    }
+
+    setSuccess("Website audit complete.");
     setAuditingId(null);
-    return;
+    await loadLeads();
   }
 
-  setSuccess("Website audit complete.");
-  setAuditingId(null);
-  await loadLeads();
-}
+  async function generateOutreachMessages(lead) {
+    setError("");
+    setSuccess("");
+    setGeneratingId(lead.id);
+
+    const messages = buildOutreachMessages(lead);
+
+    const rows = messages.map((item) => ({
+      lead_id: lead.id,
+      channel: item.channel,
+      message: item.message,
+      status: item.status,
+    }));
+
+    const { error: insertError } = await supabase
+      .from("lead_finder_outreach")
+      .insert(rows);
+
+    if (insertError) {
+      setError(insertError.message);
+      setGeneratingId(null);
+      return;
+    }
+
+    setSuccess("Outreach messages generated.");
+    setGeneratingId(null);
+    await loadLeads();
+  }
 
   async function deleteLead(id) {
     const confirmed = window.confirm("Delete this lead?");
@@ -534,9 +671,11 @@ async function runWebsiteAudit(lead) {
           <Link href="/admin" className="secondary-btn">
             Main Admin
           </Link>
+
           <button type="button" onClick={loadLeads}>
             Refresh
           </button>
+
           <button
             type="button"
             className="primary-btn"
@@ -768,9 +907,7 @@ async function runWebsiteAudit(lead) {
                 rows="4"
                 placeholder="Example: No website, old design, no booking button, weak SEO, only Facebook page..."
                 value={form.problem_summary}
-                onChange={(e) =>
-                  updateForm("problem_summary", e.target.value)
-                }
+                onChange={(e) => updateForm("problem_summary", e.target.value)}
               />
             </label>
 
@@ -839,7 +976,9 @@ async function runWebsiteAudit(lead) {
                   <p className="lead-category">
                     {lead.category || "No category"}{" "}
                     {lead.city || lead.state
-                      ? `• ${[lead.city, lead.state].filter(Boolean).join(", ")}`
+                      ? `• ${[lead.city, lead.state]
+                          .filter(Boolean)
+                          .join(", ")}`
                       : ""}
                   </p>
                   <h2>{lead.business_name}</h2>
@@ -854,7 +993,11 @@ async function runWebsiteAudit(lead) {
               <div className="lead-details">
                 <p>
                   <strong>Phone:</strong>{" "}
-                  {lead.phone ? <a href={`tel:${lead.phone}`}>{lead.phone}</a> : "None"}
+                  {lead.phone ? (
+                    <a href={`tel:${lead.phone}`}>{lead.phone}</a>
+                  ) : (
+                    "None"
+                  )}
                 </p>
 
                 <p>
@@ -896,7 +1039,11 @@ async function runWebsiteAudit(lead) {
                 ) : null}
 
                 {lead.google_maps_url ? (
-                  <a href={lead.google_maps_url} target="_blank" rel="noreferrer">
+                  <a
+                    href={lead.google_maps_url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     Google Maps
                   </a>
                 ) : null}
@@ -931,6 +1078,31 @@ async function runWebsiteAudit(lead) {
                 </div>
               ) : null}
 
+              {lead.lead_finder_outreach &&
+              lead.lead_finder_outreach.length > 0 ? (
+                <div className="outreach-box">
+                  <strong>Outreach Messages:</strong>
+
+                  {lead.lead_finder_outreach.map((item) => (
+                    <div className="outreach-message" key={item.id}>
+                      <div className="outreach-message-top">
+                        <span>{item.channel}</span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            navigator.clipboard.writeText(item.message)
+                          }
+                        >
+                          Copy
+                        </button>
+                      </div>
+
+                      <pre>{item.message}</pre>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
               <div className="card-actions">
                 <select
                   value={lead.status || "new"}
@@ -949,6 +1121,16 @@ async function runWebsiteAudit(lead) {
                   disabled={auditingId === lead.id}
                 >
                   {auditingId === lead.id ? "Auditing..." : "Run Audit"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => generateOutreachMessages(lead)}
+                  disabled={generatingId === lead.id}
+                >
+                  {generatingId === lead.id
+                    ? "Generating..."
+                    : "Generate Outreach"}
                 </button>
 
                 <button type="button" onClick={() => startEdit(lead)}>
@@ -1066,6 +1248,11 @@ const leadFinderStyles = `
   .primary-btn:hover,
   .primary-link:hover {
     background: #d96d00;
+  }
+
+  button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
   }
 
   .secondary-btn {
@@ -1329,6 +1516,58 @@ const leadFinderStyles = `
     margin: 8px 0 0;
     color: #374151;
     font-size: 16px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+
+  .outreach-box {
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 14px;
+    padding: 15px;
+    margin-bottom: 14px;
+  }
+
+  .outreach-box > strong {
+    color: #111827;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .outreach-message {
+    background: #ffffff;
+    border: 1px solid #ffedd5;
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 12px;
+  }
+
+  .outreach-message-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .outreach-message-top span {
+    color: #f57c00;
+    font-weight: 900;
+    text-transform: capitalize;
+  }
+
+  .outreach-message-top button {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .outreach-message pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    color: #374151;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
     line-height: 1.5;
   }
 
