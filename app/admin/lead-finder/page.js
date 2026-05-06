@@ -629,6 +629,54 @@ export default function LeadFinderPage() {
     };
   }, [leads]);
 
+  const followUpsDue = useMemo(() => {
+  const now = new Date();
+
+  return leads
+    .filter((lead) => {
+      if (!lead.next_followup_at) return false;
+
+      const followUpDate = new Date(lead.next_followup_at);
+      const status = lead.status || "new";
+
+      if (status === "won" || status === "lost") {
+        return false;
+      }
+
+      return followUpDate <= now;
+    })
+    .sort(
+      (a, b) =>
+        new Date(a.next_followup_at).getTime() -
+        new Date(b.next_followup_at).getTime()
+    );
+}, [leads]);
+
+const upcomingFollowUps = useMemo(() => {
+  const now = new Date();
+  const sevenDaysFromNow = new Date();
+  sevenDaysFromNow.setDate(now.getDate() + 7);
+
+  return leads
+    .filter((lead) => {
+      if (!lead.next_followup_at) return false;
+
+      const followUpDate = new Date(lead.next_followup_at);
+      const status = lead.status || "new";
+
+      if (status === "won" || status === "lost") {
+        return false;
+      }
+
+      return followUpDate > now && followUpDate <= sevenDaysFromNow;
+    })
+    .sort(
+      (a, b) =>
+        new Date(a.next_followup_at).getTime() -
+        new Date(b.next_followup_at).getTime()
+    );
+}, [leads]);
+
   if (loadingSession) {
     return (
       <main className="lead-finder-page">
@@ -719,6 +767,104 @@ export default function LeadFinderPage() {
           <strong>{stats.highScore}</strong>
         </div>
       </section>
+
+      <section className="followup-panel">
+  <div className="followup-column urgent">
+    <div className="followup-title-row">
+      <div>
+        <h2>Follow-Ups Due Now</h2>
+        <p>Leads that are due today or overdue.</p>
+      </div>
+
+      <strong>{followUpsDue.length}</strong>
+    </div>
+
+    {followUpsDue.length === 0 ? (
+      <p className="mini-empty">No follow-ups due right now.</p>
+    ) : (
+      <div className="followup-list">
+        {followUpsDue.slice(0, 6).map((lead) => (
+          <div className="followup-item" key={lead.id}>
+            <div>
+              <h3>{lead.business_name}</h3>
+              <p>
+                {lead.category || "Lead"}{" "}
+                {lead.city || lead.state
+                  ? `• ${[lead.city, lead.state].filter(Boolean).join(", ")}`
+                  : ""}
+              </p>
+              <span>
+                Due: {new Date(lead.next_followup_at).toLocaleString()}
+              </span>
+            </div>
+
+            <div className="followup-actions">
+              {lead.phone ? (
+                <a href={`tel:${lead.phone}`}>Call</a>
+              ) : null}
+
+              {lead.email ? (
+                <a href={`mailto:${lead.email}`}>Email</a>
+              ) : null}
+
+              <button type="button" onClick={() => startEdit(lead)}>
+                Open
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+
+  <div className="followup-column">
+    <div className="followup-title-row">
+      <div>
+        <h2>Upcoming Follow-Ups</h2>
+        <p>Follow-ups due in the next 7 days.</p>
+      </div>
+
+      <strong>{upcomingFollowUps.length}</strong>
+    </div>
+
+    {upcomingFollowUps.length === 0 ? (
+      <p className="mini-empty">No upcoming follow-ups in the next week.</p>
+    ) : (
+      <div className="followup-list">
+        {upcomingFollowUps.slice(0, 6).map((lead) => (
+          <div className="followup-item" key={lead.id}>
+            <div>
+              <h3>{lead.business_name}</h3>
+              <p>
+                {lead.category || "Lead"}{" "}
+                {lead.city || lead.state
+                  ? `• ${[lead.city, lead.state].filter(Boolean).join(", ")}`
+                  : ""}
+              </p>
+              <span>
+                Due: {new Date(lead.next_followup_at).toLocaleString()}
+              </span>
+            </div>
+
+            <div className="followup-actions">
+              {lead.phone ? (
+                <a href={`tel:${lead.phone}`}>Call</a>
+              ) : null}
+
+              {lead.email ? (
+                <a href={`mailto:${lead.email}`}>Email</a>
+              ) : null}
+
+              <button type="button" onClick={() => startEdit(lead)}>
+                Open
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
 
       {showForm ? (
         <section className="lead-form-card">
@@ -1678,6 +1824,150 @@ const leadFinderStyles = `
     .lead-form-card,
     .lead-card {
       padding: 20px;
+    }
+  }
+
+    .followup-panel {
+    max-width: 1220px;
+    margin: 0 auto 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+
+  .followup-column {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 22px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+  }
+
+  .followup-column.urgent {
+    border-color: #fed7aa;
+    background: #fff7ed;
+  }
+
+  .followup-title-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .followup-title-row h2 {
+    margin: 0 0 6px;
+    color: #f57c00;
+    font-size: 25px;
+  }
+
+  .followup-title-row p {
+    margin: 0;
+    color: #4b5563;
+    font-size: 15px;
+    line-height: 1.4;
+  }
+
+  .followup-title-row strong {
+    background: #f57c00;
+    color: #ffffff;
+    border-radius: 14px;
+    min-width: 52px;
+    height: 52px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+  }
+
+  .mini-empty {
+    margin: 0;
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 16px;
+    color: #4b5563;
+    text-align: center;
+  }
+
+  .followup-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .followup-item {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .followup-item h3 {
+    margin: 0 0 5px;
+    color: #111827;
+    font-size: 19px;
+  }
+
+  .followup-item p {
+    margin: 0 0 6px;
+    color: #0f83a6;
+    font-weight: 800;
+    font-size: 14px;
+  }
+
+  .followup-item span {
+    color: #6b7280;
+    font-size: 13px;
+  }
+
+  .followup-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .followup-actions a,
+  .followup-actions button {
+    border: none;
+    border-radius: 9px;
+    background: #0f83a6;
+    color: #ffffff;
+    padding: 9px 12px;
+    font-size: 13px;
+    font-weight: 900;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .followup-actions a:hover,
+  .followup-actions button:hover {
+    background: #0c6d8a;
+  }
+
+  @media (max-width: 900px) {
+    .followup-panel {
+      grid-template-columns: 1fr;
+    }
+
+    .followup-item {
+      flex-direction: column;
+    }
+
+    .followup-actions {
+      justify-content: flex-start;
+      width: 100%;
+    }
+
+    .followup-actions a,
+    .followup-actions button {
+      flex: 1;
+      text-align: center;
+      justify-content: center;
     }
   }
 `;
