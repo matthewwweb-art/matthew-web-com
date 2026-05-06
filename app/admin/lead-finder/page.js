@@ -420,6 +420,67 @@ export default function LeadFinderPage() {
     setSaving(false);
   }
 
+  function exportLeadsToCsv() {
+  const rows = filteredLeads.map((lead) => ({
+    business_name: lead.business_name || "",
+    category: lead.category || "",
+    contact_name: lead.contact_name || "",
+    phone: lead.phone || "",
+    email: lead.email || "",
+    website_url: lead.website_url || "",
+    google_maps_url: lead.google_maps_url || "",
+    facebook_url: lead.facebook_url || "",
+    yelp_url: lead.yelp_url || "",
+    city: lead.city || "",
+    state: lead.state || "",
+    source: lead.source || "",
+    rating: lead.rating || "",
+    review_count: lead.review_count || "",
+    problem_summary: lead.problem_summary || "",
+    offer_idea: lead.offer_idea || "",
+    estimated_offer_value: lead.estimated_offer_value || "",
+    lead_score: lead.lead_score || 0,
+    status: lead.status || "new",
+    notes: lead.notes || "",
+    next_followup_at: lead.next_followup_at || "",
+    created_at: lead.created_at || "",
+  }));
+
+  if (rows.length === 0) {
+    setError("No leads to export.");
+    return;
+  }
+
+  const headers = Object.keys(rows[0]);
+
+  const csv = [
+    headers.join(","),
+    ...rows.map((row) =>
+      headers
+        .map((header) => {
+          const value = String(row[header] ?? "");
+          return `"${value.replaceAll('"', '""')}"`;
+        })
+        .join(",")
+    ),
+  ].join("\n");
+
+  const blob = new Blob([csv], {
+    type: "text/csv;charset=utf-8;",
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  const today = new Date().toISOString().slice(0, 10);
+
+  link.href = url;
+  link.download = `matthew-web-leads-${today}.csv`;
+  link.click();
+
+  URL.revokeObjectURL(url);
+}
+  
   async function updateLeadStatus(id, status) {
     const { error: updateError } = await supabase
       .from("lead_finder_leads")
@@ -730,6 +791,10 @@ const upcomingFollowUps = useMemo(() => {
 
           <button type="button" onClick={loadLeads}>
             Refresh
+          </button>
+
+          <button type="button" onClick={exportLeadsToCsv}>
+            Export CSV
           </button>
 
           <button
