@@ -140,6 +140,7 @@ export default function LeadFinderPage() {
   const [loadingSession, setLoadingSession] = useState(true);
   const [loadingLeads, setLoadingLeads] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [auditingId, setAuditingId] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [leads, setLeads] = useState([]);
@@ -330,6 +331,104 @@ export default function LeadFinderPage() {
       current.map((lead) => (lead.id === id ? { ...lead, status } : lead))
     );
   }
+
+async function runWebsiteAudit(lead) {
+  setError("");
+  setSuccess("");
+
+  if (!lead.website_url) {
+    setError("This lead does not have a website URL to audit.");
+    return;
+  }
+
+  setAuditingId(lead.id);
+
+  const { data: sessionData } = await supabase.auth.getSession();
+  const accessToken = sessionData?.session?.access_token;
+
+  if (!accessToken) {
+    setError("You need to sign in again before running an audit.");
+    setAuditingId(null);
+    return;
+  }
+
+  const response = await fetch("/api/lead-finder/audit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({
+      website_url: lead.website_url,
+    }),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok || !result.ok) {
+    setError(result.error || "Website audit failed.");
+    setAuditingId(null);
+    return;
+  }
+
+  const audit = result.audit;
+
+  const { error: auditInsertError } = await supabase
+    .from("lead_finder_audits")
+    .insert({
+      lead_id: lead.id,
+      has_website: audit.has_website,
+      has_https: audit.has_https,
+      has_contact_form: audit.has_contact_form,
+      has_booking: audit.has_booking,
+      has_phone_number: audit.has_phone_number,
+      has_meta_title: audit.has_meta_title,
+      has_meta_description: audit.has_meta_description,
+      has_favicon: audit.has_favicon,
+      mobile_issue: audit.mobile_issue,
+      speed_issue: audit.speed_issue,
+      outdated_design: audit.outdated_design,
+      issues_json: audit.issues_json,
+      audit_summary: audit.audit_summary,
+    });
+
+  if (auditInsertError) {
+    setError(auditInsertError.message);
+    setAuditingId(null);
+    return;
+  }
+
+  const newProblemSummary = lead.problem_summary
+    ? `${lead.problem_summary}\n\nWebsite audit: ${audit.audit_summary}`
+    : `Website audit: ${audit.audit_summary}`;
+
+  const updatedLeadForScore = {
+    ...lead,
+    problem_summary: newProblemSummary,
+  };
+
+  const newScore = calculateLeadScore(updatedLeadForScore);
+
+  const { error: leadUpdateError } = await supabase
+    .from("lead_finder_leads")
+    .update({
+      problem_summary: newProblemSummary,
+      lead_score: newScore,
+      offer_idea: lead.offer_idea || buildOfferIdea(updatedLeadForScore, newScore),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", lead.id);
+
+  if (leadUpdateError) {
+    setError(leadUpdateError.message);
+    setAuditingId(null);
+    return;
+  }
+
+  setSuccess("Website audit complete.");
+  setAuditingId(null);
+  await loadLeads();
+}
 
   async function deleteLead(id) {
     const confirmed = window.confirm("Delete this lead?");
@@ -843,6 +942,14 @@ export default function LeadFinderPage() {
                     </option>
                   ))}
                 </select>
+
+                <button
+                  type="button"
+                  onClick={() => runWebsiteAudit(lead)}
+                  disabled={auditingId === lead.id}
+                >
+                  {auditingId === lead.id ? "Auditing..." : "Run Audit"}
+                </button>
 
                 <button type="button" onClick={() => startEdit(lead)}>
                   Edit
