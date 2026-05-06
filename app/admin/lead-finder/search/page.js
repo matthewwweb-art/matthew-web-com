@@ -11,7 +11,10 @@ export default function LeadFinderSearchPage() {
   const [places, setPlaces] = useState([]);
   const [searching, setSearching] = useState(false);
   const [savingId, setSavingId] = useState(null);
+  const [bulkSaving, setBulkSaving] = useState(false);
   const [savedIds, setSavedIds] = useState([]);
+  const [existingKeys, setExistingKeys] = useState([]);
+  const [selectedIds, setSelectedIds] = useState([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -35,6 +38,75 @@ export default function LeadFinderSearchPage() {
     };
   }, []);
 
+  function makeLeadKey(place) {
+    const website = (place.website_url || "").toLowerCase().trim();
+    const maps = (place.google_maps_url || "").toLowerCase().trim();
+    const name = (place.business_name || "").toLowerCase().trim();
+    const phone = (place.phone || "").replace(/\D/g, "");
+
+    return {
+      website,
+      maps,
+      name,
+      phone,
+    };
+  }
+
+  function isExistingLead(place) {
+    const key = makeLeadKey(place);
+
+    return existingKeys.some((existing) => {
+      if (key.website && existing.website && key.website === existing.website) {
+        return true;
+      }
+
+      if (key.maps && existing.maps && key.maps === existing.maps) {
+        return true;
+      }
+
+      if (key.phone && existing.phone && key.phone === existing.phone) {
+        return true;
+      }
+
+      if (key.name && existing.name && key.name === existing.name) {
+        return true;
+      }
+
+      return false;
+    });
+  }
+
+  function toggleSelected(placeId) {
+    setSelectedIds((current) =>
+      current.includes(placeId)
+        ? current.filter((id) => id !== placeId)
+        : [...current, placeId]
+    );
+  }
+
+  function selectHighScoreLeads() {
+  const ids = places
+    .filter((place) => Number(place.lead_score || 0) >= 50)
+    .filter((place) => !savedIds.includes(place.place_id))
+    .filter((place) => !isExistingLead(place))
+    .map((place) => place.place_id);
+
+  setSelectedIds(ids);
+}
+
+function selectAllNewLeads() {
+  const ids = places
+    .filter((place) => !savedIds.includes(place.place_id))
+    .filter((place) => !isExistingLead(place))
+    .map((place) => place.place_id);
+
+  setSelectedIds(ids);
+}
+
+  function clearSelected() {
+    setSelectedIds([]);
+  }
+
   async function searchPlaces(e) {
     e.preventDefault();
 
@@ -42,6 +114,7 @@ export default function LeadFinderSearchPage() {
     setSuccess("");
     setSearching(true);
     setPlaces([]);
+    setSelectedIds([]);
 
     const { data: sessionData } = await supabase.auth.getSession();
     const accessToken = sessionData?.session?.access_token;
@@ -69,8 +142,29 @@ export default function LeadFinderSearchPage() {
       return;
     }
 
-    setPlaces(result.places || []);
-    setSuccess(`Found ${result.places?.length || 0} businesses.`);
+    const foundPlaces = result.places || [];
+    setPlaces(foundPlaces);
+
+    const { data: existingLeads, error: existingError } = await supabase
+      .from("lead_finder_leads")
+      .select("business_name, phone, website_url, google_maps_url");
+
+    if (existingError) {
+      setError(existingError.message);
+      setSearching(false);
+      return;
+    }
+
+    setExistingKeys(
+      (existingLeads || []).map((lead) => ({
+        name: (lead.business_name || "").toLowerCase().trim(),
+        phone: (lead.phone || "").replace(/\D/g, ""),
+        website: (lead.website_url || "").toLowerCase().trim(),
+        maps: (lead.google_maps_url || "").toLowerCase().trim(),
+      }))
+    );
+
+    setSuccess(`Found ${foundPlaces.length} businesses.`);
     setSearching(false);
   }
 
@@ -78,6 +172,12 @@ export default function LeadFinderSearchPage() {
     setError("");
     setSuccess("");
     setSavingId(place.place_id);
+
+    if (isExistingLead(place)) {
+      setError("This business already looks like it exists in your Lead Finder CRM.");
+      setSavingId(null);
+      return;
+    }
 
     const payload = {
       business_name: place.business_name,
@@ -109,8 +209,70 @@ export default function LeadFinderSearchPage() {
     }
 
     setSavedIds((current) => [...current, place.place_id]);
+    setSelectedIds((current) => current.filter((id) => id !== place.place_id));
+    setExistingKeys((current) => [...current, makeLeadKey(place)]);
     setSuccess(`${place.business_name} saved to Lead Finder CRM.`);
     setSavingId(null);
+  }
+
+  async function saveSelectedLeads() {
+    setError("");
+    setSuccess("");
+
+    const selectedPlaces = places
+      .filter((place) => selectedIds.includes(place.place_id))
+      .filter((place) => !savedIds.includes(place.place_id))
+      .filter((place) => !isExistingLead(place));
+
+    if (selectedPlaces.length === 0) {
+      setError("Select at least one new lead to save.");
+      return;
+    }
+
+    setBulkSaving(true);
+
+    const rows = selectedPlaces.map((place) => ({
+      business_name: place.business_name,
+      category: place.category || null,
+      phone: place.phone || null,
+      website_url: place.website_url || null,
+      google_maps_url: place.google_maps_url || null,
+      city: place.city || null,
+      state: place.state || null,
+      source: place.source || "Google Places",
+      rating: place.rating || null,
+      review_count: place.review_count || null,
+      problem_summary: place.problem_summary || null,
+      offer_idea: place.offer_idea || null,
+      lead_score: place.lead_score || 0,
+      status: "new",
+      notes: place.address ? `Address: ${place.address}` : null,
+      updated_at: new Date().toISOString(),
+    }));
+
+    const { error: insertError } = await supabase
+      .from("lead_finder_leads")
+      .insert(rows);
+
+    if (insertError) {
+      setError(insertError.message);
+      setBulkSaving(false);
+      return;
+    }
+
+    setSavedIds((current) => [
+      ...current,
+      ...selectedPlaces.map((place) => place.place_id),
+    ]);
+
+    setExistingKeys((current) => [
+      ...current,
+      ...selectedPlaces.map((place) => makeLeadKey(place)),
+    ]);
+
+    setSelectedIds([]);
+    setSuccess(`${selectedPlaces.length} leads saved to Lead Finder CRM.`);
+    setBulkSaving(false);
   }
 
   if (loadingSession) {
@@ -186,12 +348,14 @@ export default function LeadFinderSearchPage() {
           <button type="button" onClick={() => setQuery("roofers in Allentown PA")}>
             roofers in Allentown PA
           </button>
+
           <button
             type="button"
             onClick={() => setQuery("contractors in Lehigh Valley PA")}
           >
             contractors in Lehigh Valley PA
           </button>
+
           <button
             type="button"
             onClick={() => setQuery("landscapers in Madison ME")}
@@ -201,6 +365,32 @@ export default function LeadFinderSearchPage() {
         </div>
       </section>
 
+      {places.length > 0 ? (
+        <section className="bulk-actions">
+          <div>
+            <strong>{selectedIds.length}</strong> selected
+          </div>
+
+          <div className="bulk-buttons">
+            <button type="button" onClick={selectAllNewLeads}>
+              Select All New
+            </button>
+
+            <button type="button" onClick={selectHighScoreLeads}>
+              Select High Score
+            </button>
+
+            <button type="button" onClick={clearSelected}>
+              Clear
+            </button>
+
+            <button type="button" onClick={saveSelectedLeads} disabled={bulkSaving}>
+              {bulkSaving ? "Saving..." : "Save Selected"}
+            </button>
+          </div>
+        </section>
+      ) : null}
+
       <section className="places-list">
         {places.length === 0 ? (
           <p className="empty-box">
@@ -209,12 +399,25 @@ export default function LeadFinderSearchPage() {
         ) : null}
 
         {places.map((place) => {
-          const alreadySaved = savedIds.includes(place.place_id);
+          const alreadySaved =
+            savedIds.includes(place.place_id) || isExistingLead(place);
+
+          const selected = selectedIds.includes(place.place_id);
 
           return (
             <article className="place-card" key={place.place_id}>
               <div className="place-top">
-                <div>
+                <label className="select-lead-box">
+                  <input
+                    type="checkbox"
+                    checked={selected}
+                    disabled={alreadySaved}
+                    onChange={() => toggleSelected(place.place_id)}
+                  />
+                  <span>{alreadySaved ? "Already Saved" : "Select"}</span>
+                </label>
+
+                <div className="place-main">
                   <p className="place-category">
                     {place.category || "Business"}{" "}
                     {place.city || place.state
@@ -289,7 +492,7 @@ export default function LeadFinderSearchPage() {
                 disabled={savingId === place.place_id || alreadySaved}
               >
                 {alreadySaved
-                  ? "Saved"
+                  ? "Already Saved"
                   : savingId === place.place_id
                     ? "Saving..."
                     : "Save Lead"}
@@ -325,7 +528,8 @@ const styles = `
   .places-list,
   .error-box,
   .success-box,
-  .empty-box {
+  .empty-box,
+  .bulk-actions {
     max-width: 1220px;
     margin-left: auto;
     margin-right: auto;
@@ -476,6 +680,39 @@ const styles = `
     background: #0c6d8a;
   }
 
+  .bulk-actions {
+    margin-bottom: 24px;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 18px 22px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .bulk-actions strong {
+    color: #f57c00;
+    font-size: 28px;
+  }
+
+  .bulk-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .bulk-buttons button:nth-child(1),
+  .bulk-buttons button:nth-child(2) {
+    background: #0f83a6;
+  }
+
+  .bulk-buttons button:nth-child(1):hover,
+  .bulk-buttons button:nth-child(2):hover {
+    background: #0c6d8a;
+  }
+
   .places-list {
     display: grid;
     gap: 18px;
@@ -490,11 +727,35 @@ const styles = `
   }
 
   .place-top {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 130px 1fr 92px;
     gap: 20px;
     align-items: flex-start;
     margin-bottom: 18px;
+  }
+
+  .select-lead-box {
+    min-width: 120px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 12px;
+    display: grid;
+    gap: 8px;
+    justify-items: center;
+    color: #374151;
+    font-weight: 900;
+  }
+
+  .select-lead-box input {
+    width: 22px;
+    height: 22px;
+    accent-color: #f57c00;
+  }
+
+  .select-lead-box span {
+    font-size: 13px;
+    text-align: center;
   }
 
   .place-category {
@@ -615,6 +876,20 @@ const styles = `
     .details-grid {
       grid-template-columns: repeat(2, 1fr);
     }
+
+    .place-top {
+      grid-template-columns: 1fr;
+    }
+
+    .select-lead-box {
+      width: 100%;
+      grid-template-columns: auto 1fr;
+      justify-items: start;
+    }
+
+    .score-badge {
+      width: 100%;
+    }
   }
 
   @media (max-width: 620px) {
@@ -628,11 +903,16 @@ const styles = `
       padding: 20px;
     }
 
-    .place-top {
+    .bulk-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .bulk-buttons {
       flex-direction: column;
     }
 
-    .score-badge {
+    .bulk-buttons button {
       width: 100%;
     }
 
