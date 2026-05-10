@@ -358,8 +358,8 @@ export default function HotLeadsPage() {
                 ))}
               </select>
 
-              <Link href="/admin/lead-finder" className="primary-btn">
-                Open in CRM
+              <Link href={`/admin/lead-finder/${lead.id}`} className="primary-btn">
+                Open Lead
               </Link>
             </div>
           </article>

@@ -558,6 +558,12 @@ export default function LeadFinderPage() {
       return;
     }
 
+    await supabase.from("lead_finder_activities").insert({
+      lead_id: id,
+      activity_type: status,
+      activity_text: `Status changed to ${status}.`,
+    });
+
     setLeads((current) =>
       current.map((lead) => (lead.id === id ? { ...lead, status } : lead))
     );
@@ -960,6 +966,14 @@ export default function LeadFinderPage() {
             Google Search
           </Link>
 
+          <Link href="/admin/lead-finder/board" className="secondary-btn">
+            Pipeline Board
+          </Link>
+
+          <Link href="/admin/lead-finder/hot" className="secondary-btn">
+            Hot Leads
+          </Link>
+
           <button type="button" onClick={loadLeads}>
             Refresh
           </button>
@@ -1065,6 +1079,8 @@ export default function LeadFinderPage() {
                   </div>
 
                   <div className="followup-actions">
+                    <Link href={`/admin/lead-finder/${lead.id}`}>Open</Link>
+
                     {lead.phone ? <a href={`tel:${lead.phone}`}>Call</a> : null}
 
                     {lead.email ? (
@@ -1072,7 +1088,7 @@ export default function LeadFinderPage() {
                     ) : null}
 
                     <button type="button" onClick={() => startEdit(lead)}>
-                      Open
+                      Edit
                     </button>
                   </div>
                 </div>
@@ -1113,6 +1129,8 @@ export default function LeadFinderPage() {
                   </div>
 
                   <div className="followup-actions">
+                    <Link href={`/admin/lead-finder/${lead.id}`}>Open</Link>
+
                     {lead.phone ? <a href={`tel:${lead.phone}`}>Call</a> : null}
 
                     {lead.email ? (
@@ -1120,7 +1138,7 @@ export default function LeadFinderPage() {
                     ) : null}
 
                     <button type="button" onClick={() => startEdit(lead)}>
-                      Open
+                      Edit
                     </button>
                   </div>
                 </div>
@@ -1629,6 +1647,13 @@ export default function LeadFinderPage() {
                       </option>
                     ))}
                   </select>
+
+                  <Link
+                    href={`/admin/lead-finder/${lead.id}`}
+                    className="secondary-btn"
+                  >
+                    Open Lead
+                  </Link>
 
                   <button
                     type="button"
@@ -2447,7 +2472,8 @@ const leadFinderStyles = `
     }
 
     .card-actions select,
-    .card-actions button {
+    .card-actions button,
+    .card-actions a {
       width: 100%;
       max-width: none;
     }

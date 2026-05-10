@@ -27,7 +27,9 @@ function parseEstimatedValue(value) {
   if (!numbers || numbers.length === 0) return 0;
   if (numbers.length === 1) return numbers[0];
 
-  return Math.round(numbers.reduce((sum, num) => sum + num, 0) / numbers.length);
+  return Math.round(
+    numbers.reduce((sum, num) => sum + num, 0) / numbers.length
+  );
 }
 
 function formatMoney(amount) {
@@ -39,9 +41,9 @@ function formatMoney(amount) {
 }
 
 function prettyStatus(status) {
-  return status
+  return String(status || "new")
     .split(" ")
-    .map((word) => word[0].toUpperCase() + word.slice(1))
+    .map((word) => word[0]?.toUpperCase() + word.slice(1))
     .join(" ");
 }
 
@@ -201,6 +203,10 @@ export default function LeadFinderBoardPage() {
             Google Search
           </Link>
 
+          <Link href="/admin/lead-finder/hot" className="secondary-btn">
+            Hot Leads
+          </Link>
+
           <button type="button" onClick={loadLeads}>
             Refresh
           </button>
@@ -281,10 +287,21 @@ export default function LeadFinderBoardPage() {
                         </p>
 
                         <div className="contact-row">
-                          {lead.phone ? <a href={`tel:${lead.phone}`}>Call</a> : null}
+                          <Link
+                            href={`/admin/lead-finder/${lead.id}`}
+                            className="open-lead-link"
+                          >
+                            Open
+                          </Link>
+
+                          {lead.phone ? (
+                            <a href={`tel:${lead.phone}`}>Call</a>
+                          ) : null}
+
                           {lead.email ? (
                             <a href={`mailto:${lead.email}`}>Email</a>
                           ) : null}
+
                           {lead.website_url ? (
                             <a
                               href={lead.website_url}
@@ -410,6 +427,11 @@ const styles = `
   button:hover,
   .primary-btn:hover {
     background: #d96d00;
+  }
+
+  button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
   }
 
   .secondary-btn {
@@ -575,7 +597,8 @@ const styles = `
     margin-bottom: 12px;
   }
 
-  .contact-row a {
+  .contact-row a,
+  .open-lead-link {
     background: #0f83a6;
     color: #ffffff;
     border-radius: 8px;
@@ -583,6 +606,18 @@ const styles = `
     text-decoration: none;
     font-size: 13px;
     font-weight: 900;
+  }
+
+  .contact-row a:hover {
+    background: #0c6d8a;
+  }
+
+  .open-lead-link {
+    background: #f57c00 !important;
+  }
+
+  .open-lead-link:hover {
+    background: #d96d00 !important;
   }
 
   .board-card select {
