@@ -15,6 +15,17 @@ const statusOptions = [
   "follow up later",
 ];
 
+const activityOptions = [
+  "note",
+  "call",
+  "email",
+  "facebook dm",
+  "quote sent",
+  "follow up",
+  "won",
+  "lost",
+];
+
 const categoryOptions = [
   "Contractor",
   "Roofer",
@@ -134,13 +145,9 @@ function parseEstimatedValue(value) {
     ?.map((num) => Number(num))
     .filter((num) => !Number.isNaN(num));
 
-  if (!numbers || numbers.length === 0) {
-    return 0;
-  }
+  if (!numbers || numbers.length === 0) return 0;
 
-  if (numbers.length === 1) {
-    return numbers[0];
-  }
+  if (numbers.length === 1) return numbers[0];
 
   const total = numbers.reduce((sum, num) => sum + num, 0);
   return Math.round(total / numbers.length);
@@ -264,6 +271,8 @@ export default function LeadFinderPage() {
   const [saving, setSaving] = useState(false);
   const [auditingId, setAuditingId] = useState(null);
   const [generatingId, setGeneratingId] = useState(null);
+  const [savingActivityId, setSavingActivityId] = useState(null);
+  const [deletingActivityId, setDeletingActivityId] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [leads, setLeads] = useState([]);
@@ -272,6 +281,7 @@ export default function LeadFinderPage() {
   const [form, setForm] = useState(emptyForm);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [activityForms, setActivityForms] = useState({});
 
   useEffect(() => {
     async function loadSession() {
@@ -315,10 +325,20 @@ export default function LeadFinderPage() {
           status,
           sent_at,
           created_at
+        ),
+        lead_finder_activities (
+          id,
+          activity_type,
+          activity_text,
+          created_at
         )
       `
       )
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .order("created_at", {
+        foreignTable: "lead_finder_activities",
+        ascending: false,
+      });
 
     if (leadError) {
       setError(leadError.message);
@@ -341,6 +361,17 @@ export default function LeadFinderPage() {
         offer_idea: updated.offer_idea || buildOfferIdea(updated, score),
       };
     });
+  }
+
+  function updateActivityForm(leadId, field, value) {
+    setActivityForms((current) => ({
+      ...current,
+      [leadId]: {
+        activity_type: current[leadId]?.activity_type || "note",
+        activity_text: current[leadId]?.activity_text || "",
+        [field]: value,
+      },
+    }));
   }
 
   function resetForm() {
@@ -626,6 +657,12 @@ export default function LeadFinderPage() {
       return;
     }
 
+    await supabase.from("lead_finder_activities").insert({
+      lead_id: lead.id,
+      activity_type: "note",
+      activity_text: `Website audit completed. ${audit.audit_summary}`,
+    });
+
     setSuccess("Website audit complete.");
     setAuditingId(null);
     await loadLeads();
@@ -655,8 +692,78 @@ export default function LeadFinderPage() {
       return;
     }
 
+    await supabase.from("lead_finder_activities").insert({
+      lead_id: lead.id,
+      activity_type: "note",
+      activity_text: "Outreach messages generated.",
+    });
+
     setSuccess("Outreach messages generated.");
     setGeneratingId(null);
+    await loadLeads();
+  }
+
+  async function addActivity(leadId) {
+    const current = activityForms[leadId] || {
+      activity_type: "note",
+      activity_text: "",
+    };
+
+    if (!current.activity_text.trim()) {
+      setError("Activity text is required.");
+      return;
+    }
+
+    setError("");
+    setSuccess("");
+    setSavingActivityId(leadId);
+
+    const { error: insertError } = await supabase
+      .from("lead_finder_activities")
+      .insert({
+        lead_id: leadId,
+        activity_type: current.activity_type || "note",
+        activity_text: current.activity_text.trim(),
+      });
+
+    if (insertError) {
+      setError(insertError.message);
+      setSavingActivityId(null);
+      return;
+    }
+
+    setActivityForms((forms) => ({
+      ...forms,
+      [leadId]: {
+        activity_type: "note",
+        activity_text: "",
+      },
+    }));
+
+    setSuccess("Activity added.");
+    setSavingActivityId(null);
+    await loadLeads();
+  }
+
+  async function deleteActivity(activityId) {
+    const confirmed = window.confirm("Delete this activity?");
+    if (!confirmed) return;
+
+    setDeletingActivityId(activityId);
+
+    const { error: deleteError } = await supabase
+      .from("lead_finder_activities")
+      .delete()
+      .eq("id", activityId);
+
+    if (deleteError) {
+      setError(deleteError.message);
+      setDeletingActivityId(null);
+      return;
+    }
+
+    setSuccess("Activity deleted.");
+    setDeletingActivityId(null);
     await loadLeads();
   }
 
@@ -684,6 +791,10 @@ export default function LeadFinderPage() {
       const status = lead.status || "new";
       const matchesStatus = statusFilter === "all" || status === statusFilter;
 
+      const activityText = (lead.lead_finder_activities || [])
+        .map((item) => `${item.activity_type} ${item.activity_text}`)
+        .join(" ");
+
       const searchable = [
         lead.business_name,
         lead.category,
@@ -696,6 +807,7 @@ export default function LeadFinderPage() {
         lead.problem_summary,
         lead.offer_idea,
         lead.notes,
+        activityText,
         status,
       ]
         .filter(Boolean)
@@ -763,9 +875,7 @@ export default function LeadFinderPage() {
         const followUpDate = new Date(lead.next_followup_at);
         const status = lead.status || "new";
 
-        if (status === "won" || status === "lost") {
-          return false;
-        }
+        if (status === "won" || status === "lost") return false;
 
         return followUpDate <= now;
       })
@@ -788,9 +898,7 @@ export default function LeadFinderPage() {
         const followUpDate = new Date(lead.next_followup_at);
         const status = lead.status || "new";
 
-        if (status === "won" || status === "lost") {
-          return false;
-        }
+        if (status === "won" || status === "lost") return false;
 
         return followUpDate > now && followUpDate <= sevenDaysFromNow;
       })
@@ -1271,194 +1379,290 @@ export default function LeadFinderPage() {
         ) : null}
 
         {!loadingLeads &&
-          filteredLeads.map((lead) => (
-            <article className="lead-card" key={lead.id}>
-              <div className="lead-card-top">
-                <div>
-                  <p className="lead-category">
-                    {lead.category || "No category"}{" "}
-                    {lead.city || lead.state
-                      ? `• ${[lead.city, lead.state]
-                          .filter(Boolean)
-                          .join(", ")}`
+          filteredLeads.map((lead) => {
+            const activityForm = activityForms[lead.id] || {
+              activity_type: "note",
+              activity_text: "",
+            };
+
+            return (
+              <article className="lead-card" key={lead.id}>
+                <div className="lead-card-top">
+                  <div>
+                    <p className="lead-category">
+                      {lead.category || "No category"}{" "}
+                      {lead.city || lead.state
+                        ? `• ${[lead.city, lead.state]
+                            .filter(Boolean)
+                            .join(", ")}`
+                        : ""}
+                    </p>
+                    <h2>{lead.business_name}</h2>
+                  </div>
+
+                  <div className="score-badge">
+                    <span>Score</span>
+                    <strong>{lead.lead_score || 0}</strong>
+                  </div>
+                </div>
+
+                <div className="lead-details">
+                  <p>
+                    <strong>Phone:</strong>{" "}
+                    {lead.phone ? (
+                      <a href={`tel:${lead.phone}`}>{lead.phone}</a>
+                    ) : (
+                      "None"
+                    )}
+                  </p>
+
+                  <p>
+                    <strong>Email:</strong>{" "}
+                    {lead.email ? (
+                      <a href={`mailto:${lead.email}`}>{lead.email}</a>
+                    ) : (
+                      "None"
+                    )}
+                  </p>
+
+                  <p>
+                    <strong>Rating:</strong>{" "}
+                    {lead.rating ? `${lead.rating} stars` : "Unknown"}
+                  </p>
+
+                  <p>
+                    <strong>Reviews:</strong>{" "}
+                    {lead.review_count ? lead.review_count : "Unknown"}
+                  </p>
+
+                  <p>
+                    <strong>Value:</strong>{" "}
+                    {lead.estimated_offer_value || "Not set"}{" "}
+                    {lead.estimated_offer_value
+                      ? `(${formatMoney(
+                          parseEstimatedValue(lead.estimated_offer_value)
+                        )} avg)`
                       : ""}
                   </p>
-                  <h2>{lead.business_name}</h2>
+
+                  <p>
+                    <strong>Source:</strong> {lead.source || "manual"}
+                  </p>
+
+                  <p>
+                    <strong>Follow-Up:</strong>{" "}
+                    {lead.next_followup_at
+                      ? new Date(lead.next_followup_at).toLocaleString()
+                      : "Not set"}
+                  </p>
                 </div>
 
-                <div className="score-badge">
-                  <span>Score</span>
-                  <strong>{lead.lead_score || 0}</strong>
+                <div className="link-row">
+                  {lead.website_url ? (
+                    <a href={lead.website_url} target="_blank" rel="noreferrer">
+                      Website
+                    </a>
+                  ) : null}
+
+                  {lead.google_maps_url ? (
+                    <a
+                      href={lead.google_maps_url}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Google Maps
+                    </a>
+                  ) : null}
+
+                  {lead.facebook_url ? (
+                    <a
+                      href={lead.facebook_url}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Facebook
+                    </a>
+                  ) : null}
+
+                  {lead.yelp_url ? (
+                    <a href={lead.yelp_url} target="_blank" rel="noreferrer">
+                      Yelp
+                    </a>
+                  ) : null}
                 </div>
-              </div>
 
-              <div className="lead-details">
-                <p>
-                  <strong>Phone:</strong>{" "}
-                  {lead.phone ? (
-                    <a href={`tel:${lead.phone}`}>{lead.phone}</a>
-                  ) : (
-                    "None"
-                  )}
-                </p>
-
-                <p>
-                  <strong>Email:</strong>{" "}
-                  {lead.email ? (
-                    <a href={`mailto:${lead.email}`}>{lead.email}</a>
-                  ) : (
-                    "None"
-                  )}
-                </p>
-
-                <p>
-                  <strong>Rating:</strong>{" "}
-                  {lead.rating ? `${lead.rating} stars` : "Unknown"}
-                </p>
-
-                <p>
-                  <strong>Reviews:</strong>{" "}
-                  {lead.review_count ? lead.review_count : "Unknown"}
-                </p>
-
-                <p>
-                  <strong>Value:</strong>{" "}
-                  {lead.estimated_offer_value || "Not set"}{" "}
-                  {lead.estimated_offer_value
-                    ? `(${formatMoney(
-                        parseEstimatedValue(lead.estimated_offer_value)
-                      )} avg)`
-                    : ""}
-                </p>
-
-                <p>
-                  <strong>Source:</strong> {lead.source || "manual"}
-                </p>
-
-                <p>
-                  <strong>Follow-Up:</strong>{" "}
-                  {lead.next_followup_at
-                    ? new Date(lead.next_followup_at).toLocaleString()
-                    : "Not set"}
-                </p>
-              </div>
-
-              <div className="link-row">
-                {lead.website_url ? (
-                  <a href={lead.website_url} target="_blank" rel="noreferrer">
-                    Website
-                  </a>
-                ) : null}
-
-                {lead.google_maps_url ? (
-                  <a
-                    href={lead.google_maps_url}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Google Maps
-                  </a>
-                ) : null}
-
-                {lead.facebook_url ? (
-                  <a href={lead.facebook_url} target="_blank" rel="noreferrer">
-                    Facebook
-                  </a>
-                ) : null}
-
-                {lead.yelp_url ? (
-                  <a href={lead.yelp_url} target="_blank" rel="noreferrer">
-                    Yelp
-                  </a>
-                ) : null}
-              </div>
-
-              <div className="summary-box">
-                <strong>Problem Found:</strong>
-                <p>{lead.problem_summary || "No problem summary added."}</p>
-              </div>
-
-              <div className="summary-box">
-                <strong>Offer Idea:</strong>
-                <p>{lead.offer_idea || "No offer idea added."}</p>
-              </div>
-
-              {lead.notes ? (
                 <div className="summary-box">
-                  <strong>Notes:</strong>
-                  <p>{lead.notes}</p>
+                  <strong>Problem Found:</strong>
+                  <p>{lead.problem_summary || "No problem summary added."}</p>
                 </div>
-              ) : null}
 
-              {lead.lead_finder_outreach &&
-              lead.lead_finder_outreach.length > 0 ? (
-                <div className="outreach-box">
-                  <strong>Outreach Messages:</strong>
+                <div className="summary-box">
+                  <strong>Offer Idea:</strong>
+                  <p>{lead.offer_idea || "No offer idea added."}</p>
+                </div>
 
-                  {lead.lead_finder_outreach.map((item) => (
-                    <div className="outreach-message" key={item.id}>
-                      <div className="outreach-message-top">
-                        <span>{item.channel}</span>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            navigator.clipboard.writeText(item.message)
-                          }
-                        >
-                          Copy
-                        </button>
+                {lead.notes ? (
+                  <div className="summary-box">
+                    <strong>Notes:</strong>
+                    <p>{lead.notes}</p>
+                  </div>
+                ) : null}
+
+                {lead.lead_finder_outreach &&
+                lead.lead_finder_outreach.length > 0 ? (
+                  <div className="outreach-box">
+                    <strong>Outreach Messages:</strong>
+
+                    {lead.lead_finder_outreach.map((item) => (
+                      <div className="outreach-message" key={item.id}>
+                        <div className="outreach-message-top">
+                          <span>{item.channel}</span>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              navigator.clipboard.writeText(item.message)
+                            }
+                          >
+                            Copy
+                          </button>
+                        </div>
+
+                        <pre>{item.message}</pre>
                       </div>
+                    ))}
+                  </div>
+                ) : null}
 
-                      <pre>{item.message}</pre>
+                <div className="activity-box">
+                  <div className="activity-title-row">
+                    <div>
+                      <strong>Activity Timeline</strong>
+                      <p>Log calls, DMs, emails, quotes, and follow-ups.</p>
                     </div>
-                  ))}
+                  </div>
+
+                  <div className="activity-form">
+                    <select
+                      value={activityForm.activity_type}
+                      onChange={(e) =>
+                        updateActivityForm(
+                          lead.id,
+                          "activity_type",
+                          e.target.value
+                        )
+                      }
+                    >
+                      {activityOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+
+                    <textarea
+                      rows="3"
+                      placeholder="Example: Called and left voicemail. Follow up Friday."
+                      value={activityForm.activity_text}
+                      onChange={(e) =>
+                        updateActivityForm(
+                          lead.id,
+                          "activity_text",
+                          e.target.value
+                        )
+                      }
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => addActivity(lead.id)}
+                      disabled={savingActivityId === lead.id}
+                    >
+                      {savingActivityId === lead.id
+                        ? "Saving..."
+                        : "Add Activity"}
+                    </button>
+                  </div>
+
+                  {lead.lead_finder_activities &&
+                  lead.lead_finder_activities.length > 0 ? (
+                    <div className="activity-list">
+                      {lead.lead_finder_activities.map((activity) => (
+                        <div className="activity-item" key={activity.id}>
+                          <div>
+                            <span>{activity.activity_type}</span>
+                            <p>{activity.activity_text}</p>
+                            <small>
+                              {activity.created_at
+                                ? new Date(
+                                    activity.created_at
+                                  ).toLocaleString()
+                                : ""}
+                            </small>
+                          </div>
+
+                          <button
+                            type="button"
+                            className="activity-delete"
+                            onClick={() => deleteActivity(activity.id)}
+                            disabled={deletingActivityId === activity.id}
+                          >
+                            {deletingActivityId === activity.id
+                              ? "Deleting..."
+                              : "Delete"}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mini-empty">No activity logged yet.</p>
+                  )}
                 </div>
-              ) : null}
 
-              <div className="card-actions">
-                <select
-                  value={lead.status || "new"}
-                  onChange={(e) => updateLeadStatus(lead.id, e.target.value)}
-                >
-                  {statusOptions.map((status) => (
-                    <option key={status} value={status}>
-                      {status}
-                    </option>
-                  ))}
-                </select>
+                <div className="card-actions">
+                  <select
+                    value={lead.status || "new"}
+                    onChange={(e) => updateLeadStatus(lead.id, e.target.value)}
+                  >
+                    {statusOptions.map((status) => (
+                      <option key={status} value={status}>
+                        {status}
+                      </option>
+                    ))}
+                  </select>
 
-                <button
-                  type="button"
-                  onClick={() => runWebsiteAudit(lead)}
-                  disabled={auditingId === lead.id}
-                >
-                  {auditingId === lead.id ? "Auditing..." : "Run Audit"}
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => runWebsiteAudit(lead)}
+                    disabled={auditingId === lead.id}
+                  >
+                    {auditingId === lead.id ? "Auditing..." : "Run Audit"}
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={() => generateOutreachMessages(lead)}
-                  disabled={generatingId === lead.id}
-                >
-                  {generatingId === lead.id
-                    ? "Generating..."
-                    : "Generate Outreach"}
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => generateOutreachMessages(lead)}
+                    disabled={generatingId === lead.id}
+                  >
+                    {generatingId === lead.id
+                      ? "Generating..."
+                      : "Generate Outreach"}
+                  </button>
 
-                <button type="button" onClick={() => startEdit(lead)}>
-                  Edit
-                </button>
+                  <button type="button" onClick={() => startEdit(lead)}>
+                    Edit
+                  </button>
 
-                <button
-                  type="button"
-                  className="danger-btn"
-                  onClick={() => deleteLead(lead.id)}
-                >
-                  Delete
-                </button>
-              </div>
-            </article>
-          ))}
+                  <button
+                    type="button"
+                    className="danger-btn"
+                    onClick={() => deleteLead(lead.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </article>
+            );
+          })}
       </section>
     </main>
   );
@@ -1849,7 +2053,9 @@ const leadFinderStyles = `
   .lead-form textarea,
   .filters input,
   .filters select,
-  .card-actions select {
+  .card-actions select,
+  .activity-form select,
+  .activity-form textarea {
     width: 100%;
     border: 1px solid #d1d5db;
     border-radius: 10px;
@@ -1859,7 +2065,8 @@ const leadFinderStyles = `
     color: #111827;
   }
 
-  .lead-form textarea {
+  .lead-form textarea,
+  .activity-form textarea {
     resize: vertical;
     font-family: Arial, Helvetica, sans-serif;
   }
@@ -1993,7 +2200,8 @@ const leadFinderStyles = `
     white-space: pre-wrap;
   }
 
-  .outreach-box {
+  .outreach-box,
+  .activity-box {
     background: #fff7ed;
     border: 1px solid #fed7aa;
     border-radius: 14px;
@@ -2001,10 +2209,20 @@ const leadFinderStyles = `
     margin-bottom: 14px;
   }
 
-  .outreach-box > strong {
+  .outreach-box > strong,
+  .activity-title-row strong {
     color: #111827;
     display: block;
+  }
+
+  .activity-title-row {
     margin-bottom: 12px;
+  }
+
+  .activity-title-row p {
+    margin: 5px 0 0;
+    color: #6b7280;
+    font-size: 14px;
   }
 
   .outreach-message {
@@ -2042,6 +2260,70 @@ const leadFinderStyles = `
     font-family: Arial, Helvetica, sans-serif;
     font-size: 15px;
     line-height: 1.5;
+  }
+
+  .activity-form {
+    display: grid;
+    grid-template-columns: 180px 1fr auto;
+    gap: 12px;
+    align-items: start;
+    margin-bottom: 14px;
+  }
+
+  .activity-form button {
+    height: 45px;
+    white-space: nowrap;
+  }
+
+  .activity-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .activity-item {
+    background: #ffffff;
+    border: 1px solid #ffedd5;
+    border-radius: 12px;
+    padding: 13px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .activity-item span {
+    display: inline-flex;
+    background: #0f83a6;
+    color: #ffffff;
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: capitalize;
+    margin-bottom: 7px;
+  }
+
+  .activity-item p {
+    margin: 0 0 7px;
+    color: #374151;
+    font-size: 15px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+  }
+
+  .activity-item small {
+    color: #6b7280;
+    font-size: 12px;
+  }
+
+  .activity-delete {
+    background: #dc2626;
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .activity-delete:hover {
+    background: #b91c1c;
   }
 
   .card-actions {
@@ -2091,6 +2373,10 @@ const leadFinderStyles = `
     .lead-details {
       grid-template-columns: repeat(2, 1fr);
     }
+
+    .activity-form {
+      grid-template-columns: 1fr;
+    }
   }
 
   @media (max-width: 760px) {
@@ -2125,7 +2411,8 @@ const leadFinderStyles = `
       grid-template-columns: 1fr;
     }
 
-    .followup-item {
+    .followup-item,
+    .activity-item {
       flex-direction: column;
     }
 
@@ -2135,7 +2422,9 @@ const leadFinderStyles = `
     }
 
     .followup-actions a,
-    .followup-actions button {
+    .followup-actions button,
+    .activity-delete {
+      width: 100%;
       flex: 1;
       text-align: center;
       justify-content: center;
