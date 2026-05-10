@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { supabase } from "../../lib/supabaseClient";
 
 export default function AdminPage() {
   const [session, setSession] = useState(null);
   const [loadingSession, setLoadingSession] = useState(true);
   const [loadingLeads, setLoadingLeads] = useState(false);
-  const [deletingLeadId, setDeletingLeadId] = useState("");
   const [error, setError] = useState("");
   const [leads, setLeads] = useState([]);
 
@@ -87,11 +87,9 @@ export default function AdminPage() {
   }
 
   async function updateLeadStatus(id, newStatus) {
-    setError("");
-
     const { error: updateError } = await supabase
       .from("leads")
-      .update({ status: newStatus, updated_at: new Date().toISOString() })
+      .update({ status: newStatus })
       .eq("id", id);
 
     if (updateError) {
@@ -106,27 +104,14 @@ export default function AdminPage() {
     );
   }
 
-  async function deleteLead(id, leadName) {
-    setError("");
-
-    const confirmed = window.confirm(
-      `Are you sure you want to delete this lead${
-        leadName ? ` from ${leadName}` : ""
-      }? This cannot be undone.`
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    setDeletingLeadId(id);
+  async function deleteLead(id) {
+    const confirmed = window.confirm("Delete this website form lead?");
+    if (!confirmed) return;
 
     const { error: deleteError } = await supabase
       .from("leads")
       .delete()
       .eq("id", id);
-
-    setDeletingLeadId("");
 
     if (deleteError) {
       setError(deleteError.message);
@@ -184,7 +169,7 @@ export default function AdminPage() {
 
         <section className="login-card">
           <h1>Admin Login</h1>
-          <p>Sign in to view website leads from your contact forms.</p>
+          <p>Sign in to view website leads and lead finder tools.</p>
 
           {error ? <div className="error-box">{error}</div> : null}
 
@@ -224,8 +209,8 @@ export default function AdminPage() {
 
       <header className="admin-header">
         <div>
-          <h1>Lead Dashboard</h1>
-          <p>Track messages submitted through your website forms.</p>
+          <h1>Admin Dashboard</h1>
+          <p>Manage website form leads and your private lead finder CRM.</p>
         </div>
 
         <div className="admin-actions">
@@ -240,9 +225,41 @@ export default function AdminPage() {
 
       {error ? <div className="error-box">{error}</div> : null}
 
+      <section className="admin-tool-grid">
+        <Link href="/admin/lead-finder" className="admin-tool-card">
+          <span>🎯</span>
+          <h2>Lead Finder CRM</h2>
+          <p>View, score, audit, and manage sales leads.</p>
+        </Link>
+
+        <Link href="/admin/lead-finder/search" className="admin-tool-card">
+          <span>🔎</span>
+          <h2>Google Lead Search</h2>
+          <p>Find businesses from Google Places and save them.</p>
+        </Link>
+
+        <Link href="/admin/lead-finder/import" className="admin-tool-card">
+          <span>⚡</span>
+          <h2>Quick Import</h2>
+          <p>Paste business info and turn it into a lead fast.</p>
+        </Link>
+
+        <Link href="/admin/lead-finder/board" className="admin-tool-card">
+          <span>📌</span>
+          <h2>Pipeline Board</h2>
+          <p>Move leads through your sales pipeline.</p>
+        </Link>
+
+        <Link href="/admin/lead-finder/hot" className="admin-tool-card">
+          <span>🔥</span>
+          <h2>Hot Leads</h2>
+          <p>Focus on the best leads to contact first.</p>
+        </Link>
+      </section>
+
       <section className="stats-grid">
         <div className="stat-card">
-          <span>Total Leads</span>
+          <span>Website Form Leads</span>
           <strong>{leads.length}</strong>
         </div>
 
@@ -272,7 +289,7 @@ export default function AdminPage() {
         <input
           type="text"
           value={search}
-          placeholder="Search leads..."
+          placeholder="Search website form leads..."
           onChange={(e) => setSearch(e.target.value)}
         />
 
@@ -288,10 +305,15 @@ export default function AdminPage() {
       </section>
 
       <section className="leads-section">
+        <div className="section-heading">
+          <h2>Website Form Leads</h2>
+          <p>These are leads submitted from your public website forms.</p>
+        </div>
+
         {loadingLeads ? <p className="empty-text">Loading leads...</p> : null}
 
         {!loadingLeads && filteredLeads.length === 0 ? (
-          <p className="empty-text">No leads found yet.</p>
+          <p className="empty-text">No website form leads found yet.</p>
         ) : null}
 
         {!loadingLeads &&
@@ -305,25 +327,14 @@ export default function AdminPage() {
                   </p>
                 </div>
 
-                <div className="lead-controls">
-                  <select
-                    value={lead.status || "new"}
-                    onChange={(e) => updateLeadStatus(lead.id, e.target.value)}
-                  >
-                    <option value="new">New</option>
-                    <option value="contacted">Contacted</option>
-                    <option value="closed">Closed</option>
-                  </select>
-
-                  <button
-                    type="button"
-                    className="delete-lead-btn"
-                    onClick={() => deleteLead(lead.id, lead.name)}
-                    disabled={deletingLeadId === lead.id}
-                  >
-                    {deletingLeadId === lead.id ? "Deleting..." : "Delete Lead"}
-                  </button>
-                </div>
+                <select
+                  value={lead.status || "new"}
+                  onChange={(e) => updateLeadStatus(lead.id, e.target.value)}
+                >
+                  <option value="new">New</option>
+                  <option value="contacted">Contacted</option>
+                  <option value="closed">Closed</option>
+                </select>
               </div>
 
               <div className="lead-info-grid">
@@ -361,6 +372,22 @@ export default function AdminPage() {
                 <strong>Message:</strong>
                 <p>{lead.message || "No message included."}</p>
               </div>
+
+              <div className="lead-actions-row">
+                {lead.email ? (
+                  <a href={`mailto:${lead.email}`}>Email Lead</a>
+                ) : null}
+
+                {lead.phone ? <a href={`tel:${lead.phone}`}>Call Lead</a> : null}
+
+                <button
+                  type="button"
+                  className="delete-lead-btn"
+                  onClick={() => deleteLead(lead.id)}
+                >
+                  Delete Lead
+                </button>
+              </div>
             </article>
           ))}
       </section>
@@ -388,9 +415,11 @@ const adminStyles = `
 
   .login-card,
   .admin-header,
+  .admin-tool-grid,
   .stats-grid,
   .filters,
-  .leads-section {
+  .leads-section,
+  .error-box {
     max-width: 1180px;
     margin-left: auto;
     margin-right: auto;
@@ -498,9 +527,50 @@ const adminStyles = `
     background: #0c6d8a;
   }
 
+  .admin-tool-grid {
+    margin-bottom: 28px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+
+  .admin-tool-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    text-decoration: none;
+    color: #1f2933;
+    border: 2px solid transparent;
+    transition: 0.2s ease;
+  }
+
+  .admin-tool-card:hover {
+    border-color: #f57c00;
+    transform: translateY(-2px);
+  }
+
+  .admin-tool-card span {
+    display: block;
+    font-size: 32px;
+    margin-bottom: 10px;
+  }
+
+  .admin-tool-card h2 {
+    margin: 0 0 8px;
+    color: #f57c00;
+    font-size: 20px;
+  }
+
+  .admin-tool-card p {
+    margin: 0;
+    color: #4b5563;
+    font-size: 15px;
+    line-height: 1.4;
+  }
+
   .error-box {
-    max-width: 1180px;
-    margin: 0 auto 24px;
+    margin-bottom: 24px;
     background: #fee2e2;
     color: #991b1b;
     border: 1px solid #fecaca;
@@ -549,6 +619,25 @@ const adminStyles = `
     gap: 18px;
   }
 
+  .section-heading {
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  .section-heading h2 {
+    margin: 0 0 8px;
+    color: #f57c00;
+    font-size: 30px;
+  }
+
+  .section-heading p {
+    margin: 0;
+    color: #4b5563;
+    font-size: 17px;
+  }
+
   .lead-card {
     background: #ffffff;
     padding: 24px;
@@ -577,36 +666,8 @@ const adminStyles = `
     font-size: 18px;
   }
 
-  .lead-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 180px;
-  }
-
   .lead-top select {
     max-width: 180px;
-  }
-
-  .delete-lead-btn {
-    width: 100%;
-    border: none;
-    border-radius: 10px;
-    background: #dc2626;
-    color: #ffffff;
-    padding: 12px 14px;
-    font-size: 15px;
-    font-weight: 800;
-    cursor: pointer;
-  }
-
-  .delete-lead-btn:hover {
-    background: #b91c1c;
-  }
-
-  .delete-lead-btn:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
   }
 
   .lead-info-grid {
@@ -639,6 +700,40 @@ const adminStyles = `
     color: #374151;
     font-size: 17px;
     line-height: 1.5;
+    white-space: pre-wrap;
+  }
+
+  .lead-actions-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+
+  .lead-actions-row a,
+  .lead-actions-row button {
+    border: none;
+    border-radius: 10px;
+    background: #0f83a6;
+    color: #ffffff;
+    padding: 11px 15px;
+    font-size: 15px;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .lead-actions-row a:hover,
+  .lead-actions-row button:hover {
+    background: #0c6d8a;
+  }
+
+  .lead-actions-row .delete-lead-btn {
+    background: #dc2626;
+  }
+
+  .lead-actions-row .delete-lead-btn:hover {
+    background: #b91c1c;
   }
 
   .empty-text {
@@ -648,6 +743,22 @@ const adminStyles = `
     border-radius: 16px;
     color: #4b5563;
     font-size: 18px;
+  }
+
+  .admin-card {
+    max-width: 600px;
+    margin: 80px auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    text-align: center;
+  }
+
+  @media (max-width: 1000px) {
+    .admin-tool-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   @media (max-width: 800px) {
@@ -664,6 +775,10 @@ const adminStyles = `
       font-size: 34px;
     }
 
+    .admin-actions button {
+      width: 100%;
+    }
+
     .stats-grid {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -676,15 +791,28 @@ const adminStyles = `
       flex-direction: column;
     }
 
-    .lead-controls {
-      width: 100%;
-    }
-
     .lead-top select {
       max-width: 100%;
     }
 
     .lead-info-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .lead-actions-row {
+      flex-direction: column;
+    }
+
+    .lead-actions-row a,
+    .lead-actions-row button {
+      width: 100%;
+      text-align: center;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .admin-tool-grid {
       grid-template-columns: 1fr;
     }
   }
