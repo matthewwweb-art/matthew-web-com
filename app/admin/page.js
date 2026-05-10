@@ -10,6 +10,7 @@ export default function AdminPage() {
   const [session, setSession] = useState(null);
   const [loadingSession, setLoadingSession] = useState(true);
   const [loadingLeads, setLoadingLeads] = useState(false);
+  const [convertingLeadId, setConvertingLeadId] = useState(null);
   const [error, setError] = useState("");
   const [leads, setLeads] = useState([]);
 
@@ -93,12 +94,12 @@ export default function AdminPage() {
     setReminderMessage("");
     setError("");
 
-    try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const accessToken = sessionData?.session?.access_token;
+    const { data: sessionData } = await supabase.auth.getSession();
+    const accessToken = sessionData?.session?.access_token;
 
     if (!accessToken) {
       setReminderMessage("You need to sign in again.");
+      setTestingReminder(false);
       return;
     }
 
@@ -109,20 +110,11 @@ export default function AdminPage() {
       },
     });
 
-    const text = await response.text();
-
-    let result;
-    try {
-      result = JSON.parse(text);
-    } catch {
-      setReminderMessage(
-        "Test reminder route did not return JSON. Check that app/api/lead-finder/test-reminder/route.js exists."
-      );
-      return;
-    }
+    const result = await response.json();
 
     if (!response.ok || !result.ok) {
       setReminderMessage(result.error || "Reminder test failed.");
+      setTestingReminder(false);
       return;
     }
 
@@ -133,12 +125,9 @@ export default function AdminPage() {
     } else {
       setReminderMessage("No follow-ups due right now. No email was sent.");
     }
-  } catch (err) {
-    setReminderMessage(err?.message || "Reminder test crashed.");
-  } finally {
+
     setTestingReminder(false);
   }
-}
 
   async function updateLeadStatus(id, newStatus) {
     const { error: updateError } = await supabase
@@ -173,6 +162,62 @@ export default function AdminPage() {
     }
 
     setLeads((current) => current.filter((lead) => lead.id !== id));
+  }
+
+  async function convertToLeadFinder(lead) {
+    setError("");
+    setConvertingLeadId(lead.id);
+
+    const businessName =
+      lead.business_name || lead.name || lead.email || "Website Form Lead";
+
+    const payload = {
+      business_name: businessName,
+      contact_name: lead.name || null,
+      phone: lead.phone || null,
+      email: lead.email || null,
+      source: lead.page_source || "website form",
+      problem_summary: lead.message || "Website form lead submitted.",
+      offer_idea:
+        "Follow up from website form. Qualify the lead, then offer website design, SEO, CRM, booking, automation, or custom software depending on their needs.",
+      estimated_offer_value: "$1,500–$7,500",
+      lead_score: 65,
+      status: "new",
+      notes: `Converted from website form lead.${
+        lead.created_at
+          ? ` Original form date: ${new Date(lead.created_at).toLocaleString()}`
+          : ""
+      }`,
+      updated_at: new Date().toISOString(),
+    };
+
+    const { data, error: insertError } = await supabase
+      .from("lead_finder_leads")
+      .insert(payload)
+      .select()
+      .single();
+
+    if (insertError) {
+      setError(insertError.message);
+      setConvertingLeadId(null);
+      return;
+    }
+
+    await supabase.from("lead_finder_activities").insert({
+      lead_id: data.id,
+      activity_type: "note",
+      activity_text: "Converted from website form lead.",
+    });
+
+    await supabase.from("leads").update({ status: "contacted" }).eq("id", lead.id);
+
+    setLeads((current) =>
+      current.map((item) =>
+        item.id === lead.id ? { ...item, status: "contacted" } : item
+      )
+    );
+
+    window.location.href = `/admin/lead-finder/${data.id}`;
   }
 
   const filteredLeads = useMemo(() => {
@@ -328,7 +373,9 @@ export default function AdminPage() {
           {testingReminder ? "Sending Test..." : "Send Test Follow-Up Reminder"}
         </button>
 
-        {reminderMessage ? <p className="reminder-message">{reminderMessage}</p> : null}
+        {reminderMessage ? (
+          <p className="reminder-message">{reminderMessage}</p>
+        ) : null}
       </section>
 
       <section className="stats-grid">
@@ -456,6 +503,16 @@ export default function AdminPage() {
 
                 <button
                   type="button"
+                  onClick={() => convertToLeadFinder(lead)}
+                  disabled={convertingLeadId === lead.id}
+                >
+                  {convertingLeadId === lead.id
+                    ? "Converting..."
+                    : "Convert to Lead Finder"}
+                </button>
+
+                <button
+                  type="button"
                   className="delete-lead-btn"
                   onClick={() => deleteLead(lead.id)}
                 >
@@ -566,7 +623,10 @@ const adminStyles = `
     background: #d96d00;
   }
 
-  .admin-reminder-test button:disabled {
+  .login-form button:disabled,
+  .admin-actions button:disabled,
+  .admin-reminder-test button:disabled,
+  .lead-actions-row button:disabled {
     opacity: 0.65;
     cursor: not-allowed;
   }
