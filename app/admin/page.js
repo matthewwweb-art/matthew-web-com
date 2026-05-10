@@ -5,6 +5,8 @@ import Link from "next/link";
 import { supabase } from "../../lib/supabaseClient";
 
 export default function AdminPage() {
+  const [testingReminder, setTestingReminder] = useState(false);
+  const [reminderMessage, setReminderMessage] = useState("");
   const [session, setSession] = useState(null);
   const [loadingSession, setLoadingSession] = useState(true);
   const [loadingLeads, setLoadingLeads] = useState(false);
@@ -85,6 +87,58 @@ export default function AdminPage() {
     setLeads(data || []);
     setLoadingLeads(false);
   }
+
+  async function testFollowupReminder() {
+    setTestingReminder(true);
+    setReminderMessage("");
+    setError("");
+
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+
+    if (!accessToken) {
+      setReminderMessage("You need to sign in again.");
+      return;
+    }
+
+    const response = await fetch("/api/lead-finder/test-reminder", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const text = await response.text();
+
+    let result;
+    try {
+      result = JSON.parse(text);
+    } catch {
+      setReminderMessage(
+        "Test reminder route did not return JSON. Check that app/api/lead-finder/test-reminder/route.js exists."
+      );
+      return;
+    }
+
+    if (!response.ok || !result.ok) {
+      setReminderMessage(result.error || "Reminder test failed.");
+      return;
+    }
+
+    if (result.result?.sent) {
+      setReminderMessage(
+        `Reminder email sent. ${result.result.count || 0} follow-up(s) found.`
+      );
+    } else {
+      setReminderMessage("No follow-ups due right now. No email was sent.");
+    }
+  } catch (err) {
+    setReminderMessage(err?.message || "Reminder test crashed.");
+  } finally {
+    setTestingReminder(false);
+  }
+}
 
   async function updateLeadStatus(id, newStatus) {
     const { error: updateError } = await supabase
@@ -257,6 +311,26 @@ export default function AdminPage() {
         </Link>
       </section>
 
+      <section className="admin-reminder-test">
+        <div>
+          <h2>Follow-Up Reminder Test</h2>
+          <p>
+            Send yourself a test email for any Lead Finder follow-ups that are
+            due now or overdue.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={testFollowupReminder}
+          disabled={testingReminder}
+        >
+          {testingReminder ? "Sending Test..." : "Send Test Follow-Up Reminder"}
+        </button>
+
+        {reminderMessage ? <p className="reminder-message">{reminderMessage}</p> : null}
+      </section>
+
       <section className="stats-grid">
         <div className="stat-card">
           <span>Website Form Leads</span>
@@ -416,6 +490,7 @@ const adminStyles = `
   .login-card,
   .admin-header,
   .admin-tool-grid,
+  .admin-reminder-test,
   .stats-grid,
   .filters,
   .leads-section,
@@ -473,7 +548,8 @@ const adminStyles = `
   }
 
   .login-form button,
-  .admin-actions button {
+  .admin-actions button,
+  .admin-reminder-test button {
     border: none;
     border-radius: 10px;
     background: #f57c00;
@@ -485,8 +561,14 @@ const adminStyles = `
   }
 
   .login-form button:hover,
-  .admin-actions button:hover {
+  .admin-actions button:hover,
+  .admin-reminder-test button:hover {
     background: #d96d00;
+  }
+
+  .admin-reminder-test button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
   }
 
   .admin-header {
@@ -567,6 +649,43 @@ const adminStyles = `
     color: #4b5563;
     font-size: 15px;
     line-height: 1.4;
+  }
+
+  .admin-reminder-test {
+    margin-bottom: 28px;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .admin-reminder-test h2 {
+    margin: 0 0 8px;
+    color: #f57c00;
+    font-size: 24px;
+  }
+
+  .admin-reminder-test p {
+    margin: 0;
+    color: #4b5563;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .admin-reminder-test .reminder-message {
+    width: 100%;
+    margin: 4px 0 0;
+    color: #166534;
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-weight: 800;
   }
 
   .error-box {
@@ -758,6 +877,14 @@ const adminStyles = `
   @media (max-width: 1000px) {
     .admin-tool-grid {
       grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-reminder-test {
+      align-items: stretch;
+    }
+
+    .admin-reminder-test button {
+      width: 100%;
     }
   }
 
