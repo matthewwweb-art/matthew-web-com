@@ -972,7 +972,7 @@ const adminStyles = `
     text-align: center;
   }
 
-  @media (max-width: 1180px) {
+  @media (max-width: 1150px) {
     .admin-tool-grid {
       grid-template-columns: repeat(3, 1fr);
     }
@@ -1038,7 +1038,7 @@ const adminStyles = `
     }
   }
 
-  @media (max-width: 650px) {
+  @media (max-width: 560px) {
     .admin-tool-grid {
       grid-template-columns: 1fr;
     }
