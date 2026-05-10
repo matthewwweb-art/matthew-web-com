@@ -367,6 +367,12 @@ export default function AdminPage() {
           <h2>Hot Leads</h2>
           <p>Focus on the best leads to contact first.</p>
         </Link>
+
+        <Link href="/admin/lead-finder/followups" className="admin-tool-card">
+          <span>📅</span>
+          <h2>Follow-Up Center</h2>
+          <p>Work every due and upcoming lead follow-up.</p>
+        </Link>
       </section>
 
       <section className="admin-reminder-test">
@@ -694,7 +700,7 @@ const adminStyles = `
   .admin-tool-grid {
     margin-bottom: 28px;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 16px;
   }
 
@@ -966,11 +972,13 @@ const adminStyles = `
     text-align: center;
   }
 
-  @media (max-width: 1000px) {
+  @media (max-width: 1180px) {
     .admin-tool-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
     }
+  }
 
+  @media (max-width: 1000px) {
     .admin-reminder-test {
       align-items: stretch;
     }
@@ -1030,7 +1038,7 @@ const adminStyles = `
     }
   }
 
-  @media (max-width: 560px) {
+  @media (max-width: 650px) {
     .admin-tool-grid {
       grid-template-columns: 1fr;
     }
