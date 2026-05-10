@@ -56,15 +56,17 @@ function calculateLeadScore(form) {
   if (
     problemText.includes("bad website") ||
     problemText.includes("old website")
-  )
+  ) {
     score += 25;
+  }
   if (problemText.includes("no booking")) score += 15;
   if (problemText.includes("no contact form")) score += 15;
   if (
     problemText.includes("facebook only") ||
     problemText.includes("only facebook")
-  )
+  ) {
     score += 15;
+  }
   if (rating >= 4) score += 15;
   if (reviews >= 25) score += 15;
   if (reviews >= 75) score += 10;
@@ -121,6 +123,35 @@ function buildOfferIdea(form, score) {
   }
 
   return "Offer a free website audit first, then pitch website improvements, lead forms, SEO cleanup, or custom software based on their needs.";
+}
+
+function parseEstimatedValue(value) {
+  if (!value) return 0;
+
+  const numbers = String(value)
+    .replace(/,/g, "")
+    .match(/\d+/g)
+    ?.map((num) => Number(num))
+    .filter((num) => !Number.isNaN(num));
+
+  if (!numbers || numbers.length === 0) {
+    return 0;
+  }
+
+  if (numbers.length === 1) {
+    return numbers[0];
+  }
+
+  const total = numbers.reduce((sum, num) => sum + num, 0);
+  return Math.round(total / numbers.length);
+}
+
+function formatMoney(amount) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(amount || 0);
 }
 
 function getFirstProblem(problemSummary) {
@@ -421,66 +452,67 @@ export default function LeadFinderPage() {
   }
 
   function exportLeadsToCsv() {
-  const rows = filteredLeads.map((lead) => ({
-    business_name: lead.business_name || "",
-    category: lead.category || "",
-    contact_name: lead.contact_name || "",
-    phone: lead.phone || "",
-    email: lead.email || "",
-    website_url: lead.website_url || "",
-    google_maps_url: lead.google_maps_url || "",
-    facebook_url: lead.facebook_url || "",
-    yelp_url: lead.yelp_url || "",
-    city: lead.city || "",
-    state: lead.state || "",
-    source: lead.source || "",
-    rating: lead.rating || "",
-    review_count: lead.review_count || "",
-    problem_summary: lead.problem_summary || "",
-    offer_idea: lead.offer_idea || "",
-    estimated_offer_value: lead.estimated_offer_value || "",
-    lead_score: lead.lead_score || 0,
-    status: lead.status || "new",
-    notes: lead.notes || "",
-    next_followup_at: lead.next_followup_at || "",
-    created_at: lead.created_at || "",
-  }));
+    const rows = filteredLeads.map((lead) => ({
+      business_name: lead.business_name || "",
+      category: lead.category || "",
+      contact_name: lead.contact_name || "",
+      phone: lead.phone || "",
+      email: lead.email || "",
+      website_url: lead.website_url || "",
+      google_maps_url: lead.google_maps_url || "",
+      facebook_url: lead.facebook_url || "",
+      yelp_url: lead.yelp_url || "",
+      city: lead.city || "",
+      state: lead.state || "",
+      source: lead.source || "",
+      rating: lead.rating || "",
+      review_count: lead.review_count || "",
+      problem_summary: lead.problem_summary || "",
+      offer_idea: lead.offer_idea || "",
+      estimated_offer_value: lead.estimated_offer_value || "",
+      parsed_estimated_value: parseEstimatedValue(lead.estimated_offer_value),
+      lead_score: lead.lead_score || 0,
+      status: lead.status || "new",
+      notes: lead.notes || "",
+      next_followup_at: lead.next_followup_at || "",
+      created_at: lead.created_at || "",
+    }));
 
-  if (rows.length === 0) {
-    setError("No leads to export.");
-    return;
+    if (rows.length === 0) {
+      setError("No leads to export.");
+      return;
+    }
+
+    const headers = Object.keys(rows[0]);
+
+    const csv = [
+      headers.join(","),
+      ...rows.map((row) =>
+        headers
+          .map((header) => {
+            const value = String(row[header] ?? "");
+            return `"${value.replaceAll('"', '""')}"`;
+          })
+          .join(",")
+      ),
+    ].join("\n");
+
+    const blob = new Blob([csv], {
+      type: "text/csv;charset=utf-8;",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    const today = new Date().toISOString().slice(0, 10);
+
+    link.href = url;
+    link.download = `matthew-web-leads-${today}.csv`;
+    link.click();
+
+    URL.revokeObjectURL(url);
   }
 
-  const headers = Object.keys(rows[0]);
-
-  const csv = [
-    headers.join(","),
-    ...rows.map((row) =>
-      headers
-        .map((header) => {
-          const value = String(row[header] ?? "");
-          return `"${value.replaceAll('"', '""')}"`;
-        })
-        .join(",")
-    ),
-  ].join("\n");
-
-  const blob = new Blob([csv], {
-    type: "text/csv;charset=utf-8;",
-  });
-
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-
-  const today = new Date().toISOString().slice(0, 10);
-
-  link.href = url;
-  link.download = `matthew-web-leads-${today}.csv`;
-  link.click();
-
-  URL.revokeObjectURL(url);
-}
-  
   async function updateLeadStatus(id, status) {
     const { error: updateError } = await supabase
       .from("lead_finder_leads")
@@ -679,64 +711,95 @@ export default function LeadFinderPage() {
   }, [leads, search, statusFilter]);
 
   const stats = useMemo(() => {
+    const openLeads = leads.filter((lead) => {
+      const status = lead.status || "new";
+      return status !== "lost" && status !== "won";
+    });
+
+    const wonLeads = leads.filter((lead) => lead.status === "won");
+
+    const highScoreLeads = leads.filter(
+      (lead) =>
+        Number(lead.lead_score || 0) >= 75 &&
+        (lead.status || "new") !== "lost" &&
+        (lead.status || "new") !== "won"
+    );
+
+    const pipelineValue = openLeads.reduce(
+      (sum, lead) => sum + parseEstimatedValue(lead.estimated_offer_value),
+      0
+    );
+
+    const wonValue = wonLeads.reduce(
+      (sum, lead) => sum + parseEstimatedValue(lead.estimated_offer_value),
+      0
+    );
+
+    const highScoreValue = highScoreLeads.reduce(
+      (sum, lead) => sum + parseEstimatedValue(lead.estimated_offer_value),
+      0
+    );
+
     return {
       total: leads.length,
       newLeads: leads.filter((lead) => (lead.status || "new") === "new").length,
       contacted: leads.filter((lead) => lead.status === "contacted").length,
       interested: leads.filter((lead) => lead.status === "interested").length,
-      won: leads.filter((lead) => lead.status === "won").length,
-      highScore: leads.filter((lead) => Number(lead.lead_score || 0) >= 75)
-        .length,
+      won: wonLeads.length,
+      highScore: highScoreLeads.length,
+      pipelineValue,
+      wonValue,
+      highScoreValue,
     };
   }, [leads]);
 
   const followUpsDue = useMemo(() => {
-  const now = new Date();
+    const now = new Date();
 
-  return leads
-    .filter((lead) => {
-      if (!lead.next_followup_at) return false;
+    return leads
+      .filter((lead) => {
+        if (!lead.next_followup_at) return false;
 
-      const followUpDate = new Date(lead.next_followup_at);
-      const status = lead.status || "new";
+        const followUpDate = new Date(lead.next_followup_at);
+        const status = lead.status || "new";
 
-      if (status === "won" || status === "lost") {
-        return false;
-      }
+        if (status === "won" || status === "lost") {
+          return false;
+        }
 
-      return followUpDate <= now;
-    })
-    .sort(
-      (a, b) =>
-        new Date(a.next_followup_at).getTime() -
-        new Date(b.next_followup_at).getTime()
-    );
-}, [leads]);
+        return followUpDate <= now;
+      })
+      .sort(
+        (a, b) =>
+          new Date(a.next_followup_at).getTime() -
+          new Date(b.next_followup_at).getTime()
+      );
+  }, [leads]);
 
-const upcomingFollowUps = useMemo(() => {
-  const now = new Date();
-  const sevenDaysFromNow = new Date();
-  sevenDaysFromNow.setDate(now.getDate() + 7);
+  const upcomingFollowUps = useMemo(() => {
+    const now = new Date();
+    const sevenDaysFromNow = new Date();
+    sevenDaysFromNow.setDate(now.getDate() + 7);
 
-  return leads
-    .filter((lead) => {
-      if (!lead.next_followup_at) return false;
+    return leads
+      .filter((lead) => {
+        if (!lead.next_followup_at) return false;
 
-      const followUpDate = new Date(lead.next_followup_at);
-      const status = lead.status || "new";
+        const followUpDate = new Date(lead.next_followup_at);
+        const status = lead.status || "new";
 
-      if (status === "won" || status === "lost") {
-        return false;
-      }
+        if (status === "won" || status === "lost") {
+          return false;
+        }
 
-      return followUpDate > now && followUpDate <= sevenDaysFromNow;
-    })
-    .sort(
-      (a, b) =>
-        new Date(a.next_followup_at).getTime() -
-        new Date(b.next_followup_at).getTime()
-    );
-}, [leads]);
+        return followUpDate > now && followUpDate <= sevenDaysFromNow;
+      })
+      .sort(
+        (a, b) =>
+          new Date(a.next_followup_at).getTime() -
+          new Date(b.next_followup_at).getTime()
+      );
+  }, [leads]);
 
   if (loadingSession) {
     return (
@@ -841,103 +904,123 @@ const upcomingFollowUps = useMemo(() => {
         </div>
       </section>
 
+      <section className="value-grid">
+        <div className="value-card">
+          <span>Open Pipeline Value</span>
+          <strong>{formatMoney(stats.pipelineValue)}</strong>
+          <p>Estimated value from open leads, excluding won and lost.</p>
+        </div>
+
+        <div className="value-card">
+          <span>High-Score Pipeline</span>
+          <strong>{formatMoney(stats.highScoreValue)}</strong>
+          <p>Estimated value from leads scoring 75 or higher.</p>
+        </div>
+
+        <div className="value-card">
+          <span>Won Value</span>
+          <strong>{formatMoney(stats.wonValue)}</strong>
+          <p>Estimated value from leads marked as won.</p>
+        </div>
+      </section>
+
       <section className="followup-panel">
-  <div className="followup-column urgent">
-    <div className="followup-title-row">
-      <div>
-        <h2>Follow-Ups Due Now</h2>
-        <p>Leads that are due today or overdue.</p>
-      </div>
-
-      <strong>{followUpsDue.length}</strong>
-    </div>
-
-    {followUpsDue.length === 0 ? (
-      <p className="mini-empty">No follow-ups due right now.</p>
-    ) : (
-      <div className="followup-list">
-        {followUpsDue.slice(0, 6).map((lead) => (
-          <div className="followup-item" key={lead.id}>
+        <div className="followup-column urgent">
+          <div className="followup-title-row">
             <div>
-              <h3>{lead.business_name}</h3>
-              <p>
-                {lead.category || "Lead"}{" "}
-                {lead.city || lead.state
-                  ? `• ${[lead.city, lead.state].filter(Boolean).join(", ")}`
-                  : ""}
-              </p>
-              <span>
-                Due: {new Date(lead.next_followup_at).toLocaleString()}
-              </span>
+              <h2>Follow-Ups Due Now</h2>
+              <p>Leads that are due today or overdue.</p>
             </div>
 
-            <div className="followup-actions">
-              {lead.phone ? (
-                <a href={`tel:${lead.phone}`}>Call</a>
-              ) : null}
-
-              {lead.email ? (
-                <a href={`mailto:${lead.email}`}>Email</a>
-              ) : null}
-
-              <button type="button" onClick={() => startEdit(lead)}>
-                Open
-              </button>
-            </div>
+            <strong>{followUpsDue.length}</strong>
           </div>
-        ))}
-      </div>
-    )}
-  </div>
 
-  <div className="followup-column">
-    <div className="followup-title-row">
-      <div>
-        <h2>Upcoming Follow-Ups</h2>
-        <p>Follow-ups due in the next 7 days.</p>
-      </div>
+          {followUpsDue.length === 0 ? (
+            <p className="mini-empty">No follow-ups due right now.</p>
+          ) : (
+            <div className="followup-list">
+              {followUpsDue.slice(0, 6).map((lead) => (
+                <div className="followup-item" key={lead.id}>
+                  <div>
+                    <h3>{lead.business_name}</h3>
+                    <p>
+                      {lead.category || "Lead"}{" "}
+                      {lead.city || lead.state
+                        ? `• ${[lead.city, lead.state]
+                            .filter(Boolean)
+                            .join(", ")}`
+                        : ""}
+                    </p>
+                    <span>
+                      Due: {new Date(lead.next_followup_at).toLocaleString()}
+                    </span>
+                  </div>
 
-      <strong>{upcomingFollowUps.length}</strong>
-    </div>
+                  <div className="followup-actions">
+                    {lead.phone ? <a href={`tel:${lead.phone}`}>Call</a> : null}
 
-    {upcomingFollowUps.length === 0 ? (
-      <p className="mini-empty">No upcoming follow-ups in the next week.</p>
-    ) : (
-      <div className="followup-list">
-        {upcomingFollowUps.slice(0, 6).map((lead) => (
-          <div className="followup-item" key={lead.id}>
+                    {lead.email ? (
+                      <a href={`mailto:${lead.email}`}>Email</a>
+                    ) : null}
+
+                    <button type="button" onClick={() => startEdit(lead)}>
+                      Open
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="followup-column">
+          <div className="followup-title-row">
             <div>
-              <h3>{lead.business_name}</h3>
-              <p>
-                {lead.category || "Lead"}{" "}
-                {lead.city || lead.state
-                  ? `• ${[lead.city, lead.state].filter(Boolean).join(", ")}`
-                  : ""}
-              </p>
-              <span>
-                Due: {new Date(lead.next_followup_at).toLocaleString()}
-              </span>
+              <h2>Upcoming Follow-Ups</h2>
+              <p>Follow-ups due in the next 7 days.</p>
             </div>
 
-            <div className="followup-actions">
-              {lead.phone ? (
-                <a href={`tel:${lead.phone}`}>Call</a>
-              ) : null}
-
-              {lead.email ? (
-                <a href={`mailto:${lead.email}`}>Email</a>
-              ) : null}
-
-              <button type="button" onClick={() => startEdit(lead)}>
-                Open
-              </button>
-            </div>
+            <strong>{upcomingFollowUps.length}</strong>
           </div>
-        ))}
-      </div>
-    )}
-  </div>
-</section>
+
+          {upcomingFollowUps.length === 0 ? (
+            <p className="mini-empty">No upcoming follow-ups in the next week.</p>
+          ) : (
+            <div className="followup-list">
+              {upcomingFollowUps.slice(0, 6).map((lead) => (
+                <div className="followup-item" key={lead.id}>
+                  <div>
+                    <h3>{lead.business_name}</h3>
+                    <p>
+                      {lead.category || "Lead"}{" "}
+                      {lead.city || lead.state
+                        ? `• ${[lead.city, lead.state]
+                            .filter(Boolean)
+                            .join(", ")}`
+                        : ""}
+                    </p>
+                    <span>
+                      Due: {new Date(lead.next_followup_at).toLocaleString()}
+                    </span>
+                  </div>
+
+                  <div className="followup-actions">
+                    {lead.phone ? <a href={`tel:${lead.phone}`}>Call</a> : null}
+
+                    {lead.email ? (
+                      <a href={`mailto:${lead.email}`}>Email</a>
+                    ) : null}
+
+                    <button type="button" onClick={() => startEdit(lead)}>
+                      Open
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
       {showForm ? (
         <section className="lead-form-card">
@@ -1239,6 +1322,16 @@ const upcomingFollowUps = useMemo(() => {
                 </p>
 
                 <p>
+                  <strong>Value:</strong>{" "}
+                  {lead.estimated_offer_value || "Not set"}{" "}
+                  {lead.estimated_offer_value
+                    ? `(${formatMoney(
+                        parseEstimatedValue(lead.estimated_offer_value)
+                      )} avg)`
+                    : ""}
+                </p>
+
+                <p>
                   <strong>Source:</strong> {lead.source || "manual"}
                 </p>
 
@@ -1391,6 +1484,8 @@ const leadFinderStyles = `
 
   .lead-header,
   .stats-grid,
+  .value-grid,
+  .followup-panel,
   .lead-form-card,
   .filters,
   .lead-list,
@@ -1547,6 +1642,165 @@ const leadFinderStyles = `
     color: #f57c00;
     font-size: 34px;
     line-height: 1;
+  }
+
+  .value-grid {
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .value-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 22px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+  }
+
+  .value-card span {
+    display: block;
+    color: #4b5563;
+    font-size: 15px;
+    margin-bottom: 8px;
+    font-weight: 800;
+  }
+
+  .value-card strong {
+    display: block;
+    color: #f57c00;
+    font-size: clamp(30px, 4vw, 44px);
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .value-card p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 15px;
+    line-height: 1.4;
+  }
+
+  .followup-panel {
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+
+  .followup-column {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 22px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+  }
+
+  .followup-column.urgent {
+    border-color: #fed7aa;
+    background: #fff7ed;
+  }
+
+  .followup-title-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .followup-title-row h2 {
+    margin: 0 0 6px;
+    color: #f57c00;
+    font-size: 25px;
+  }
+
+  .followup-title-row p {
+    margin: 0;
+    color: #4b5563;
+    font-size: 15px;
+    line-height: 1.4;
+  }
+
+  .followup-title-row strong {
+    background: #f57c00;
+    color: #ffffff;
+    border-radius: 14px;
+    min-width: 52px;
+    height: 52px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+  }
+
+  .mini-empty {
+    margin: 0;
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 16px;
+    color: #4b5563;
+    text-align: center;
+  }
+
+  .followup-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .followup-item {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .followup-item h3 {
+    margin: 0 0 5px;
+    color: #111827;
+    font-size: 19px;
+  }
+
+  .followup-item p {
+    margin: 0 0 6px;
+    color: #0f83a6;
+    font-weight: 800;
+    font-size: 14px;
+  }
+
+  .followup-item span {
+    color: #6b7280;
+    font-size: 13px;
+  }
+
+  .followup-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .followup-actions a,
+  .followup-actions button {
+    border: none;
+    border-radius: 9px;
+    background: #0f83a6;
+    color: #ffffff;
+    padding: 9px 12px;
+    font-size: 13px;
+    font-weight: 900;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .followup-actions a:hover,
+  .followup-actions button:hover {
+    background: #0c6d8a;
   }
 
   .lead-form-card {
@@ -1825,6 +2079,11 @@ const leadFinderStyles = `
       grid-template-columns: repeat(3, 1fr);
     }
 
+    .value-grid,
+    .followup-panel {
+      grid-template-columns: 1fr;
+    }
+
     .lead-form {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -1866,6 +2125,22 @@ const leadFinderStyles = `
       grid-template-columns: 1fr;
     }
 
+    .followup-item {
+      flex-direction: column;
+    }
+
+    .followup-actions {
+      justify-content: flex-start;
+      width: 100%;
+    }
+
+    .followup-actions a,
+    .followup-actions button {
+      flex: 1;
+      text-align: center;
+      justify-content: center;
+    }
+
     .lead-card-top {
       flex-direction: column;
     }
@@ -1897,150 +2172,6 @@ const leadFinderStyles = `
     .lead-form-card,
     .lead-card {
       padding: 20px;
-    }
-  }
-
-    .followup-panel {
-    max-width: 1220px;
-    margin: 0 auto 24px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-  }
-
-  .followup-column {
-    background: #ffffff;
-    border-radius: 20px;
-    padding: 22px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    border: 1px solid #e5e7eb;
-  }
-
-  .followup-column.urgent {
-    border-color: #fed7aa;
-    background: #fff7ed;
-  }
-
-  .followup-title-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 18px;
-    align-items: flex-start;
-    margin-bottom: 16px;
-  }
-
-  .followup-title-row h2 {
-    margin: 0 0 6px;
-    color: #f57c00;
-    font-size: 25px;
-  }
-
-  .followup-title-row p {
-    margin: 0;
-    color: #4b5563;
-    font-size: 15px;
-    line-height: 1.4;
-  }
-
-  .followup-title-row strong {
-    background: #f57c00;
-    color: #ffffff;
-    border-radius: 14px;
-    min-width: 52px;
-    height: 52px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-  }
-
-  .mini-empty {
-    margin: 0;
-    background: #f8fafc;
-    border-radius: 14px;
-    padding: 16px;
-    color: #4b5563;
-    text-align: center;
-  }
-
-  .followup-list {
-    display: grid;
-    gap: 12px;
-  }
-
-  .followup-item {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 15px;
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    gap: 14px;
-    align-items: flex-start;
-  }
-
-  .followup-item h3 {
-    margin: 0 0 5px;
-    color: #111827;
-    font-size: 19px;
-  }
-
-  .followup-item p {
-    margin: 0 0 6px;
-    color: #0f83a6;
-    font-weight: 800;
-    font-size: 14px;
-  }
-
-  .followup-item span {
-    color: #6b7280;
-    font-size: 13px;
-  }
-
-  .followup-actions {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-  }
-
-  .followup-actions a,
-  .followup-actions button {
-    border: none;
-    border-radius: 9px;
-    background: #0f83a6;
-    color: #ffffff;
-    padding: 9px 12px;
-    font-size: 13px;
-    font-weight: 900;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  .followup-actions a:hover,
-  .followup-actions button:hover {
-    background: #0c6d8a;
-  }
-
-  @media (max-width: 900px) {
-    .followup-panel {
-      grid-template-columns: 1fr;
-    }
-
-    .followup-item {
-      flex-direction: column;
-    }
-
-    .followup-actions {
-      justify-content: flex-start;
-      width: 100%;
-    }
-
-    .followup-actions a,
-    .followup-actions button {
-      flex: 1;
-      text-align: center;
-      justify-content: center;
     }
   }
 `;
