@@ -168,6 +168,11 @@ export default function AdminPage() {
     setError("");
     setConvertingLeadId(lead.id);
 
+    if (lead.lead_finder_id) {
+      window.location.href = `/admin/lead-finder/${lead.lead_finder_id}`;
+      return;
+    }
+
     const businessName =
       lead.business_name || lead.name || lead.email || "Website Form Lead";
 
@@ -209,11 +214,19 @@ export default function AdminPage() {
       activity_text: "Converted from website form lead.",
     });
 
-    await supabase.from("leads").update({ status: "contacted" }).eq("id", lead.id);
+    await supabase
+      .from("leads")
+      .update({
+        status: "contacted",
+        lead_finder_id: data.id,
+      })
+      .eq("id", lead.id);
 
     setLeads((current) =>
       current.map((item) =>
-        item.id === lead.id ? { ...item, status: "contacted" } : item
+        item.id === lead.id
+          ? { ...item, status: "contacted", lead_finder_id: data.id }
+          : item
       )
     );
 
@@ -494,6 +507,13 @@ export default function AdminPage() {
                 <p>{lead.message || "No message included."}</p>
               </div>
 
+              {lead.lead_finder_id ? (
+                <div className="converted-box">
+                  This website lead is already connected to a Lead Finder CRM
+                  record.
+                </div>
+              ) : null}
+
               <div className="lead-actions-row">
                 {lead.email ? (
                   <a href={`mailto:${lead.email}`}>Email Lead</a>
@@ -506,9 +526,11 @@ export default function AdminPage() {
                   onClick={() => convertToLeadFinder(lead)}
                   disabled={convertingLeadId === lead.id}
                 >
-                  {convertingLeadId === lead.id
-                    ? "Converting..."
-                    : "Convert to Lead Finder"}
+                  {lead.lead_finder_id
+                    ? "Open Lead Finder Record"
+                    : convertingLeadId === lead.id
+                      ? "Converting..."
+                      : "Convert to Lead Finder"}
                 </button>
 
                 <button
@@ -880,6 +902,16 @@ const adminStyles = `
     font-size: 17px;
     line-height: 1.5;
     white-space: pre-wrap;
+  }
+
+  .converted-box {
+    margin-top: 14px;
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-weight: 800;
   }
 
   .lead-actions-row {
