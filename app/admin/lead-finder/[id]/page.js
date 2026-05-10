@@ -423,7 +423,7 @@ export default function LeadDetailPage() {
       return;
     }
 
-    const outreach = result.outreach || {};
+    const outreach = result.outreach;
 
     const rows = [
       {
@@ -453,12 +453,6 @@ export default function LeadDetailPage() {
         status: "draft",
       },
     ].filter((row) => row.message.trim());
-
-    if (rows.length === 0) {
-      setError("AI did not return any outreach messages.");
-      setGeneratingAi(false);
-      return;
-    }
 
     const { error: insertError } = await supabase
       .from("lead_finder_outreach")
@@ -802,18 +796,11 @@ Recommended offer: ${outreach.recommended_offer || "Not provided"}`,
             <div className="section-title-row">
               <div>
                 <h2>Outreach Messages</h2>
-                <p>
-                  Generate and copy template or AI messages for DMs, email,
-                  calls, and follow-up.
-                </p>
+                <p>Generate and copy messages for DMs, email, calls, and follow-up.</p>
               </div>
 
               <div className="button-row">
-                <button
-                  type="button"
-                  onClick={generateOutreach}
-                  disabled={generating}
-                >
+                <button type="button" onClick={generateOutreach} disabled={generating}>
                   {generating ? "Generating..." : "Template Outreach"}
                 </button>
 
@@ -865,29 +852,90 @@ Recommended offer: ${outreach.recommended_offer || "Not provided"}`,
 
             {sortedAudits.length > 0 ? (
               <div className="audit-list">
-                {sortedAudits.map((audit) => (
-                  <div className="audit-item" key={audit.id}>
-                    <strong>{audit.audit_summary || "Website audit saved."}</strong>
+                {sortedAudits.map((audit) => {
+                  const issues = audit.issues_json || {};
 
-                    <div className="audit-checks">
-                      <span>HTTPS: {audit.has_https ? "Yes" : "No"}</span>
-                      <span>Title: {audit.has_meta_title ? "Yes" : "No"}</span>
-                      <span>
-                        Description: {audit.has_meta_description ? "Yes" : "No"}
-                      </span>
-                      <span>Form: {audit.has_contact_form ? "Yes" : "No"}</span>
-                      <span>Booking: {audit.has_booking ? "Yes" : "No"}</span>
-                      <span>Phone: {audit.has_phone_number ? "Yes" : "No"}</span>
-                      <span>Favicon: {audit.has_favicon ? "Yes" : "No"}</span>
+                  return (
+                    <div className="audit-item" key={audit.id}>
+                      <div className="audit-score-grid">
+                        <div>
+                          <span>Website</span>
+                          <strong>{issues.website_score ?? "?"}/100</strong>
+                        </div>
+
+                        <div>
+                          <span>SEO</span>
+                          <strong>{issues.seo_score ?? "?"}/100</strong>
+                        </div>
+
+                        <div>
+                          <span>Conversion</span>
+                          <strong>{issues.conversion_score ?? "?"}/100</strong>
+                        </div>
+
+                        <div>
+                          <span>Trust</span>
+                          <strong>{issues.trust_score ?? "?"}/100</strong>
+                        </div>
+                      </div>
+
+                      <div className="audit-summary-block">
+                        <strong>Audit Summary</strong>
+                        <p>{audit.audit_summary || "Website audit saved."}</p>
+                      </div>
+
+                      {issues.sales_angle ? (
+                        <div className="audit-summary-block">
+                          <strong>Sales Angle</strong>
+                          <p>{issues.sales_angle}</p>
+                        </div>
+                      ) : null}
+
+                      {issues.recommended_offer ? (
+                        <div className="audit-summary-block">
+                          <strong>Recommended Offer</strong>
+                          <p>{issues.recommended_offer}</p>
+                        </div>
+                      ) : null}
+
+                      {issues.suggested_price_range ? (
+                        <div className="audit-summary-block">
+                          <strong>Suggested Package</strong>
+                          <p>{issues.suggested_price_range}</p>
+                        </div>
+                      ) : null}
+
+                      {issues.problems && issues.problems.length > 0 ? (
+                        <div className="audit-summary-block">
+                          <strong>Problems Found</strong>
+                          <ul>
+                            {issues.problems.map((problem) => (
+                              <li key={problem}>{problem}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : null}
+
+                      <div className="audit-checks">
+                        <span>HTTPS: {audit.has_https ? "Yes" : "No"}</span>
+                        <span>Title: {audit.has_meta_title ? "Yes" : "No"}</span>
+                        <span>
+                          Description: {audit.has_meta_description ? "Yes" : "No"}
+                        </span>
+                        <span>Form: {audit.has_contact_form ? "Yes" : "No"}</span>
+                        <span>Booking: {audit.has_booking ? "Yes" : "No"}</span>
+                        <span>Phone: {audit.has_phone_number ? "Yes" : "No"}</span>
+                        <span>Favicon: {audit.has_favicon ? "Yes" : "No"}</span>
+                      </div>
+
+                      <small>
+                        {audit.created_at
+                          ? new Date(audit.created_at).toLocaleString()
+                          : ""}
+                      </small>
                     </div>
-
-                    <small>
-                      {audit.created_at
-                        ? new Date(audit.created_at).toLocaleString()
-                        : ""}
-                    </small>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <p className="mini-empty">No website audits yet.</p>
@@ -1134,7 +1182,6 @@ const styles = `
 
   .button-row button {
     flex: 1;
-    white-space: nowrap;
   }
 
   .error-box {
@@ -1335,6 +1382,65 @@ const styles = `
     line-height: 1.4;
   }
 
+  .audit-score-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .audit-score-grid div {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 12px;
+  }
+
+  .audit-score-grid span {
+    display: block;
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 900;
+    margin-bottom: 6px;
+  }
+
+  .audit-score-grid strong {
+    color: #f57c00;
+    font-size: 22px;
+    margin: 0;
+  }
+
+  .audit-summary-block {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 13px;
+    margin-bottom: 12px;
+  }
+
+  .audit-summary-block strong {
+    margin: 0 0 8px;
+    color: #111827;
+  }
+
+  .audit-summary-block p {
+    margin: 0;
+    color: #374151;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+
+  .audit-summary-block ul {
+    margin: 8px 0 0;
+    padding-left: 20px;
+    color: #374151;
+    line-height: 1.5;
+  }
+
+  .audit-summary-block li {
+    margin-bottom: 6px;
+  }
+
   .audit-checks {
     display: flex;
     gap: 8px;
@@ -1454,14 +1560,6 @@ const styles = `
     .button-row {
       width: 100%;
     }
-
-    .button-row {
-      flex-direction: column;
-    }
-
-    .button-row button {
-      width: 100%;
-    }
   }
 
   @media (max-width: 650px) {
@@ -1482,6 +1580,10 @@ const styles = `
     .link-row a {
       width: 100%;
       text-align: center;
+    }
+
+    .audit-score-grid {
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 `;
