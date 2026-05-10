@@ -140,6 +140,7 @@ export default function LeadDetailPage() {
   const [savingActivity, setSavingActivity] = useState(false);
   const [deletingActivityId, setDeletingActivityId] = useState(null);
   const [generating, setGenerating] = useState(false);
+  const [generatingAi, setGeneratingAi] = useState(false);
   const [auditing, setAuditing] = useState(false);
 
   const [status, setStatus] = useState("new");
@@ -381,11 +382,106 @@ export default function LeadDetailPage() {
     await supabase.from("lead_finder_activities").insert({
       lead_id: lead.id,
       activity_type: "note",
-      activity_text: "Outreach messages generated.",
+      activity_text: "Template outreach messages generated.",
     });
 
-    setSuccess("Outreach messages generated.");
+    setSuccess("Template outreach messages generated.");
     setGenerating(false);
+    await loadLead();
+  }
+
+  async function generateAiOutreach() {
+    if (!lead) return;
+
+    setGeneratingAi(true);
+    setError("");
+    setSuccess("");
+
+    const { data: sessionData } = await supabase.auth.getSession();
+    const accessToken = sessionData?.session?.access_token;
+
+    if (!accessToken) {
+      setError("You need to sign in again before generating AI outreach.");
+      setGeneratingAi(false);
+      return;
+    }
+
+    const response = await fetch("/api/lead-finder/ai-outreach", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ lead }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.ok) {
+      setError(result.error || "AI outreach failed.");
+      setGeneratingAi(false);
+      return;
+    }
+
+    const outreach = result.outreach || {};
+
+    const rows = [
+      {
+        lead_id: lead.id,
+        channel: "ai facebook dm",
+        message: outreach.facebook_dm || "",
+        status: "draft",
+      },
+      {
+        lead_id: lead.id,
+        channel: "ai email",
+        message: `Subject: ${outreach.email_subject || "Quick idea"}\n\n${
+          outreach.email_message || ""
+        }`,
+        status: "draft",
+      },
+      {
+        lead_id: lead.id,
+        channel: "ai phone script",
+        message: outreach.phone_script || "",
+        status: "draft",
+      },
+      {
+        lead_id: lead.id,
+        channel: "ai follow up",
+        message: outreach.follow_up || "",
+        status: "draft",
+      },
+    ].filter((row) => row.message.trim());
+
+    if (rows.length === 0) {
+      setError("AI did not return any outreach messages.");
+      setGeneratingAi(false);
+      return;
+    }
+
+    const { error: insertError } = await supabase
+      .from("lead_finder_outreach")
+      .insert(rows);
+
+    if (insertError) {
+      setError(insertError.message);
+      setGeneratingAi(false);
+      return;
+    }
+
+    await supabase.from("lead_finder_activities").insert({
+      lead_id: lead.id,
+      activity_type: "note",
+      activity_text: `AI outreach generated.
+
+Sales angle: ${outreach.sales_angle || "Not provided"}
+
+Recommended offer: ${outreach.recommended_offer || "Not provided"}`,
+    });
+
+    setSuccess("AI outreach generated.");
+    setGeneratingAi(false);
     await loadLead();
   }
 
@@ -610,7 +706,11 @@ export default function LeadDetailPage() {
             <div className="info-grid">
               <p>
                 <strong>Phone:</strong>{" "}
-                {lead.phone ? <a href={`tel:${lead.phone}`}>{lead.phone}</a> : "None"}
+                {lead.phone ? (
+                  <a href={`tel:${lead.phone}`}>{lead.phone}</a>
+                ) : (
+                  "None"
+                )}
               </p>
 
               <p>
@@ -702,16 +802,29 @@ export default function LeadDetailPage() {
             <div className="section-title-row">
               <div>
                 <h2>Outreach Messages</h2>
-                <p>Generate and copy messages for DMs, email, calls, and follow-up.</p>
+                <p>
+                  Generate and copy template or AI messages for DMs, email,
+                  calls, and follow-up.
+                </p>
               </div>
 
-              <button
-                type="button"
-                onClick={generateOutreach}
-                disabled={generating}
-              >
-                {generating ? "Generating..." : "Generate Outreach"}
-              </button>
+              <div className="button-row">
+                <button
+                  type="button"
+                  onClick={generateOutreach}
+                  disabled={generating}
+                >
+                  {generating ? "Generating..." : "Template Outreach"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={generateAiOutreach}
+                  disabled={generatingAi}
+                >
+                  {generatingAi ? "Thinking..." : "AI Outreach"}
+                </button>
+              </div>
             </div>
 
             {lead.lead_finder_outreach &&
@@ -1011,6 +1124,17 @@ const styles = `
   .full-btn {
     width: 100%;
     margin-top: 12px;
+  }
+
+  .button-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .button-row button {
+    flex: 1;
+    white-space: nowrap;
   }
 
   .error-box {
@@ -1326,7 +1450,16 @@ const styles = `
       flex-direction: column;
     }
 
-    .section-title-row button {
+    .section-title-row button,
+    .button-row {
+      width: 100%;
+    }
+
+    .button-row {
+      flex-direction: column;
+    }
+
+    .button-row button {
       width: 100%;
     }
   }
