@@ -50,6 +50,86 @@ const images = {
 
 const blogPosts = [
   {
+  id: "custom-coded-websites-beat-diy-builders",
+  title: "Why Custom-Coded Websites Beat DIY Website Builders for Small Businesses",
+  image: images.blog3,
+  href: "/why-custom-coded-websites-beat-diy-website-builders",
+  text:
+    "DIY website builders can help a business get online quickly, but custom-coded websites give growing businesses more control, better flexibility, stronger lead capture, and more room for SEO, automation, CRM tools, and future software features.",
+  },
+  {
+  id: "small-business-website-cost-2026",
+  title: "How Much Should a Small Business Website Cost in 2026?",
+  image: images.blog4,
+  href: "/how-much-should-a-small-business-website-cost-in-2026",
+  text:
+    "A practical pricing guide for small business owners comparing starter websites, custom-coded websites, SEO setup, CRM dashboards, booking tools, automation, and full code ownership in 2026.",
+  },
+  {
+  id: "contractor-website-leads",
+  title: "What Every Contractor Website Needs to Generate Leads",
+  image: images.blog7,
+  href: "/what-every-contractor-website-needs-to-generate-leads",
+  text:
+    "A contractor website should do more than look professional. It should help homeowners trust the business, understand the services, request estimates, and become real leads.",
+  },
+  {
+  id: "website-design-vs-custom-software",
+  title: "Website Design vs Custom Software: What Does Your Business Actually Need?",
+  image: images.blog8,
+  href: "/website-design-vs-custom-software-what-does-your-business-need",
+  text:
+    "Some businesses need a better website. Others need a CRM dashboard, booking system, automation tool, or custom software. The right answer depends on the problem the business is trying to solve.",
+  },
+  {
+  id: "crm-dashboards-stop-losing-leads",
+  title: "How CRM Dashboards Help Small Businesses Stop Losing Leads",
+  image: images.blog9,
+  href: "/how-crm-dashboards-help-small-businesses-stop-losing-leads",
+  text:
+    "A CRM dashboard helps small businesses organize leads, track follow-ups, save activity notes, manage quotes, and stop potential customers from disappearing after the first message.",
+  },
+  {
+  id: "google-indexing-after-launch",
+  title: "Why Google Indexing Matters After Launching a New Website",
+  image: images.blog10,
+  href: "/why-google-indexing-matters-after-launching-a-new-website",
+  text:
+    "Launching a website is only the first step. Google still needs to crawl, understand, and index your pages before customers can find them through search.",
+  },
+  {
+  id: "raw-code-vs-wordpress-wix-godaddy",
+  title: "Raw Code vs WordPress vs Wix vs GoDaddy: Which Is Best for Your Business?",
+  image: images.blog1,
+  href: "/raw-code-vs-wordpress-vs-wix-vs-godaddy",
+  text:
+    "Compare raw custom code, WordPress, Wix, and GoDaddy for small business websites, including SEO, speed, ownership, design control, custom features, and long-term growth.",
+  },
+  {
+  id: "seo-ready-small-business-websites",
+  title: "How matthew-web Builds SEO-Ready Small Business Websites",
+  image: images.blog2,
+  href: "/how-matthew-web-builds-seo-ready-small-business-websites",
+  text:
+    "SEO-ready websites are planned before launch with clean structure, useful content, mobile design, metadata, sitemaps, indexing setup, internal links, and lead forms.",
+  },
+  {
+  id: "fast-website-speed-leads-seo-trust",
+  title: "Why Fast Website Load Speed Helps Leads, SEO, and Trust",
+  image: images.blog5,
+  href: "/why-fast-website-load-speed-helps-leads-seo-and-trust",
+  text:
+    "A fast website helps visitors stay, trust the business, read the content, use the forms, and take the next step. Speed also supports mobile usability and SEO-ready website structure.",
+  },
+  {
+  id: "booking-quote-forms-automation-local-businesses",
+  title: "How Booking Forms, Quote Forms, and Automation Help Local Businesses",
+  image: images.blog6,
+  href: "/how-booking-forms-quote-forms-and-automation-help-local-businesses",
+  text:
+    "Booking forms, quote forms, lead forms, email notifications, CRM dashboards, and automation help local businesses save time, capture better leads, and follow up faster.",
+  },
+  {
     id: "facebook-page-not-substitute-website",
     title: "Why a Facebook Page is Not a Substitute for a Website",
     image: images.blog1,
