@@ -1,5 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/called",
+        destination: "/contact-us",
+        permanent: true,
+      },
+    ];
+  },
+
   async headers() {
     return [
       {
