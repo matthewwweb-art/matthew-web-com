@@ -36,6 +36,7 @@ export default function sitemap() {
     "/custom-software",
     "/seo-and-indexing",
     "/small-business-websites",
+    "/free-game-hub-project",
   ];
 
   return routes.map((route) => {
