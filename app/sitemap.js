@@ -32,6 +32,7 @@ export default function sitemap() {
     "/how-booking-forms-quote-forms-and-automation-help-local-businesses",
     "/code-of-ethics",
     "/privacy-policy",
+    "/website-design",
   ];
 
   return routes.map((route) => {
