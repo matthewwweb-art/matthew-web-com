@@ -33,6 +33,7 @@ export default function sitemap() {
     "/code-of-ethics",
     "/privacy-policy",
     "/website-design",
+    "/custom-software",
   ];
 
   return routes.map((route) => {
