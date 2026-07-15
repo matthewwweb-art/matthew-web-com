@@ -8,6 +8,11 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about-us" },
   { label: "Services", href: "/services" },
+  { label: "Web Design", href: "/website-design" },
+  { label: "Custom Software", href: "/custom-software" },
+  { label: "SEO Help", href: "/seo-and-indexing" },
+  { label: "Small Business Sites", href: "/small-business-websites" },
+  { label: "Game Hub", href: "/free-game-hub-project" },
   { label: "Examples", href: "/examples" },
   { label: "Blog", href: "/blog" },
   { label: "Testimonials", href: "/testimonials" },
@@ -52,7 +57,9 @@ export default function SiteHeader() {
             key={link.href}
             href={link.href}
             onClick={closeMenu}
-            className={pathname === link.href ? "mw-nav-link active" : "mw-nav-link"}
+            className={
+              pathname === link.href ? "mw-nav-link active" : "mw-nav-link"
+            }
           >
             {link.label}
           </Link>
@@ -61,7 +68,9 @@ export default function SiteHeader() {
         <Link
           href="/search"
           onClick={closeMenu}
-          className={pathname === "/search" ? "mw-nav-link active" : "mw-nav-link"}
+          className={
+            pathname === "/search" ? "mw-nav-link active" : "mw-nav-link"
+          }
         >
           🔍 Search
         </Link>

@@ -5,11 +5,19 @@ export default function sitemap() {
     "",
     "/about-us",
     "/services",
+    "/website-design",
+    "/custom-software",
+    "/seo-and-indexing",
+    "/small-business-websites",
+    "/free-game-hub-project",
     "/examples",
     "/blog",
     "/testimonials",
     "/pricing",
     "/contact-us",
+    "/privacy-policy",
+    "/code-of-ethics",
+
     "/why-a-facebook-page-is-not-a-substitute-for-a-website",
     "/7-signs-you-need-a-new-website-for-your-business",
     "/why-diy-site-builders-are-bad-for-small-businesses",
@@ -20,6 +28,7 @@ export default function sitemap() {
     "/website-traffic-stats-explained",
     "/8-marketing-mistakes-small-businesses-make",
     "/how-often-should-you-redesign-your-website",
+
     "/why-custom-coded-websites-beat-diy-website-builders",
     "/how-much-should-a-small-business-website-cost-in-2026",
     "/what-every-contractor-website-needs-to-generate-leads",
@@ -30,13 +39,6 @@ export default function sitemap() {
     "/how-matthew-web-builds-seo-ready-small-business-websites",
     "/why-fast-website-load-speed-helps-leads-seo-and-trust",
     "/how-booking-forms-quote-forms-and-automation-help-local-businesses",
-    "/code-of-ethics",
-    "/privacy-policy",
-    "/website-design",
-    "/custom-software",
-    "/seo-and-indexing",
-    "/small-business-websites",
-    "/free-game-hub-project",
   ];
 
   return routes.map((route) => {
@@ -48,12 +50,27 @@ export default function sitemap() {
       priority = 1;
     }
 
+    if (
+      route === "/services" ||
+      route === "/website-design" ||
+      route === "/custom-software" ||
+      route === "/seo-and-indexing" ||
+      route === "/small-business-websites"
+    ) {
+      changeFrequency = "monthly";
+      priority = 0.9;
+    }
+
     if (route === "/blog") {
       changeFrequency = "weekly";
       priority = 0.9;
     }
 
-    if (route === "/code-of-ethics" || route === "/privacy-policy") {
+    if (
+      route === "/privacy-policy" ||
+      route === "/code-of-ethics" ||
+      route === "/free-game-hub-project"
+    ) {
       changeFrequency = "yearly";
       priority = 0.6;
     }
