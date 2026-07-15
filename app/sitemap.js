@@ -35,6 +35,7 @@ export default function sitemap() {
     "/website-design",
     "/custom-software",
     "/seo-and-indexing",
+    "/small-business-websites",
   ];
 
   return routes.map((route) => {
