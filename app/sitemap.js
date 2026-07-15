@@ -34,6 +34,7 @@ export default function sitemap() {
     "/privacy-policy",
     "/website-design",
     "/custom-software",
+    "/seo-and-indexing",
   ];
 
   return routes.map((route) => {
