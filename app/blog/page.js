@@ -2,16 +2,22 @@ import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 
-const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "About Us", href: "/about-us" },
-  { label: "Services", href: "/services" },
-  { label: "Examples", href: "/examples" },
-  { label: "Blog", href: "/blog" },
-  { label: "Testimonials", href: "/testimonials" },
-  { label: "Pricing", href: "/pricing" },
-  { label: "Contact Us", href: "/contact-us" },
-];
+export const metadata = {
+  title: "Blog | matthew-web",
+  description:
+    "Helpful matthew-web articles about website design, custom software, SEO, Google indexing, CRM dashboards, website speed, booking forms, automation, and small business websites.",
+  alternates: {
+    canonical: "https://matthew-web.com/blog",
+  },
+  openGraph: {
+    title: "Blog | matthew-web",
+    description:
+      "Read original matthew-web guides about website design, custom software, SEO, indexing, CRM dashboards, forms, automation, and small business websites.",
+    url: "https://matthew-web.com/blog",
+    siteName: "matthew-web",
+    type: "website",
+  },
+};
 
 const images = {
   blog1:
@@ -50,165 +56,88 @@ const images = {
 
 const blogPosts = [
   {
-  id: "custom-coded-websites-beat-diy-builders",
-  title: "Why Custom-Coded Websites Beat DIY Website Builders for Small Businesses",
-  image: images.blog3,
-  href: "/why-custom-coded-websites-beat-diy-website-builders",
-  text:
-    "DIY website builders can help a business get online quickly, but custom-coded websites give growing businesses more control, better flexibility, stronger lead capture, and more room for SEO, automation, CRM tools, and future software features.",
-  },
-  {
-  id: "small-business-website-cost-2026",
-  title: "How Much Should a Small Business Website Cost in 2026?",
-  image: images.blog4,
-  href: "/how-much-should-a-small-business-website-cost-in-2026",
-  text:
-    "A practical pricing guide for small business owners comparing starter websites, custom-coded websites, SEO setup, CRM dashboards, booking tools, automation, and full code ownership in 2026.",
-  },
-  {
-  id: "contractor-website-leads",
-  title: "What Every Contractor Website Needs to Generate Leads",
-  image: images.blog7,
-  href: "/what-every-contractor-website-needs-to-generate-leads",
-  text:
-    "A contractor website should do more than look professional. It should help homeowners trust the business, understand the services, request estimates, and become real leads.",
-  },
-  {
-  id: "website-design-vs-custom-software",
-  title: "Website Design vs Custom Software: What Does Your Business Actually Need?",
-  image: images.blog8,
-  href: "/website-design-vs-custom-software-what-does-your-business-need",
-  text:
-    "Some businesses need a better website. Others need a CRM dashboard, booking system, automation tool, or custom software. The right answer depends on the problem the business is trying to solve.",
-  },
-  {
-  id: "crm-dashboards-stop-losing-leads",
-  title: "How CRM Dashboards Help Small Businesses Stop Losing Leads",
-  image: images.blog9,
-  href: "/how-crm-dashboards-help-small-businesses-stop-losing-leads",
-  text:
-    "A CRM dashboard helps small businesses organize leads, track follow-ups, save activity notes, manage quotes, and stop potential customers from disappearing after the first message.",
-  },
-  {
-  id: "google-indexing-after-launch",
-  title: "Why Google Indexing Matters After Launching a New Website",
-  image: images.blog10,
-  href: "/why-google-indexing-matters-after-launching-a-new-website",
-  text:
-    "Launching a website is only the first step. Google still needs to crawl, understand, and index your pages before customers can find them through search.",
-  },
-  {
-  id: "raw-code-vs-wordpress-wix-godaddy",
-  title: "Raw Code vs WordPress vs Wix vs GoDaddy: Which Is Best for Your Business?",
-  image: images.blog1,
-  href: "/raw-code-vs-wordpress-vs-wix-vs-godaddy",
-  text:
-    "Compare raw custom code, WordPress, Wix, and GoDaddy for small business websites, including SEO, speed, ownership, design control, custom features, and long-term growth.",
-  },
-  {
-  id: "seo-ready-small-business-websites",
-  title: "How matthew-web Builds SEO-Ready Small Business Websites",
-  image: images.blog2,
-  href: "/how-matthew-web-builds-seo-ready-small-business-websites",
-  text:
-    "SEO-ready websites are planned before launch with clean structure, useful content, mobile design, metadata, sitemaps, indexing setup, internal links, and lead forms.",
-  },
-  {
-  id: "fast-website-speed-leads-seo-trust",
-  title: "Why Fast Website Load Speed Helps Leads, SEO, and Trust",
-  image: images.blog5,
-  href: "/why-fast-website-load-speed-helps-leads-seo-and-trust",
-  text:
-    "A fast website helps visitors stay, trust the business, read the content, use the forms, and take the next step. Speed also supports mobile usability and SEO-ready website structure.",
-  },
-  {
-  id: "booking-quote-forms-automation-local-businesses",
-  title: "How Booking Forms, Quote Forms, and Automation Help Local Businesses",
-  image: images.blog6,
-  href: "/how-booking-forms-quote-forms-and-automation-help-local-businesses",
-  text:
-    "Booking forms, quote forms, lead forms, email notifications, CRM dashboards, and automation help local businesses save time, capture better leads, and follow up faster.",
-  },
-  {
-    id: "facebook-page-not-substitute-website",
-    title: "Why a Facebook Page is Not a Substitute for a Website",
-    image: images.blog1,
-    href: "/why-a-facebook-page-is-not-a-substitute-for-a-website",
-    text:
-      "When it comes to promoting and representing your small business online, it's important to have a strong, professional presence. Many businesses today turn to social media platforms, like Facebook, to create that presence. However, using a Facebook page as your primary or only online presence can be a huge mistake.",
-  },
-  {
-    id: "signs-you-need-new-website",
-    title: "7 Signs You Need a New Website for Your Business",
-    image: images.blog2,
-    href: "/7-signs-you-need-a-new-website-for-your-business",
-    text:
-      "Web design might sometimes seem like an unnecessary expense for some small business owners. In fact, it's quite the opposite. User habits and Google search algorithms change regularly. You're missing out on valuable traffic and potential customers if you're not consistently modernizing your website.",
-  },
-  {
-    id: "diy-site-builders-bad-small-business",
-    title: "Why DIY Site Builders are Bad for Small Businesses",
-    image: images.blog3,
-    href: "/why-diy-site-builders-are-bad-for-small-businesses",
-    text:
-      "Do you need to build a website for your small business and are considering building one yourself? Unfortunately, many people think that it's something that they can build on their own. Only after making a low-quality website do they realize that they would have been better off leaving it to the professionals.",
-  },
-  {
-    id: "small-business-website-needs",
-    title: "8 Things Every Small Business Website Needs",
-    image: images.blog4,
-    href: "/8-things-every-small-business-website-needs",
-    text:
-      "If you run a small business, no matter what it is that you do, or where you’re located, you need a website. Small business websites are crucial for online visibility, branding, and driving sales, but only if you've got good web design.",
-  },
-  {
-    id: "respond-to-online-reviews",
-    title: "How To Respond to Online Reviews (Good and Bad)",
-    image: images.blog5,
-    href: "/how-to-respond-to-online-reviews-good-and-bad",
-    text:
-      "93% of surveyed shoppers make buying decisions based on online reviews. That's a huge percentage! If you run a business, your reviews are vital to your success.",
-  },
-  {
-    id: "reputation-management-online-reviews",
+    id: "custom-coded-websites-beat-diy-builders",
     title:
-      "Why Reputation Management and Online Reviews Are Important in Business",
-    image: images.blog6,
-    href: "/why-reputation-management-and-online-reviews-are-important-in-business",
+      "Why Custom-Coded Websites Beat DIY Website Builders for Small Businesses",
+    image: images.blog3,
+    href: "/why-custom-coded-websites-beat-diy-website-builders",
     text:
-      "One recent report suggested that a company's reputation can account for more than 60% of its total value. As a result, your business might not be worth as much as it would be worth otherwise simply because of its reputation.",
+      "DIY website builders can help a business get online quickly, but custom-coded websites give growing businesses more control, better flexibility, stronger lead capture, and more room for SEO, automation, CRM tools, and future software features.",
   },
   {
-    id: "small-business-websites-vital",
-    title: "7 Reasons Why Small Business Websites Are Vital",
+    id: "small-business-website-cost-2026",
+    title: "How Much Should a Small Business Website Cost in 2026?",
+    image: images.blog4,
+    href: "/how-much-should-a-small-business-website-cost-in-2026",
+    text:
+      "A practical pricing guide for small business owners comparing starter websites, custom-coded websites, SEO setup, CRM dashboards, booking tools, automation, and full code ownership in 2026.",
+  },
+  {
+    id: "contractor-website-leads",
+    title: "What Every Contractor Website Needs to Generate Leads",
     image: images.blog7,
-    href: "/7-reasons-why-small-business-websites-are-vital",
+    href: "/what-every-contractor-website-needs-to-generate-leads",
     text:
-      "A website is a vital component to a small businesses’ success. However not any website will do. About one in five small business websites struggle to generate traffic to their website. Meanwhile, 57% of users won't recommend a company with a poor mobile web design.",
+      "A contractor website should do more than look professional. It should help homeowners trust the business, understand the services, request estimates, and become real leads.",
   },
   {
-    id: "website-traffic-stats",
-    title: "Website Traffic Stats Explained",
+    id: "website-design-vs-custom-software",
+    title:
+      "Website Design vs Custom Software: What Does Your Business Actually Need?",
     image: images.blog8,
-    href: "/website-traffic-stats-explained",
+    href: "/website-design-vs-custom-software-what-does-your-business-need",
     text:
-      "There are over 5.07 billion daily Internet users in the world, so there's a large base of potential customers you can reach with your website. But before you can tap into that potential, you need to know whether your website is capable of attracting those visitors.",
+      "Some businesses need a better website. Others need a CRM dashboard, booking system, automation tool, or custom software. The right answer depends on the problem the business is trying to solve.",
   },
   {
-    id: "marketing-mistakes-small-businesses",
-    title: "8 Marketing Mistakes Small Businesses Make",
+    id: "crm-dashboards-stop-losing-leads",
+    title: "How CRM Dashboards Help Small Businesses Stop Losing Leads",
     image: images.blog9,
-    href: "/8-marketing-mistakes-small-businesses-make",
+    href: "/how-crm-dashboards-help-small-businesses-stop-losing-leads",
     text:
-      "According to a recent survey, about half of all American small businesses lack a solid marketing plan. Not having a plan in place is one of the biggest marketing mistakes that any small business can make.",
+      "A CRM dashboard helps small businesses organize leads, track follow-ups, save activity notes, manage quotes, and stop potential customers from disappearing after the first message.",
   },
   {
-    id: "redesign-your-website",
-    title: "How Often Should You Redesign Your Website?",
+    id: "google-indexing-after-launch",
+    title: "Why Google Indexing Matters After Launching a New Website",
     image: images.blog10,
-    href: "/how-often-should-you-redesign-your-website",
+    href: "/why-google-indexing-matters-after-launching-a-new-website",
     text:
-      "A recent study found that 50% of consumers believe that website design is a fundamental factor in a business’s brand. Website design showcases your business’s style, attitude, and aesthetic.",
+      "Launching a website is only the first step. Google still needs to crawl, understand, and index your pages before customers can find them through search.",
+  },
+  {
+    id: "raw-code-vs-wordpress-wix-godaddy",
+    title:
+      "Raw Code vs WordPress vs Wix vs GoDaddy: Which Is Best for Your Business?",
+    image: images.blog1,
+    href: "/raw-code-vs-wordpress-vs-wix-vs-godaddy",
+    text:
+      "Compare raw custom code, WordPress, Wix, and GoDaddy for small business websites, including SEO, speed, ownership, design control, custom features, and long-term growth.",
+  },
+  {
+    id: "seo-ready-small-business-websites",
+    title: "How matthew-web Builds SEO-Ready Small Business Websites",
+    image: images.blog2,
+    href: "/how-matthew-web-builds-seo-ready-small-business-websites",
+    text:
+      "SEO-ready websites are planned before launch with clean structure, useful content, mobile design, metadata, sitemaps, indexing setup, internal links, and lead forms.",
+  },
+  {
+    id: "fast-website-speed-leads-seo-trust",
+    title: "Why Fast Website Load Speed Helps Leads, SEO, and Trust",
+    image: images.blog5,
+    href: "/why-fast-website-load-speed-helps-leads-seo-and-trust",
+    text:
+      "A fast website helps visitors stay, trust the business, read the content, use the forms, and take the next step. Speed also supports mobile usability and SEO-ready website structure.",
+  },
+  {
+    id: "booking-quote-forms-automation-local-businesses",
+    title:
+      "How Booking Forms, Quote Forms, and Automation Help Local Businesses",
+    image: images.blog6,
+    href: "/how-booking-forms-quote-forms-and-automation-help-local-businesses",
+    text:
+      "Booking forms, quote forms, lead forms, email notifications, CRM dashboards, and automation help local businesses save time, capture better leads, and follow up faster.",
   },
 ];
 
@@ -231,6 +160,15 @@ export default function BlogPage() {
           letter-spacing: 1px;
         }
 
+        .blog-page-title p {
+          max-width: 900px;
+          margin: 18px auto 0;
+          color: #ffffff;
+          font-size: clamp(20px, 3vw, 28px);
+          line-height: 1.35;
+          font-weight: 600;
+        }
+
         .blog-list {
           max-width: 1120px;
           margin: 0 auto;
@@ -238,7 +176,7 @@ export default function BlogPage() {
         }
 
         .blog-post {
-          margin-bottom: 112px;
+          margin-bottom: 94px;
           scroll-margin-top: 30px;
         }
 
@@ -285,6 +223,7 @@ export default function BlogPage() {
           color: #f57c00;
           font-size: 22px;
           text-decoration: none;
+          font-weight: 800;
         }
 
         .read-more:hover {
@@ -334,94 +273,11 @@ export default function BlogPage() {
           font-size: 24px;
           padding: 22px 58px;
           border-radius: 8px;
-          font-weight: 600;
+          font-weight: 800;
         }
 
-        .site-footer {
-          background: #f57c00;
-          color: #ffffff;
-          padding: 52px 32px 34px;
-        }
-
-        .footer-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 70px;
-          max-width: 1120px;
-          margin: 0 auto;
-        }
-
-        .footer-grid h3 {
-          font-size: 24px;
-          margin: 0 0 18px;
-          color: #ffffff;
-        }
-
-        .footer-grid p,
-        .footer-grid a {
-          color: #ffffff;
-          font-size: 21px;
-          line-height: 1.6;
-        }
-
-        .footer-grid a {
-          text-decoration: underline;
-        }
-
-        .footer-contact {
-          margin: 0 0 14px;
-        }
-
-        .social-row {
-          display: flex;
-          gap: 16px;
-          margin-top: 24px;
-        }
-
-        .social-row a {
-          width: 46px;
-          height: 46px;
-          border-radius: 50%;
-          background: #ffffff;
-          color: #f57c00;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 26px;
-          font-weight: 900;
-          text-decoration: none;
-          line-height: 1;
-          transition: 0.2s ease;
-        }
-
-        .social-row a:hover {
-          transform: translateY(-2px);
-          opacity: 0.9;
-        }
-
-        .footer-nav {
-          display: flex;
-          justify-content: center;
-          gap: 22px;
-          flex-wrap: wrap;
-          margin-top: 42px;
-        }
-
-        .footer-nav a {
-          color: #ffffff;
-          font-size: 18px;
-          text-decoration: none;
-        }
-
-        .footer-nav a:hover {
-          text-decoration: underline;
-        }
-
-        .copyright {
-          text-align: center;
-          font-size: 12px;
-          margin: 22px 0 0;
-          color: #ffffff;
+        .btn-primary:hover {
+          background: #d96d00;
         }
 
         @media (max-width: 900px) {
@@ -455,11 +311,6 @@ export default function BlogPage() {
             font-size: 20px;
           }
 
-          .footer-grid {
-            grid-template-columns: 1fr;
-            gap: 30px;
-          }
-
           .blog-cta-parallax {
             background-attachment: scroll;
           }
@@ -491,11 +342,6 @@ export default function BlogPage() {
             font-size: 20px;
             padding: 18px 34px;
           }
-
-          .footer-grid p,
-          .footer-grid a {
-            font-size: 18px;
-          }
         }
       `}</style>
 
@@ -503,6 +349,11 @@ export default function BlogPage() {
 
       <section className="blog-page-title" id="blog">
         <h1>Blog</h1>
+        <p>
+          Original matthew-web guides about website design, custom software,
+          SEO, Google indexing, CRM dashboards, booking forms, automation, and
+          small business websites.
+        </p>
       </section>
 
       <section className="blog-list" id="blog-posts">
@@ -533,9 +384,8 @@ export default function BlogPage() {
         <div className="blog-cta-overlay">
           <h2>GET YOUR FREE WEBSITE MOCKUP</h2>
           <p>
-            Interesting in seeing how your new website can look? Contact us
-            today to request your{" "}
-            <strong>FREE no-obligation website mockup.</strong>
+            Interested in seeing how your new website can look? Contact us today
+            to request your <strong>FREE no-obligation website mockup.</strong>
           </p>
 
           <Link href="/contact-us" className="btn-primary">
