@@ -22,6 +22,10 @@ export const metadata = {
     canonical:
       "https://matthew-web.com/how-often-should-you-redesign-your-website",
   },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function RedesignWebsiteBlogPost() {

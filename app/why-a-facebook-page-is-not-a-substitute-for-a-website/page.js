@@ -21,6 +21,10 @@ export const metadata = {
     canonical:
       "https://matthew-web.com/why-a-facebook-page-is-not-a-substitute-for-a-website",
   },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function FacebookPageBlogPost() {

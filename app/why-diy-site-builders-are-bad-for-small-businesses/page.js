@@ -22,6 +22,10 @@ export const metadata = {
     canonical:
       "https://matthew-web.com/why-diy-site-builders-are-bad-for-small-businesses",
   },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function DiySiteBuildersBlogPost() {

@@ -22,6 +22,10 @@ export const metadata = {
     canonical:
       "https://matthew-web.com/7-signs-you-need-a-new-website-for-your-business",
   },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function SevenSignsWebsiteBlogPost() {

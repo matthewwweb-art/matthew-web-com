@@ -22,6 +22,10 @@ export const metadata = {
     canonical:
       "https://matthew-web.com/8-things-every-small-business-website-needs",
   },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function SmallBusinessWebsiteNeedsBlogPost() {

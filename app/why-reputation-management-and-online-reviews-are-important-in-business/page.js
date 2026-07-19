@@ -22,6 +22,10 @@ export const metadata = {
     canonical:
       "https://matthew-web.com/why-reputation-management-and-online-reviews-are-important-in-business",
   },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function ReputationManagementBlogPost() {

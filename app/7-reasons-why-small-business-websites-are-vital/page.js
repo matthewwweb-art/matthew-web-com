@@ -22,6 +22,10 @@ export const metadata = {
     canonical:
       "https://matthew-web.com/7-reasons-why-small-business-websites-are-vital",
   },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function SmallBusinessWebsitesVitalBlogPost() {

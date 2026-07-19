@@ -22,6 +22,10 @@ export const metadata = {
   alternates: {
     canonical: "https://matthew-web.com/website-traffic-stats-explained",
   },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function WebsiteTrafficStatsBlogPost() {

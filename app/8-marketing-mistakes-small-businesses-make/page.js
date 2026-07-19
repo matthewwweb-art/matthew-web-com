@@ -22,6 +22,10 @@ export const metadata = {
     canonical:
       "https://matthew-web.com/8-marketing-mistakes-small-businesses-make",
   },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function MarketingMistakesBlogPost() {

@@ -22,6 +22,10 @@ export const metadata = {
     canonical:
       "https://matthew-web.com/how-to-respond-to-online-reviews-good-and-bad",
   },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function RespondToOnlineReviewsBlogPost() {
