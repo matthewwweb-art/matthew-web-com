@@ -8,6 +8,5 @@ export default function robots() {
       },
     ],
     sitemap: "https://matthew-web.com/sitemap.xml",
-    host: "https://matthew-web.com",
   };
 }
