@@ -11,6 +11,20 @@ const navLinks = [
   { label: "Contact Us", href: "/contact-us" },
 ];
 
+const serviceLinks = [
+  { label: "Website Design", href: "/website-design" },
+  { label: "Custom Software", href: "/custom-software" },
+  { label: "SEO and Indexing", href: "/seo-and-indexing" },
+  { label: "Small Business Websites", href: "/small-business-websites" },
+];
+
+const resourceLinks = [
+  { label: "Free Game Hub Project", href: "/free-game-hub-project" },
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Terms of Use", href: "/terms" },
+  { label: "Code of Ethics", href: "/code-of-ethics" },
+];
+
 const googleBusinessLink =
   "https://www.google.com/maps/place/matthew-web/@44.835119,-69.805476,12z/data=!3m1!4b1!4m6!3m5!1s0xafa28749f39516d3:0xa868970605ad7855!8m2!3d44.835119!4d-69.805476!16s%2Fg%2F11ytxf9y2w?entry=ttu&g_ep=EgoyMDI2MDQyOS4wIKXMDSoASAFQAw%3D%3D";
 
@@ -23,19 +37,17 @@ export default function SiteFooter() {
 
           <p>
             If you're searching for an affordable and reliable website designer
-            near Madison, than look no further. At Matthew, we specialize in
+            near Madison, then look no further. At Matthew, we specialize in
             creating professional, functional, and affordable websites for small
             businesses.
           </p>
 
           <p>
-            Whether you're across town or across the country, our team of
-            experts will help you get your business online with a cost-friendly
-            website that is visually appealing, user-friendly, and optimized for
-            search engines. Contact us to request your FREE website demo.
+            Whether you're across town or across the country, matthew-web can
+            help you get your business online with a cost-friendly website that
+            is visually appealing, user-friendly, and built with search engines
+            and lead generation in mind.
           </p>
-
-          <Link href="/privacy-policy">Privacy Policy</Link>
 
           <div className="mw-social-row">
             <a
@@ -77,6 +89,8 @@ export default function SiteFooter() {
         </div>
 
         <div>
+          <h3>Contact</h3>
+
           <p className="mw-footer-contact">
             📍{" "}
             <a
@@ -100,13 +114,25 @@ export default function SiteFooter() {
 
           <p className="mw-footer-note">
             Client walk-ins are not accepted at this location. Please contact us
-            by phone, email, or website message.
+            by phone, email, mail, or website message.
           </p>
         </div>
       </div>
 
       <nav className="mw-footer-nav">
         {navLinks.map((link) => (
+          <Link key={link.href} href={link.href}>
+            {link.label}
+          </Link>
+        ))}
+
+        {serviceLinks.map((link) => (
+          <Link key={link.href} href={link.href}>
+            {link.label}
+          </Link>
+        ))}
+
+        {resourceLinks.map((link) => (
           <Link key={link.href} href={link.href}>
             {link.label}
           </Link>

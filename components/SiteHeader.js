@@ -55,24 +55,40 @@ export default function SiteHeader() {
         .mw-dropdown {
           position: relative;
           display: inline-flex;
-          align-items: center;
+          align-items: stretch;
         }
 
         .mw-dropdown-button {
+          appearance: none;
+          -webkit-appearance: none;
           border: 0;
           cursor: pointer;
           font-family: inherit;
+          border-radius: 0;
+          margin: 0;
+          background: #0f86a6;
+          color: #ff7300;
+        }
+
+        .mw-dropdown-button:hover {
+          background: #0b7897;
+          color: #ff7300;
+        }
+
+        .mw-dropdown-button.active {
+          background: #f57c00;
+          color: #ffffff;
         }
 
         .mw-dropdown-menu {
           position: absolute;
-          top: calc(100% + 8px);
+          top: 100%;
           left: 0;
           z-index: 9999;
-          min-width: 250px;
+          min-width: 260px;
           background: #ffffff;
           border: 1px solid rgba(0,0,0,0.12);
-          border-radius: 14px;
+          border-radius: 0 0 14px 14px;
           box-shadow: 0 18px 38px rgba(0,0,0,0.18);
           padding: 10px;
           display: none;
@@ -109,13 +125,14 @@ export default function SiteHeader() {
           .mw-dropdown-button {
             width: 100%;
             text-align: center;
+            justify-content: center;
           }
 
           .mw-dropdown-menu {
             position: static;
             width: 100%;
             min-width: 0;
-            margin-top: 8px;
+            margin-top: 0;
             box-shadow: none;
             border-radius: 12px;
           }
@@ -215,7 +232,7 @@ export default function SiteHeader() {
             }
             aria-expanded={openDropdown === "resources"}
           >
-            Resources ▾
+            Projects ▾
           </button>
 
           <div className="mw-dropdown-menu">
