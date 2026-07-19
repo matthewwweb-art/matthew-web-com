@@ -16,7 +16,9 @@ export default function sitemap() {
     "/pricing",
     "/contact-us",
     "/privacy-policy",
+    "/terms",
     "/code-of-ethics",
+    
 
     "/why-a-facebook-page-is-not-a-substitute-for-a-website",
     "/7-signs-you-need-a-new-website-for-your-business",
@@ -68,6 +70,7 @@ export default function sitemap() {
 
     if (
       route === "/privacy-policy" ||
+      route === "/terms" ||
       route === "/code-of-ethics" ||
       route === "/free-game-hub-project"
     ) {
