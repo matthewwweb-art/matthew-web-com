@@ -853,7 +853,7 @@ export default function PricingPage() {
         <div className="pricing-cta-overlay">
           <h2>GET YOUR FREE WEBSITE MOCKUP</h2>
           <p>
-            Interesting in seeing how your new website can look? Contact us
+            Interested in seeing how your new website can look? Contact us
             today to request your{" "}
             <strong>FREE no-obligation website mockup.</strong>
           </p>
