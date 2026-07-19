@@ -22,9 +22,11 @@ const serviceLinks = [
   { label: "Small Business Websites", href: "/small-business-websites" },
 ];
 
-const projectLinks = [
+const resourceLinks = [
   { label: "Free Game Hub Project", href: "/free-game-hub-project" },
   { label: "Code of Ethics", href: "/code-of-ethics" },
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Terms of Use", href: "/terms" },
 ];
 
 const logo =
@@ -45,7 +47,7 @@ export default function SiteHeader() {
   }
 
   const serviceActive = serviceLinks.some((link) => link.href === pathname);
-  const projectActive = projectLinks.some((link) => link.href === pathname);
+  const resourceActive = resourceLinks.some((link) => link.href === pathname);
 
   return (
     <header className="mw-header">
@@ -67,7 +69,7 @@ export default function SiteHeader() {
           top: calc(100% + 8px);
           left: 0;
           z-index: 9999;
-          min-width: 240px;
+          min-width: 250px;
           background: #ffffff;
           border: 1px solid rgba(0,0,0,0.12);
           border-radius: 14px;
@@ -162,11 +164,19 @@ export default function SiteHeader() {
           About Us
         </Link>
 
-        <div className={openDropdown === "services" ? "mw-dropdown open" : "mw-dropdown"}>
+        <div
+          className={
+            openDropdown === "services" ? "mw-dropdown open" : "mw-dropdown"
+          }
+        >
           <button
             type="button"
             onClick={() => toggleDropdown("services")}
-            className={serviceActive ? "mw-nav-link mw-dropdown-button active" : "mw-nav-link mw-dropdown-button"}
+            className={
+              serviceActive
+                ? "mw-nav-link mw-dropdown-button active"
+                : "mw-nav-link mw-dropdown-button"
+            }
             aria-expanded={openDropdown === "services"}
           >
             Services ▾
@@ -190,18 +200,26 @@ export default function SiteHeader() {
           </div>
         </div>
 
-        <div className={openDropdown === "projects" ? "mw-dropdown open" : "mw-dropdown"}>
+        <div
+          className={
+            openDropdown === "resources" ? "mw-dropdown open" : "mw-dropdown"
+          }
+        >
           <button
             type="button"
-            onClick={() => toggleDropdown("projects")}
-            className={projectActive ? "mw-nav-link mw-dropdown-button active" : "mw-nav-link mw-dropdown-button"}
-            aria-expanded={openDropdown === "projects"}
+            onClick={() => toggleDropdown("resources")}
+            className={
+              resourceActive
+                ? "mw-nav-link mw-dropdown-button active"
+                : "mw-nav-link mw-dropdown-button"
+            }
+            aria-expanded={openDropdown === "resources"}
           >
-            Projects ▾
+            Resources ▾
           </button>
 
           <div className="mw-dropdown-menu">
-            {projectLinks.map((link) => (
+            {resourceLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
