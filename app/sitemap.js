@@ -18,18 +18,6 @@ export default function sitemap() {
     "/privacy-policy",
     "/terms",
     "/code-of-ethics",
-    
-
-    "/why-a-facebook-page-is-not-a-substitute-for-a-website",
-    "/7-signs-you-need-a-new-website-for-your-business",
-    "/why-diy-site-builders-are-bad-for-small-businesses",
-    "/8-things-every-small-business-website-needs",
-    "/how-to-respond-to-online-reviews-good-and-bad",
-    "/why-reputation-management-and-online-reviews-are-important-in-business",
-    "/7-reasons-why-small-business-websites-are-vital",
-    "/website-traffic-stats-explained",
-    "/8-marketing-mistakes-small-businesses-make",
-    "/how-often-should-you-redesign-your-website",
 
     "/why-custom-coded-websites-beat-diy-website-builders",
     "/how-much-should-a-small-business-website-cost-in-2026",
