@@ -2099,8 +2099,8 @@ export default function SiteHeader() {
             /* PHONE ONLY:
                moves MW emblem down and right
                without changing laptop or tablet */
-            left: 4px;
-            transform: translateY(2px);
+            left: 1px;
+            transform: translateY(-1px);
           }
 
           .mwx-energy.orange {
