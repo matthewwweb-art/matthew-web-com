@@ -1,5 +1,7 @@
 export const metadata = {
-  title: "Mission Control | Matthew Web",
+  title: {
+    absolute: "Mission Control | Matthew Web",
+  },
   description: "Private Matthew Web administration system.",
   robots: {
     index: false,
