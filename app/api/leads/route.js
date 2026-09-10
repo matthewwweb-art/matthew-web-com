@@ -3,6 +3,10 @@ import "server-only";
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
+import {
+  rateLimitRequest,
+  getRateLimitHeaders,
+} from "@/lib/rateLimit";
 
 export const dynamic = "force-dynamic";
 
@@ -22,11 +26,19 @@ const LIMITS = {
   recaptchaToken: 4096,
 };
 
+/*
+  Public contact form:
+  Maximum 5 accepted request attempts
+  per client address every 15 minutes.
+*/
+const CONTACT_RATE_LIMIT = 5;
+const CONTACT_RATE_WINDOW_SECONDS = 15 * 60;
+
 /* ============================================================
    RESPONSE HELPERS
 ============================================================ */
 
-function jsonError(message, status) {
+function jsonError(message, status, headers = {}) {
   return NextResponse.json(
     {
       ok: false,
@@ -34,6 +46,7 @@ function jsonError(message, status) {
     },
     {
       status,
+      headers,
     }
   );
 }
@@ -119,11 +132,15 @@ export async function POST(request) {
        ENVIRONMENT CONFIGURATION
     --------------------------------------------------------- */
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseUrl =
+      process.env.NEXT_PUBLIC_SUPABASE_URL;
+
     const supabaseServiceRoleKey =
       process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    const resendApiKey = process.env.RESEND_API_KEY;
+    const resendApiKey =
+      process.env.RESEND_API_KEY;
+
     const recaptchaSecretKey =
       process.env.RECAPTCHA_SECRET_KEY;
 
@@ -154,6 +171,32 @@ export async function POST(request) {
     }
 
     /* --------------------------------------------------------
+       RATE LIMIT
+
+       This happens before reCAPTCHA so abusive traffic
+       does not repeatedly consume reCAPTCHA, database,
+       or email resources.
+    --------------------------------------------------------- */
+
+    const rateLimit = await rateLimitRequest(
+      request,
+      {
+        namespace: "contact-form",
+        limit: CONTACT_RATE_LIMIT,
+        windowSeconds:
+          CONTACT_RATE_WINDOW_SECONDS,
+      }
+    );
+
+    if (!rateLimit.allowed) {
+      return jsonError(
+        "Too many contact requests. Please wait a few minutes and try again.",
+        429,
+        getRateLimitHeaders(rateLimit)
+      );
+    }
+
+    /* --------------------------------------------------------
        CONTENT TYPE
     --------------------------------------------------------- */
 
@@ -179,7 +222,8 @@ export async function POST(request) {
       request.headers.get("content-length");
 
     if (contentLengthHeader) {
-      const contentLength = Number(contentLengthHeader);
+      const contentLength =
+        Number(contentLengthHeader);
 
       if (
         Number.isFinite(contentLength) &&
@@ -201,7 +245,10 @@ export async function POST(request) {
     try {
       rawBody = await request.text();
     } catch (error) {
-      console.error("Unable to read lead request body:", error);
+      console.error(
+        "Unable to read lead request body:",
+        error
+      );
 
       return jsonError(
         "Unable to read request body.",
@@ -209,9 +256,8 @@ export async function POST(request) {
       );
     }
 
-    const bodyBytes = new TextEncoder().encode(
-      rawBody
-    ).length;
+    const bodyBytes =
+      new TextEncoder().encode(rawBody).length;
 
     if (bodyBytes > MAX_BODY_BYTES) {
       return jsonError(
@@ -284,22 +330,27 @@ export async function POST(request) {
        NORMALIZE INPUTS
     --------------------------------------------------------- */
 
-    const name = cleanSingleLine(body.name);
-    const email = cleanSingleLine(body.email);
-    const phone = cleanSingleLine(body.phone);
-    const business_name = cleanSingleLine(
-      body.business_name
-    );
+    const name =
+      cleanSingleLine(body.name);
 
-    const message = cleanString(body.message);
+    const email =
+      cleanSingleLine(body.email);
+
+    const phone =
+      cleanSingleLine(body.phone);
+
+    const business_name =
+      cleanSingleLine(body.business_name);
+
+    const message =
+      cleanString(body.message);
 
     const page_source =
       cleanSingleLine(body.page_source) ||
       "Website Form";
 
-    const recaptchaToken = cleanString(
-      body.recaptchaToken
-    );
+    const recaptchaToken =
+      cleanString(body.recaptchaToken);
 
     /* --------------------------------------------------------
        REQUIRED FIELDS
@@ -359,7 +410,10 @@ export async function POST(request) {
       );
     }
 
-    if (message.length > LIMITS.message) {
+    if (
+      message.length >
+      LIMITS.message
+    ) {
       return jsonError(
         "Message is too long.",
         400
@@ -404,10 +458,11 @@ export async function POST(request) {
     let recaptchaValid = false;
 
     try {
-      recaptchaValid = await verifyRecaptcha(
-        recaptchaToken,
-        recaptchaSecretKey
-      );
+      recaptchaValid =
+        await verifyRecaptcha(
+          recaptchaToken,
+          recaptchaSecretKey
+        );
     } catch (error) {
       console.error(
         "reCAPTCHA verification service error:",
@@ -431,18 +486,20 @@ export async function POST(request) {
        SERVER CLIENTS
     --------------------------------------------------------- */
 
-    const supabase = createClient(
-      supabaseUrl,
-      supabaseServiceRoleKey,
-      {
-        auth: {
-          persistSession: false,
-          autoRefreshToken: false,
-        },
-      }
-    );
+    const supabase =
+      createClient(
+        supabaseUrl,
+        supabaseServiceRoleKey,
+        {
+          auth: {
+            persistSession: false,
+            autoRefreshToken: false,
+          },
+        }
+      );
 
-    const resend = new Resend(resendApiKey);
+    const resend =
+      new Resend(resendApiKey);
 
     /* --------------------------------------------------------
        SAVE LEAD
@@ -483,9 +540,14 @@ export async function POST(request) {
        SAFE EMAIL VALUES
     --------------------------------------------------------- */
 
-    const safeName = escapeHtml(name);
-    const safeEmail = escapeHtml(email);
-    const safePhone = escapeHtml(phone);
+    const safeName =
+      escapeHtml(name);
+
+    const safeEmail =
+      escapeHtml(email);
+
+    const safePhone =
+      escapeHtml(phone);
 
     const safeBusinessName =
       escapeHtml(business_name);
@@ -493,9 +555,10 @@ export async function POST(request) {
     const safePageSource =
       escapeHtml(page_source);
 
-    const safeMessage = message
-      ? escapeHtmlWithBreaks(message)
-      : "No message included.";
+    const safeMessage =
+      message
+        ? escapeHtmlWithBreaks(message)
+        : "No message included.";
 
     /* --------------------------------------------------------
        ADMIN EMAIL
@@ -576,7 +639,7 @@ export async function POST(request) {
     `;
 
     /* --------------------------------------------------------
-       SEND ADMIN EMAIL
+       SEND EMAILS
     --------------------------------------------------------- */
 
     let adminEmailSent = false;
@@ -588,7 +651,8 @@ export async function POST(request) {
         from: fromEmail,
         to: adminEmail,
         replyTo: email,
-        subject: `New Website Lead from ${name}`,
+        subject:
+          `New Website Lead from ${name}`,
         html: adminEmailHtml,
       });
 
@@ -599,10 +663,6 @@ export async function POST(request) {
         error
       );
     }
-
-    /* --------------------------------------------------------
-       SEND CUSTOMER EMAIL
-    --------------------------------------------------------- */
 
     try {
       await resend.emails.send({
@@ -639,6 +699,9 @@ export async function POST(request) {
       },
       {
         status: 200,
+        headers: {
+          "Cache-Control": "no-store",
+        },
       }
     );
   } catch (error) {
