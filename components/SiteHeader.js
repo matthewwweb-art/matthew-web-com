@@ -2099,7 +2099,7 @@ export default function SiteHeader() {
             /* PHONE ONLY:
                moves MW emblem down and right
                without changing laptop or tablet */
-            left: 0px;
+            left: -0.5px;
             transform: translateY(-1px);
           }
 
