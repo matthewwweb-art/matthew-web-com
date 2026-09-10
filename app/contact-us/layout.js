@@ -1,30 +1,49 @@
+import BreadcrumbSchema from "@/components/BreadcrumbSchema";
+
 export const metadata = {
-  title: "Contact matthew-web | Get a Free Website Mockup",
+  title: "Contact Matthew Web",
+
   description:
-    "Contact matthew-web to request a free website mockup, affordable website design, custom software coding, SEO help, lead forms, CRM dashboards, or AI business tools.",
-  keywords: [
-    "contact matthew-web",
-    "free website mockup",
-    "hire web designer",
-    "website designer Maine",
-    "custom software developer",
-    "small business website help",
-    "custom coding services",
-    "SEO website help",
-    "business dashboard developer",
-  ],
+    "Contact Matthew Web about website design, custom software, small-business technology, project questions, development work, or ongoing support.",
+
   alternates: {
     canonical: "https://matthew-web.com/contact-us",
   },
+
   openGraph: {
-    title: "Contact matthew-web | Free Website Mockup",
+    title: "Contact Matthew Web",
     description:
-      "Request a free website mockup or ask about website design, SEO, custom code, CRM dashboards, and AI business tools.",
+      "Contact Matthew Web about websites, custom software, business technology, development projects, or support.",
     url: "https://matthew-web.com/contact-us",
+    siteName: "Matthew Web",
+    locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/apple-touch-icon.png",
+        alt: "Matthew Web",
+      },
+    ],
   },
 };
 
 export default function ContactUsLayout({ children }) {
-  return children;
+  return (
+    <>
+      <BreadcrumbSchema
+        items={[
+          {
+            name: "Home",
+            url: "https://matthew-web.com",
+          },
+          {
+            name: "Contact Us",
+            url: "https://matthew-web.com/contact-us",
+          },
+        ]}
+      />
+
+      {children}
+    </>
+  );
 }

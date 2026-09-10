@@ -1,16 +1,32 @@
+/* ============================================================
+   MATTHEW WEB — SEARCH PAGE METADATA
+
+   The search page is useful for visitors,
+   but should not appear as a Google/Bing search result.
+
+   We allow crawlers to reach it so they can read:
+   noindex, follow
+============================================================ */
+
 export const metadata = {
-  title: "Search matthew-web",
+  title: "Search",
+
   description:
-    "Search matthew-web pages, services, blog articles, pricing, examples, and contact information.",
+    "Search Matthew Web pages, services, projects, and educational articles.",
+
   robots: {
     index: false,
     follow: true,
-  },
-  alternates: {
-    canonical: "https://matthew-web.com/search",
+
+    googleBot: {
+      index: false,
+      follow: true,
+    },
   },
 };
 
-export default function SearchLayout({ children }) {
+export default function SearchLayout({
+  children,
+}) {
   return children;
 }

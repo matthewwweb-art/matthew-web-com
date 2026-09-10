@@ -1,605 +1,3680 @@
 import Link from "next/link";
+
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  Building2,
+  CheckCircle2,
+  ClipboardList,
+  Code2,
+  FileText,
+  Globe2,
+  Hammer,
+  MapPin,
+  MonitorSmartphone,
+  MousePointerClick,
+  SearchCheck,
+  ShieldCheck,
+  Smartphone,
+  Sparkles,
+  Store,
+  Users,
+  Wrench,
+  Zap,
+} from "lucide-react";
+
 import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
+
+/* ============================================================
+   METADATA
+============================================================ */
 
 export const metadata = {
-  title: "Small Business Websites | matthew-web",
+  title:
+    "Small Business Websites in Maine & Across the U.S. | Matthew Web",
+
   description:
-    "Small business websites built for leads, trust, SEO, mobile users, and growth. matthew-web builds affordable websites, service pages, contact forms, quote forms, CRM dashboards, and custom-coded business tools.",
+    "Matthew Web builds modern small business websites for Maine businesses and companies across the United States, including new websites, redesigns, mobile-friendly layouts, lead forms, SEO-ready structure, domains, analytics, and custom functionality.",
+
   alternates: {
-    canonical: "https://matthew-web.com/small-business-websites",
+    canonical:
+      "https://matthew-web.com/small-business-websites",
   },
+
   openGraph: {
-    title: "Small Business Websites | matthew-web",
+    title:
+      "Small Business Websites | Matthew Web",
+
     description:
-      "matthew-web builds affordable small business websites with SEO-ready pages, lead forms, mobile design, service pages, CRM dashboards, and custom-coded growth options.",
-    url: "https://matthew-web.com/small-business-websites",
-    siteName: "matthew-web",
-    type: "website",
+      "Modern, mobile-friendly small business websites built around clear services, customer trust, lead generation, search readiness, and future growth.",
+
+    url:
+      "https://matthew-web.com/small-business-websites",
+
+    siteName:
+      "Matthew Web",
+
+    type:
+      "website",
   },
 };
 
+/* ============================================================
+   WEBSITE SITUATIONS
+============================================================ */
+
+const websiteSituations = [
+  {
+    icon: Globe2,
+    title: "No Website",
+    text:
+      "Your business relies on Facebook, directories, word-of-mouth, or nothing at all for its main online presence.",
+    solution:
+      "Build a professional website from the ground up.",
+    accent:
+      "blue",
+  },
+
+  {
+    icon: Wrench,
+    title: "Outdated Website",
+    text:
+      "The site looks old, contains outdated information, or no longer reflects what the business has become.",
+    solution:
+      "Modern redesign and content cleanup.",
+    accent:
+      "orange",
+  },
+
+  {
+    icon: Smartphone,
+    title: "Poor Mobile Experience",
+    text:
+      "Customers have trouble reading, navigating, calling, or filling out forms when using their phone.",
+    solution:
+      "Responsive mobile-friendly rebuild.",
+    accent:
+      "blue",
+  },
+
+  {
+    icon: MousePointerClick,
+    title: "No Clear Customer Path",
+    text:
+      "Visitors can see the business but cannot easily figure out how to call, request a quote, book, or take the next step.",
+    solution:
+      "Stronger calls-to-action and lead flow.",
+    accent:
+      "orange",
+  },
+
+  {
+    icon: SearchCheck,
+    title: "Weak Search Foundation",
+    text:
+      "The website lacks clear service pages, useful metadata, internal links, sitemap structure, or indexing preparation.",
+    solution:
+      "SEO-ready structure and indexing support.",
+    accent:
+      "blue",
+  },
+
+  {
+    icon: FileText,
+    title: "Incomplete Information",
+    text:
+      "Important services, service areas, trust information, FAQs, examples, pricing guidance, or contact details are missing.",
+    solution:
+      "Complete the information customers actually need.",
+    accent:
+      "orange",
+  },
+];
+
+/* ============================================================
+   WEBSITE FOUNDATION
+============================================================ */
+
+const foundations = [
+  {
+    icon: Building2,
+    title: "Clear Business Identity",
+    text:
+      "Visitors should quickly understand who the business is, what it provides, where it operates, and who it serves.",
+  },
+
+  {
+    icon: ClipboardList,
+    title: "Dedicated Service Pages",
+    text:
+      "Major services deserve enough space to explain the work, customer need, process, and next step.",
+  },
+
+  {
+    icon: Smartphone,
+    title: "Mobile-Friendly Design",
+    text:
+      "Customers should be able to read, navigate, call, and submit forms comfortably from a phone.",
+  },
+
+  {
+    icon: MousePointerClick,
+    title: "Strong Contact Paths",
+    text:
+      "Calls, forms, quote requests, booking links, and other customer actions should be easy to find.",
+  },
+
+  {
+    icon: ShieldCheck,
+    title: "Trust Information",
+    text:
+      "About information, examples, testimonials, policies, FAQs, and accurate business details help reduce uncertainty.",
+  },
+
+  {
+    icon: SearchCheck,
+    title: "Search-Ready Structure",
+    text:
+      "Metadata, internal links, page organization, sitemap preparation, and useful content help search engines understand the site.",
+  },
+];
+
+/* ============================================================
+   BUSINESS TYPES
+============================================================ */
+
+const businessTypes = [
+  {
+    icon: Hammer,
+    label: "Contractors",
+  },
+  {
+    icon: Building2,
+    label: "Property Services",
+  },
+  {
+    icon: Store,
+    label: "Local Shops",
+  },
+  {
+    icon: BriefcaseBusiness,
+    label: "Consultants",
+  },
+  {
+    icon: Users,
+    label: "Small Agencies",
+  },
+  {
+    icon: Globe2,
+    label: "Local Service Businesses",
+  },
+];
+
+/* ============================================================
+   GROWTH OPTIONS
+============================================================ */
+
+const growthOptions = [
+  {
+    title: "More Service Pages",
+    text:
+      "Expand the site as the business adds services, locations, customer groups, or new offerings.",
+  },
+
+  {
+    title: "Blog & Educational Content",
+    text:
+      "Answer real customer questions and build more useful information around the business.",
+  },
+
+  {
+    title: "Advanced Lead Forms",
+    text:
+      "Collect project details, service needs, timelines, locations, and other useful customer information.",
+  },
+
+  {
+    title: "CRM-Style Dashboards",
+    text:
+      "Move leads from the public website into a private system for tracking status, notes, and follow-ups.",
+  },
+
+  {
+    title: "Payments & Booking",
+    text:
+      "Add appropriate payment links, booking requests, consultations, or other customer actions.",
+  },
+
+  {
+    title: "Custom Business Software",
+    text:
+      "Grow beyond public website pages into dashboards, databases, workflows, integrations, or automation.",
+  },
+];
+
+/* ============================================================
+   PROCESS
+============================================================ */
+
+const processSteps = [
+  {
+    number: "01",
+    title: "Understand the Business",
+    text:
+      "We start with the services, customers, location, current website situation, and what the owner actually needs the website to accomplish.",
+  },
+
+  {
+    number: "02",
+    title: "Identify the Important Pages",
+    text:
+      "We determine which pages the business needs instead of automatically forcing every customer into the same template.",
+  },
+
+  {
+    number: "03",
+    title: "Build Around the Customer",
+    text:
+      "The site is structured so visitors can understand the business, find the right service, build trust, and take the next step.",
+  },
+
+  {
+    number: "04",
+    title: "Add Lead Capture",
+    text:
+      "Phone links, contact forms, quote requests, booking actions, or other conversion paths are added where useful.",
+  },
+
+  {
+    number: "05",
+    title: "Prepare for Search",
+    text:
+      "Metadata, page structure, internal links, sitemap preparation, and indexing basics are handled as part of the technical foundation.",
+  },
+
+  {
+    number: "06",
+    title: "Launch & Grow",
+    text:
+      "After launch, the website can continue growing with new pages, maintenance, analytics, SEO work, and custom functionality.",
+  },
+];
+
+/* ============================================================
+   FAQ
+============================================================ */
+
+const faqs = [
+  {
+    q:
+      "Does every small business need a huge website?",
+
+    a:
+      "No. The right website depends on the business. Some businesses need a focused professional website with only a few strong pages. Others benefit from separate service pages, content, examples, forms, and more advanced functionality.",
+  },
+
+  {
+    q:
+      "What if my business has no website at all?",
+
+    a:
+      "That is fine. Matthew Web can build a first website from the ground up using your business information, services, contact details, customer needs, and goals.",
+  },
+
+  {
+    q:
+      "Can you replace an outdated website?",
+
+    a:
+      "Yes. An existing website can be redesigned or rebuilt with updated information, clearer structure, improved mobile usability, stronger customer actions, and a more modern technical foundation.",
+  },
+
+  {
+    q:
+      "Is this service only for Maine businesses?",
+
+    a:
+      "No. Maine small businesses are an important Matthew Web focus, but website projects can also be completed remotely for businesses throughout the United States.",
+  },
+
+  {
+    q:
+      "Can you use my existing domain?",
+
+    a:
+      "Usually, yes. If you still own and control the domain, it can generally be connected to the new website when the project is ready to launch.",
+  },
+
+  {
+    q:
+      "Can the website help collect leads?",
+
+    a:
+      "Yes. Depending on the business, the website can include phone actions, contact forms, quote requests, booking links, service inquiries, or more advanced lead systems.",
+  },
+
+  {
+    q:
+      "Can my website grow later?",
+
+    a:
+      "Yes. New service pages, blog content, examples, forms, payment functionality, dashboards, booking systems, and custom software can be added as the business grows.",
+  },
+
+  {
+    q:
+      "Will a new website automatically rank first in Google?",
+
+    a:
+      "No. A website can be built with a strong technical and content foundation, but search rankings depend on competition, relevance, location, content quality, authority, reviews, links, time, and search-engine decisions.",
+  },
+];
+
+/* ============================================================
+   STRUCTURED DATA
+============================================================ */
+
+const serviceSchema = {
+  "@context":
+    "https://schema.org",
+
+  "@type":
+    "Service",
+
+  name:
+    "Small Business Website Design",
+
+  provider: {
+    "@type":
+      "Organization",
+
+    name:
+      "Matthew Web",
+
+    url:
+      "https://matthew-web.com",
+  },
+
+  areaServed: {
+    "@type":
+      "Country",
+
+    name:
+      "United States",
+  },
+
+  serviceType:
+    "Small business website design and development",
+
+  url:
+    "https://matthew-web.com/small-business-websites",
+};
+
+const faqSchema = {
+  "@context":
+    "https://schema.org",
+
+  "@type":
+    "FAQPage",
+
+  mainEntity:
+    faqs.map((item) => ({
+      "@type":
+        "Question",
+
+      name:
+        item.q,
+
+      acceptedAnswer: {
+        "@type":
+          "Answer",
+
+        text:
+          item.a,
+      },
+    })),
+};
+
+/* ============================================================
+   PAGE
+============================================================ */
+
 export default function SmallBusinessWebsitesPage() {
   return (
-    <main>
+    <main className="mwsb-page">
+      <SiteHeader />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(
+              serviceSchema
+            ),
+        }}
+      />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(
+              faqSchema
+            ),
+        }}
+      />
+
       <style>{`
-        .service-page {
-          background: #ffffff;
-          color: #1f2933;
-          font-family: Arial, Helvetica, sans-serif;
+        :root {
+          --mwsb-black:
+            #020304;
+
+          --mwsb-panel:
+            #091117;
+
+          --mwsb-muted:
+            #aebbc5;
+
+          --mwsb-blue:
+            #08b9f4;
+
+          --mwsb-blue-light:
+            #38d7ff;
+
+          --mwsb-orange:
+            #ff7900;
+
+          --mwsb-orange-light:
+            #ffab31;
+
+          --mwsb-border:
+            rgba(
+              255,
+              255,
+              255,
+              0.09
+            );
         }
 
-        .service-hero {
-          background: #f57c00;
-          color: #ffffff;
-          text-align: center;
-          padding: 76px 22px;
-        }
-
-        .service-hero h1 {
-          max-width: 1100px;
-          margin: 0 auto 18px;
-          font-size: clamp(42px, 6vw, 72px);
-          line-height: 1.05;
-          font-weight: 900;
-        }
-
-        .service-hero p {
-          max-width: 940px;
-          margin: 0 auto;
-          font-size: clamp(20px, 3vw, 28px);
-          line-height: 1.35;
-          font-weight: 600;
-        }
-
-        .service-wrap {
-          max-width: 1080px;
-          margin: 0 auto;
-          padding: 70px 22px;
-        }
-
-        .intro-card,
-        .content-card,
-        .faq-card {
-          background: #f8fafc;
-          border: 1px solid #e5e7eb;
-          border-radius: 24px;
-          padding: 34px;
-          margin-bottom: 30px;
-          box-shadow: 0 10px 28px rgba(0,0,0,0.06);
-        }
-
-        .intro-card h2,
-        .content-card h2,
-        .faq-card h2 {
-          color: #f57c00;
-          font-size: clamp(30px, 4vw, 46px);
-          line-height: 1.12;
-          margin: 0 0 18px;
-        }
-
-        .content-card h3,
-        .faq-card h3 {
-          color: #0f83a6;
-          font-size: 25px;
-          margin: 28px 0 10px;
-        }
-
-        .intro-card p,
-        .content-card p,
-        .faq-card p {
-          color: #374151;
-          font-size: 20px;
-          line-height: 1.7;
-          margin: 0 0 20px;
-        }
-
-        .feature-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 18px;
-          margin: 28px 0;
-        }
-
-        .feature-card {
-          background: #ffffff;
-          border: 1px solid #e5e7eb;
-          border-radius: 18px;
-          padding: 22px;
-        }
-
-        .feature-card h3 {
-          margin: 0 0 10px;
-          color: #f57c00;
-          font-size: 24px;
-        }
-
-        .feature-card p {
+        body {
           margin: 0;
-          font-size: 18px;
-          line-height: 1.55;
+
+          background:
+            var(--mwsb-black);
         }
 
-        .process-list {
-          list-style: none;
-          padding: 0;
-          margin: 26px 0 0;
-          display: grid;
-          gap: 16px;
+        .mwsb-page {
+          min-height:
+            100vh;
+
+          overflow:
+            hidden;
+
+          color:
+            white;
+
+          background:
+            var(--mwsb-black);
         }
 
-        .process-list li {
-          background: #ffffff;
-          border-left: 6px solid #f57c00;
-          border-radius: 14px;
-          padding: 18px;
-          color: #374151;
-          font-size: 19px;
-          line-height: 1.55;
+        .mwsb-container {
+          width:
+            100%;
+
+          max-width:
+            1380px;
+
+          margin:
+            0 auto;
         }
 
-        .process-list strong {
-          color: #111827;
+        .mwsb-section {
+          position:
+            relative;
+
+          padding:
+            100px
+            clamp(
+              20px,
+              5vw,
+              80px
+            );
         }
 
-        .highlight-box {
-          background: #0f83a6;
-          color: #ffffff;
-          border-radius: 22px;
-          padding: 30px;
-          margin: 34px 0;
+        .mwsb-blue {
+          color:
+            var(
+              --mwsb-blue-light
+            );
         }
 
-        .highlight-box p {
-          color: #ffffff;
-          margin: 0;
-          font-size: clamp(22px, 3vw, 32px);
-          line-height: 1.3;
-          font-weight: 900;
+        .mwsb-orange {
+          color:
+            var(
+              --mwsb-orange
+            );
         }
 
-        .business-list {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 14px;
-          margin: 28px 0;
+        /* =====================================================
+           COMMON
+        ===================================================== */
+
+        .mwsb-kicker {
+          display:
+            inline-flex;
+
+          align-items:
+            center;
+
+          gap:
+            8px;
+
+          margin-bottom:
+            14px;
+
+          color:
+            var(
+              --mwsb-blue-light
+            );
+
+          font-size:
+            11px;
+
+          font-weight:
+            900;
+
+          letter-spacing:
+            0.16em;
+
+          text-transform:
+            uppercase;
         }
 
-        .business-list span {
-          background: #ffffff;
-          border: 1px solid #e5e7eb;
-          border-radius: 14px;
-          padding: 15px;
-          color: #374151;
-          font-size: 17px;
-          font-weight: 800;
-          text-align: center;
+        .mwsb-kicker.orange {
+          color:
+            var(
+              --mwsb-orange-light
+            );
         }
 
-        .cta-box {
-          background: #111827;
-          color: #ffffff;
-          border-radius: 24px;
-          padding: 42px;
-          text-align: center;
-          margin-top: 40px;
+        .mwsb-kicker svg {
+          width:
+            18px;
+
+          height:
+            18px;
         }
 
-        .cta-box h2 {
-          color: #ffffff;
-          margin: 0 0 16px;
-          font-size: clamp(32px, 5vw, 52px);
+        .mwsb-heading {
+          max-width:
+            900px;
+
+          margin-bottom:
+            48px;
         }
 
-        .cta-box p {
-          color: #e5e7eb;
-          max-width: 780px;
-          margin: 0 auto 28px;
-          font-size: 21px;
-          line-height: 1.5;
+        .mwsb-heading.center {
+          margin-left:
+            auto;
+
+          margin-right:
+            auto;
+
+          text-align:
+            center;
         }
 
-        .cta-box a {
-          display: inline-block;
-          background: #f57c00;
-          color: #ffffff;
-          text-decoration: none;
-          font-size: 20px;
-          font-weight: 900;
-          padding: 16px 30px;
-          border-radius: 10px;
+        .mwsb-heading h2 {
+          margin:
+            0 0 18px;
+
+          font-size:
+            clamp(
+              38px,
+              4.7vw,
+              68px
+            );
+
+          line-height:
+            1.02;
+
+          letter-spacing:
+            -0.05em;
         }
 
-        .cta-box a:hover {
-          background: #d96d00;
+        .mwsb-heading p {
+          max-width:
+            800px;
+
+          margin:
+            0;
+
+          color:
+            var(
+              --mwsb-muted
+            );
+
+          font-size:
+            clamp(
+              15px,
+              1.35vw,
+              19px
+            );
+
+          line-height:
+            1.75;
         }
 
-        .link-row {
-          margin-top: 34px;
-          display: flex;
-          gap: 14px;
-          flex-wrap: wrap;
-          justify-content: center;
+        .mwsb-heading.center p {
+          margin-left:
+            auto;
+
+          margin-right:
+            auto;
         }
 
-        .link-row a {
-          color: #0f83a6;
-          font-size: 18px;
-          font-weight: 800;
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        .mwsb-button-row {
+          display:
+            flex;
+
+          flex-wrap:
+            wrap;
+
+          gap:
+            13px;
+
+          margin-top:
+            29px;
         }
 
-        @media (max-width: 850px) {
-          .business-list {
-            grid-template-columns: repeat(2, 1fr);
+        .mwsb-btn {
+          min-height:
+            53px;
+
+          display:
+            inline-flex;
+
+          align-items:
+            center;
+
+          justify-content:
+            center;
+
+          gap:
+            9px;
+
+          padding:
+            0 22px;
+
+          border-radius:
+            9px;
+
+          color:
+            white;
+
+          text-decoration:
+            none;
+
+          font-size:
+            14px;
+
+          font-weight:
+            850;
+
+          transition:
+            transform
+              0.2s ease,
+            box-shadow
+              0.2s ease,
+            border-color
+              0.2s ease;
+        }
+
+        .mwsb-btn svg {
+          width:
+            18px;
+
+          height:
+            18px;
+        }
+
+        .mwsb-btn-blue {
+          border:
+            1px solid
+            rgba(
+              56,
+              215,
+              255,
+              0.55
+            );
+
+          background:
+            linear-gradient(
+              180deg,
+              #0ab6ed,
+              #0789b6
+            );
+
+          box-shadow:
+            0 0 16px
+            rgba(
+              8,
+              185,
+              244,
+              0.28
+            );
+        }
+
+        .mwsb-btn-orange {
+          border:
+            1px solid
+            rgba(
+              255,
+              176,
+              49,
+              0.6
+            );
+
+          background:
+            linear-gradient(
+              180deg,
+              #ff9519,
+              #f16600
+            );
+
+          box-shadow:
+            0 0 16px
+            rgba(
+              255,
+              121,
+              0,
+              0.27
+            );
+        }
+
+        .mwsb-btn-dark {
+          border:
+            1px solid
+            rgba(
+              255,
+              255,
+              255,
+              0.13
+            );
+
+          background:
+            rgba(
+              255,
+              255,
+              255,
+              0.035
+            );
+        }
+
+        .mwsb-btn:hover {
+          transform:
+            translateY(
+              -2px
+            );
+        }
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .mwsb-hero {
+          position:
+            relative;
+
+          min-height:
+            680px;
+
+          display:
+            flex;
+
+          align-items:
+            center;
+
+          overflow:
+            hidden;
+
+          border-bottom:
+            1px solid
+            rgba(
+              8,
+              185,
+              244,
+              0.16
+            );
+
+          background:
+            radial-gradient(
+              ellipse at
+              18% 42%,
+              rgba(
+                8,
+                185,
+                244,
+                0.16
+              ),
+              transparent
+              36%
+            ),
+            radial-gradient(
+              ellipse at
+              82% 48%,
+              rgba(
+                255,
+                121,
+                0,
+                0.08
+              ),
+              transparent
+              32%
+            ),
+            linear-gradient(
+              180deg,
+              #020304,
+              #03080c,
+              #020304
+            );
+        }
+
+        .mwsb-hero::before {
+          content:
+            "";
+
+          position:
+            absolute;
+
+          inset:
+            0;
+
+          opacity:
+            0.27;
+
+          pointer-events:
+            none;
+
+          background-image:
+            linear-gradient(
+              rgba(
+                8,
+                185,
+                244,
+                0.055
+              )
+              1px,
+              transparent
+              1px
+            ),
+            linear-gradient(
+              90deg,
+              rgba(
+                8,
+                185,
+                244,
+                0.055
+              )
+              1px,
+              transparent
+              1px
+            );
+
+          background-size:
+            76px 76px;
+
+          mask-image:
+            radial-gradient(
+              ellipse at center,
+              black,
+              transparent
+              80%
+            );
+        }
+
+        .mwsb-hero-inner {
+          position:
+            relative;
+
+          z-index:
+            3;
+
+          display:
+            grid;
+
+          grid-template-columns:
+            minmax(
+              0,
+              1.06fr
+            )
+            minmax(
+              420px,
+              0.94fr
+            );
+
+          align-items:
+            center;
+
+          gap:
+            clamp(
+              45px,
+              6vw,
+              95px
+            );
+
+          width:
+            100%;
+
+          max-width:
+            1380px;
+
+          margin:
+            0 auto;
+
+          padding:
+            95px
+            clamp(
+              20px,
+              5vw,
+              80px
+            );
+        }
+
+        .mwsb-hero-badge {
+          display:
+            inline-flex;
+
+          align-items:
+            center;
+
+          gap:
+            8px;
+
+          width:
+            fit-content;
+
+          margin-bottom:
+            21px;
+
+          padding:
+            8px 12px;
+
+          border:
+            1px solid
+            rgba(
+              8,
+              185,
+              244,
+              0.28
+            );
+
+          border-radius:
+            999px;
+
+          color:
+            #d9f8ff;
+
+          background:
+            rgba(
+              8,
+              185,
+              244,
+              0.055
+            );
+
+          font-size:
+            10px;
+
+          font-weight:
+            900;
+
+          letter-spacing:
+            0.14em;
+
+          text-transform:
+            uppercase;
+        }
+
+        .mwsb-hero-badge span {
+          width:
+            7px;
+
+          height:
+            7px;
+
+          border-radius:
+            50%;
+
+          background:
+            #35e07e;
+
+          box-shadow:
+            0 0 9px
+            rgba(
+              53,
+              224,
+              126,
+              0.8
+            );
+        }
+
+        .mwsb-hero h1 {
+          max-width:
+            900px;
+
+          margin:
+            0;
+
+          font-size:
+            clamp(
+              50px,
+              6vw,
+              91px
+            );
+
+          line-height:
+            0.97;
+
+          letter-spacing:
+            -0.06em;
+        }
+
+        .mwsb-hero h1 span {
+          display:
+            block;
+        }
+
+        .mwsb-hero-copy
+          > p {
+          max-width:
+            760px;
+
+          margin:
+            25px 0 0;
+
+          color:
+            #b8c6cf;
+
+          font-size:
+            clamp(
+              16px,
+              1.4vw,
+              20px
+            );
+
+          line-height:
+            1.72;
+        }
+
+        /* =====================================================
+           LOCAL BUSINESS VISUAL
+        ===================================================== */
+
+        .mwsb-business-stage {
+          position:
+            relative;
+
+          min-height:
+            470px;
+
+          display:
+            grid;
+
+          place-items:
+            center;
+        }
+
+        .mwsb-business-card {
+          position:
+            relative;
+
+          z-index:
+            3;
+
+          width:
+            min(
+              100%,
+              480px
+            );
+
+          padding:
+            25px;
+
+          border:
+            1px solid
+            rgba(
+              8,
+              185,
+              244,
+              0.31
+            );
+
+          border-radius:
+            20px;
+
+          background:
+            radial-gradient(
+              circle at
+              20% 15%,
+              rgba(
+                8,
+                185,
+                244,
+                0.13
+              ),
+              transparent
+              34%
+            ),
+            linear-gradient(
+              145deg,
+              #0c171e,
+              #04080b
+            );
+
+          box-shadow:
+            0 30px 70px
+            rgba(
+              0,
+              0,
+              0,
+              0.48
+            ),
+            0 0 30px
+            rgba(
+              8,
+              185,
+              244,
+              0.08
+            );
+        }
+
+        .mwsb-business-top {
+          display:
+            flex;
+
+          justify-content:
+            space-between;
+
+          align-items:
+            center;
+
+          margin-bottom:
+            20px;
+        }
+
+        .mwsb-business-logo {
+          display:
+            flex;
+
+          align-items:
+            center;
+
+          gap:
+            9px;
+
+          color:
+            white;
+
+          font-size:
+            12px;
+
+          font-weight:
+            900;
+        }
+
+        .mwsb-business-logo-icon {
+          width:
+            34px;
+
+          height:
+            34px;
+
+          display:
+            grid;
+
+          place-items:
+            center;
+
+          border:
+            1px solid
+            rgba(
+              255,
+              121,
+              0,
+              0.28
+            );
+
+          border-radius:
+            8px;
+
+          color:
+            var(
+              --mwsb-orange-light
+            );
+
+          background:
+            rgba(
+              255,
+              121,
+              0,
+              0.05
+            );
+        }
+
+        .mwsb-business-logo-icon
+          svg {
+          width:
+            18px;
+
+          height:
+            18px;
+        }
+
+        .mwsb-online-status {
+          display:
+            flex;
+
+          align-items:
+            center;
+
+          gap:
+            6px;
+
+          color:
+            #7f919b;
+
+          font-size:
+            8px;
+
+          font-weight:
+            900;
+
+          letter-spacing:
+            0.1em;
+        }
+
+        .mwsb-online-status::before {
+          content:
+            "";
+
+          width:
+            6px;
+
+          height:
+            6px;
+
+          border-radius:
+            50%;
+
+          background:
+            #35e07e;
+
+          box-shadow:
+            0 0 7px
+            rgba(
+              53,
+              224,
+              126,
+              0.8
+            );
+        }
+
+        .mwsb-demo-hero {
+          min-height:
+            125px;
+
+          padding:
+            20px;
+
+          border:
+            1px solid
+            rgba(
+              8,
+              185,
+              244,
+              0.18
+            );
+
+          border-radius:
+            10px;
+
+          background:
+            radial-gradient(
+              circle at
+              20% 50%,
+              rgba(
+                8,
+                185,
+                244,
+                0.24
+              ),
+              transparent
+              32%
+            ),
+            #081117;
+        }
+
+        .mwsb-demo-title {
+          width:
+            62%;
+
+          height:
+            15px;
+
+          border-radius:
+            3px;
+
+          background:
+            white;
+        }
+
+        .mwsb-demo-line {
+          width:
+            78%;
+
+          height:
+            7px;
+
+          margin-top:
+            12px;
+
+          border-radius:
+            3px;
+
+          background:
+            rgba(
+              255,
+              255,
+              255,
+              0.25
+            );
+        }
+
+        .mwsb-demo-line.short {
+          width:
+            53%;
+        }
+
+        .mwsb-demo-button {
+          width:
+            78px;
+
+          height:
+            23px;
+
+          margin-top:
+            15px;
+
+          border-radius:
+            4px;
+
+          background:
+            var(
+              --mwsb-orange
+            );
+        }
+
+        .mwsb-demo-grid {
+          display:
+            grid;
+
+          grid-template-columns:
+            repeat(
+              3,
+              1fr
+            );
+
+          gap:
+            9px;
+
+          margin-top:
+            11px;
+        }
+
+        .mwsb-demo-grid
+          div {
+          min-height:
+            75px;
+
+          border:
+            1px solid
+            rgba(
+              255,
+              255,
+              255,
+              0.07
+            );
+
+          border-radius:
+            7px;
+
+          background:
+            #0c171d;
+        }
+
+        .mwsb-floating-tag {
+          position:
+            absolute;
+
+          z-index:
+            5;
+
+          display:
+            inline-flex;
+
+          align-items:
+            center;
+
+          gap:
+            7px;
+
+          min-height:
+            35px;
+
+          padding:
+            0 10px;
+
+          border:
+            1px solid
+            rgba(
+              255,
+              255,
+              255,
+              0.1
+            );
+
+          border-radius:
+            7px;
+
+          color:
+            #dce7ec;
+
+          background:
+            rgba(
+              3,
+              8,
+              11,
+              0.92
+            );
+
+          font-size:
+            9px;
+
+          font-weight:
+            900;
+
+          letter-spacing:
+            0.08em;
+        }
+
+        .mwsb-floating-tag
+          svg {
+          width:
+            15px;
+
+          height:
+            15px;
+
+          color:
+            var(
+              --mwsb-blue-light
+            );
+        }
+
+        .mwsb-floating-tag.one {
+          left:
+            -1%;
+
+          top:
+            8%;
+        }
+
+        .mwsb-floating-tag.two {
+          right:
+            -1%;
+
+          top:
+            17%;
+        }
+
+        .mwsb-floating-tag.three {
+          left:
+            3%;
+
+          bottom:
+            8%;
+        }
+
+        .mwsb-floating-tag.two
+          svg {
+          color:
+            var(
+              --mwsb-orange-light
+            );
+        }
+
+        /* =====================================================
+           SITUATIONS
+        ===================================================== */
+
+        .mwsb-situations {
+          background:
+            linear-gradient(
+              180deg,
+              #020304,
+              #04090d,
+              #020304
+            );
+        }
+
+        .mwsb-situation-grid {
+          display:
+            grid;
+
+          grid-template-columns:
+            repeat(
+              3,
+              minmax(
+                0,
+                1fr
+              )
+            );
+
+          gap:
+            15px;
+        }
+
+        .mwsb-situation-card {
+          min-height:
+            295px;
+
+          padding:
+            25px;
+
+          border:
+            1px solid
+            var(
+              --mwsb-border
+            );
+
+          border-radius:
+            16px;
+
+          background:
+            linear-gradient(
+              145deg,
+              #0a1218,
+              #04080b
+            );
+
+          transition:
+            transform
+              0.2s ease,
+            border-color
+              0.2s ease;
+        }
+
+        .mwsb-situation-card:hover {
+          transform:
+            translateY(
+              -5px
+            );
+        }
+
+        .mwsb-situation-card.blue:hover {
+          border-color:
+            rgba(
+              8,
+              185,
+              244,
+              0.35
+            );
+        }
+
+        .mwsb-situation-card.orange:hover {
+          border-color:
+            rgba(
+              255,
+              121,
+              0,
+              0.35
+            );
+        }
+
+        .mwsb-situation-icon {
+          width:
+            53px;
+
+          height:
+            53px;
+
+          display:
+            grid;
+
+          place-items:
+            center;
+
+          margin-bottom:
+            19px;
+
+          border-radius:
+            13px;
+        }
+
+        .mwsb-situation-card.blue
+          .mwsb-situation-icon {
+          border:
+            1px solid
+            rgba(
+              8,
+              185,
+              244,
+              0.3
+            );
+
+          color:
+            var(
+              --mwsb-blue-light
+            );
+
+          background:
+            rgba(
+              8,
+              185,
+              244,
+              0.065
+            );
+        }
+
+        .mwsb-situation-card.orange
+          .mwsb-situation-icon {
+          border:
+            1px solid
+            rgba(
+              255,
+              121,
+              0,
+              0.3
+            );
+
+          color:
+            var(
+              --mwsb-orange-light
+            );
+
+          background:
+            rgba(
+              255,
+              121,
+              0,
+              0.06
+            );
+        }
+
+        .mwsb-situation-icon
+          svg {
+          width:
+            27px;
+
+          height:
+            27px;
+        }
+
+        .mwsb-situation-card
+          h3 {
+          margin:
+            0 0 10px;
+
+          font-size:
+            19px;
+        }
+
+        .mwsb-situation-card
+          p {
+          margin:
+            0;
+
+          color:
+            var(
+              --mwsb-muted
+            );
+
+          font-size:
+            13px;
+
+          line-height:
+            1.68;
+        }
+
+        .mwsb-solution {
+          display:
+            inline-flex;
+
+          margin-top:
+            17px;
+
+          padding:
+            6px 9px;
+
+          border-radius:
+            999px;
+
+          font-size:
+            9px;
+
+          font-weight:
+            900;
+
+          letter-spacing:
+            0.07em;
+
+          text-transform:
+            uppercase;
+        }
+
+        .mwsb-situation-card.blue
+          .mwsb-solution {
+          border:
+            1px solid
+            rgba(
+              8,
+              185,
+              244,
+              0.2
+            );
+
+          color:
+            #bcefff;
+
+          background:
+            rgba(
+              8,
+              185,
+              244,
+              0.04
+            );
+        }
+
+        .mwsb-situation-card.orange
+          .mwsb-solution {
+          border:
+            1px solid
+            rgba(
+              255,
+              121,
+              0,
+              0.2
+            );
+
+          color:
+            #ffd4ad;
+
+          background:
+            rgba(
+              255,
+              121,
+              0,
+              0.04
+            );
+        }
+
+        /* =====================================================
+           FOUNDATION
+        ===================================================== */
+
+        .mwsb-foundation {
+          background:
+            radial-gradient(
+              ellipse at
+              82% 45%,
+              rgba(
+                255,
+                121,
+                0,
+                0.05
+              ),
+              transparent
+              31%
+            ),
+            #020304;
+        }
+
+        .mwsb-foundation-grid {
+          display:
+            grid;
+
+          grid-template-columns:
+            repeat(
+              3,
+              minmax(
+                0,
+                1fr
+              )
+            );
+
+          gap:
+            14px;
+        }
+
+        .mwsb-foundation-card {
+          min-height:
+            245px;
+
+          padding:
+            24px;
+
+          border:
+            1px solid
+            var(
+              --mwsb-border
+            );
+
+          border-radius:
+            14px;
+
+          background:
+            rgba(
+              255,
+              255,
+              255,
+              0.018
+            );
+        }
+
+        .mwsb-foundation-card
+          svg {
+          width:
+            29px;
+
+          height:
+            29px;
+
+          margin-bottom:
+            17px;
+
+          color:
+            var(
+              --mwsb-blue-light
+            );
+        }
+
+        .mwsb-foundation-card:nth-child(even)
+          svg {
+          color:
+            var(
+              --mwsb-orange-light
+            );
+        }
+
+        .mwsb-foundation-card
+          h3 {
+          margin:
+            0 0 10px;
+
+          font-size:
+            18px;
+        }
+
+        .mwsb-foundation-card
+          p {
+          margin:
+            0;
+
+          color:
+            var(
+              --mwsb-muted
+            );
+
+          font-size:
+            13px;
+
+          line-height:
+            1.67;
+        }
+
+        /* =====================================================
+           MAINE
+        ===================================================== */
+
+        .mwsb-maine {
+          background:
+            linear-gradient(
+              180deg,
+              #020304,
+              #04090d,
+              #020304
+            );
+        }
+
+        .mwsb-maine-grid {
+          display:
+            grid;
+
+          grid-template-columns:
+            minmax(
+              0,
+              0.95fr
+            )
+            minmax(
+              420px,
+              1.05fr
+            );
+
+          align-items:
+            center;
+
+          gap:
+            clamp(
+              45px,
+              7vw,
+              100px
+            );
+        }
+
+        .mwsb-maine-copy
+          h2 {
+          margin:
+            0 0 20px;
+
+          font-size:
+            clamp(
+              40px,
+              4.7vw,
+              68px
+            );
+
+          line-height:
+            1.02;
+
+          letter-spacing:
+            -0.05em;
+        }
+
+        .mwsb-maine-copy
+          p {
+          margin:
+            0 0 17px;
+
+          color:
+            var(
+              --mwsb-muted
+            );
+
+          font-size:
+            16px;
+
+          line-height:
+            1.8;
+        }
+
+        .mwsb-local-panel {
+          padding:
+            28px;
+
+          border:
+            1px solid
+            rgba(
+              8,
+              185,
+              244,
+              0.22
+            );
+
+          border-radius:
+            20px;
+
+          background:
+            radial-gradient(
+              circle at
+              20% 30%,
+              rgba(
+                8,
+                185,
+                244,
+                0.1
+              ),
+              transparent
+              34%
+            ),
+            linear-gradient(
+              145deg,
+              #09131a,
+              #04080b
+            );
+        }
+
+        .mwsb-local-map {
+          position:
+            relative;
+
+          min-height:
+            300px;
+
+          overflow:
+            hidden;
+
+          border:
+            1px solid
+            rgba(
+              255,
+              255,
+              255,
+              0.08
+            );
+
+          border-radius:
+            13px;
+
+          background:
+            linear-gradient(
+              30deg,
+              transparent
+              24%,
+              rgba(
+                8,
+                185,
+                244,
+                0.045
+              )
+              25%,
+              rgba(
+                8,
+                185,
+                244,
+                0.045
+              )
+              26%,
+              transparent
+              27%,
+              transparent
+              74%,
+              rgba(
+                8,
+                185,
+                244,
+                0.045
+              )
+              75%,
+              rgba(
+                8,
+                185,
+                244,
+                0.045
+              )
+              76%,
+              transparent
+              77%
+            ),
+            linear-gradient(
+              -30deg,
+              transparent
+              24%,
+              rgba(
+                255,
+                121,
+                0,
+                0.035
+              )
+              25%,
+              rgba(
+                255,
+                121,
+                0,
+                0.035
+              )
+              26%,
+              transparent
+              27%
+            ),
+            #071016;
+
+          background-size:
+            52px 90px;
+        }
+
+        .mwsb-map-center {
+          position:
+            absolute;
+
+          left:
+            50%;
+
+          top:
+            50%;
+
+          transform:
+            translate(
+              -50%,
+              -50%
+            );
+
+          width:
+            150px;
+
+          height:
+            150px;
+
+          display:
+            grid;
+
+          place-items:
+            center;
+
+          border:
+            1px solid
+            rgba(
+              8,
+              185,
+              244,
+              0.25
+            );
+
+          border-radius:
+            50%;
+
+          background:
+            rgba(
+              8,
+              185,
+              244,
+              0.035
+            );
+
+          box-shadow:
+            0 0 40px
+            rgba(
+              8,
+              185,
+              244,
+              0.08
+            );
+        }
+
+        .mwsb-map-pin {
+          width:
+            62px;
+
+          height:
+            62px;
+
+          display:
+            grid;
+
+          place-items:
+            center;
+
+          border:
+            1px solid
+            rgba(
+              255,
+              121,
+              0,
+              0.33
+            );
+
+          border-radius:
+            50%;
+
+          color:
+            var(
+              --mwsb-orange
+            );
+
+          background:
+            #071016;
+
+          box-shadow:
+            0 0 20px
+            rgba(
+              255,
+              121,
+              0,
+              0.16
+            );
+        }
+
+        .mwsb-map-pin
+          svg {
+          width:
+            28px;
+
+          height:
+            28px;
+        }
+
+        .mwsb-map-label {
+          position:
+            absolute;
+
+          left:
+            50%;
+
+          bottom:
+            28px;
+
+          transform:
+            translateX(
+              -50%
+            );
+
+          padding:
+            9px 13px;
+
+          border:
+            1px solid
+            rgba(
+              8,
+              185,
+              244,
+              0.2
+            );
+
+          border-radius:
+            8px;
+
+          color:
+            #d8e6ec;
+
+          background:
+            rgba(
+              2,
+              5,
+              7,
+              0.9
+            );
+
+          font-size:
+            10px;
+
+          font-weight:
+            900;
+
+          letter-spacing:
+            0.08em;
+
+          white-space:
+            nowrap;
+        }
+
+        /* =====================================================
+           BUSINESS TYPES
+        ===================================================== */
+
+        .mwsb-businesses {
+          background:
+            #020304;
+        }
+
+        .mwsb-business-type-grid {
+          display:
+            grid;
+
+          grid-template-columns:
+            repeat(
+              3,
+              minmax(
+                0,
+                1fr
+              )
+            );
+
+          gap:
+            12px;
+        }
+
+        .mwsb-business-type {
+          min-height:
+            110px;
+
+          display:
+            flex;
+
+          align-items:
+            center;
+
+          gap:
+            14px;
+
+          padding:
+            18px;
+
+          border:
+            1px solid
+            rgba(
+              255,
+              255,
+              255,
+              0.08
+            );
+
+          border-radius:
+            12px;
+
+          background:
+            linear-gradient(
+              145deg,
+              #0a1218,
+              #04080b
+            );
+        }
+
+        .mwsb-business-type
+          svg {
+          width:
+            29px;
+
+          height:
+            29px;
+
+          flex:
+            0 0 auto;
+
+          color:
+            var(
+              --mwsb-blue-light
+            );
+        }
+
+        .mwsb-business-type:nth-child(even)
+          svg {
+          color:
+            var(
+              --mwsb-orange-light
+            );
+        }
+
+        .mwsb-business-type
+          strong {
+          font-size:
+            14px;
+        }
+
+        /* =====================================================
+           GROWTH
+        ===================================================== */
+
+        .mwsb-growth {
+          background:
+            radial-gradient(
+              ellipse at
+              15% 45%,
+              rgba(
+                8,
+                185,
+                244,
+                0.06
+              ),
+              transparent
+              30%
+            ),
+            #020304;
+        }
+
+        .mwsb-growth-grid {
+          display:
+            grid;
+
+          grid-template-columns:
+            repeat(
+              3,
+              minmax(
+                0,
+                1fr
+              )
+            );
+
+          gap:
+            14px;
+        }
+
+        .mwsb-growth-card {
+          min-height:
+            225px;
+
+          padding:
+            24px;
+
+          border:
+            1px solid
+            rgba(
+              8,
+              185,
+              244,
+              0.14
+            );
+
+          border-radius:
+            14px;
+
+          background:
+            rgba(
+              8,
+              185,
+              244,
+              0.02
+            );
+        }
+
+        .mwsb-growth-card:nth-child(even) {
+          border-color:
+            rgba(
+              255,
+              121,
+              0,
+              0.14
+            );
+
+          background:
+            rgba(
+              255,
+              121,
+              0,
+              0.018
+            );
+        }
+
+        .mwsb-growth-number {
+          margin-bottom:
+            15px;
+
+          color:
+            var(
+              --mwsb-blue-light
+            );
+
+          font-size:
+            10px;
+
+          font-weight:
+            950;
+
+          letter-spacing:
+            0.12em;
+        }
+
+        .mwsb-growth-card:nth-child(even)
+          .mwsb-growth-number {
+          color:
+            var(
+              --mwsb-orange-light
+            );
+        }
+
+        .mwsb-growth-card
+          h3 {
+          margin:
+            0 0 10px;
+
+          font-size:
+            17px;
+        }
+
+        .mwsb-growth-card
+          p {
+          margin:
+            0;
+
+          color:
+            var(
+              --mwsb-muted
+            );
+
+          font-size:
+            13px;
+
+          line-height:
+            1.67;
+        }
+
+        /* =====================================================
+           PROCESS
+        ===================================================== */
+
+        .mwsb-process {
+          background:
+            linear-gradient(
+              180deg,
+              #020304,
+              #04090d,
+              #020304
+            );
+        }
+
+        .mwsb-process-grid {
+          display:
+            grid;
+
+          grid-template-columns:
+            repeat(
+              3,
+              minmax(
+                0,
+                1fr
+              )
+            );
+
+          gap:
+            13px;
+        }
+
+        .mwsb-process-card {
+          min-height:
+            245px;
+
+          padding:
+            25px;
+
+          border:
+            1px solid
+            rgba(
+              8,
+              185,
+              244,
+              0.16
+            );
+
+          border-radius:
+            14px;
+
+          background:
+            rgba(
+              8,
+              185,
+              244,
+              0.02
+            );
+        }
+
+        .mwsb-process-card:nth-child(even) {
+          border-color:
+            rgba(
+              255,
+              121,
+              0,
+              0.16
+            );
+
+          background:
+            rgba(
+              255,
+              121,
+              0,
+              0.018
+            );
+        }
+
+        .mwsb-process-number {
+          margin-bottom:
+            17px;
+
+          color:
+            var(
+              --mwsb-blue-light
+            );
+
+          font-size:
+            11px;
+
+          font-weight:
+            950;
+
+          letter-spacing:
+            0.14em;
+        }
+
+        .mwsb-process-card:nth-child(even)
+          .mwsb-process-number {
+          color:
+            var(
+              --mwsb-orange-light
+            );
+        }
+
+        .mwsb-process-card
+          h3 {
+          margin:
+            0 0 10px;
+
+          font-size:
+            19px;
+        }
+
+        .mwsb-process-card
+          p {
+          margin:
+            0;
+
+          color:
+            var(
+              --mwsb-muted
+            );
+
+          font-size:
+            13px;
+
+          line-height:
+            1.68;
+        }
+
+        /* =====================================================
+           FAQ
+        ===================================================== */
+
+        .mwsb-faq {
+          background:
+            #020304;
+        }
+
+        .mwsb-faq-grid {
+          display:
+            grid;
+
+          grid-template-columns:
+            repeat(
+              2,
+              minmax(
+                0,
+                1fr
+              )
+            );
+
+          gap:
+            14px;
+        }
+
+        .mwsb-faq-card {
+          padding:
+            24px;
+
+          border:
+            1px solid
+            var(
+              --mwsb-border
+            );
+
+          border-radius:
+            14px;
+
+          background:
+            linear-gradient(
+              145deg,
+              #0a1218,
+              #04080b
+            );
+        }
+
+        .mwsb-faq-card
+          h3 {
+          margin:
+            0 0 10px;
+
+          font-size:
+            16px;
+        }
+
+        .mwsb-faq-card
+          p {
+          margin:
+            0;
+
+          color:
+            var(
+              --mwsb-muted
+            );
+
+          font-size:
+            13px;
+
+          line-height:
+            1.7;
+        }
+
+        /* =====================================================
+           FINAL
+        ===================================================== */
+
+        .mwsb-final {
+          padding:
+            95px
+            clamp(
+              20px,
+              5vw,
+              80px
+            );
+
+          background:
+            radial-gradient(
+              ellipse at
+              20% 50%,
+              rgba(
+                8,
+                185,
+                244,
+                0.1
+              ),
+              transparent
+              32%
+            ),
+            radial-gradient(
+              ellipse at
+              80% 50%,
+              rgba(
+                255,
+                121,
+                0,
+                0.075
+              ),
+              transparent
+              32%
+            ),
+            #020304;
+        }
+
+        .mwsb-final-card {
+          max-width:
+            1100px;
+
+          margin:
+            0 auto;
+
+          padding:
+            clamp(
+              42px,
+              6vw,
+              72px
+            );
+
+          border:
+            1px solid
+            rgba(
+              255,
+              121,
+              0,
+              0.24
+            );
+
+          border-radius:
+            22px;
+
+          text-align:
+            center;
+
+          background:
+            linear-gradient(
+              145deg,
+              #09131a,
+              #04080b
+            );
+
+          box-shadow:
+            0 30px 80px
+            rgba(
+              0,
+              0,
+              0,
+              0.34
+            );
+        }
+
+        .mwsb-final-card
+          > svg {
+          width:
+            42px;
+
+          height:
+            42px;
+
+          margin-bottom:
+            19px;
+
+          color:
+            var(
+              --mwsb-orange
+            );
+        }
+
+        .mwsb-final-card
+          h2 {
+          margin:
+            0;
+
+          font-size:
+            clamp(
+              38px,
+              5vw,
+              67px
+            );
+
+          line-height:
+            1.03;
+
+          letter-spacing:
+            -0.05em;
+        }
+
+        .mwsb-final-card
+          p {
+          max-width:
+            730px;
+
+          margin:
+            18px auto 0;
+
+          color:
+            var(
+              --mwsb-muted
+            );
+
+          font-size:
+            15px;
+
+          line-height:
+            1.75;
+        }
+
+        .mwsb-final-card
+          .mwsb-button-row {
+          justify-content:
+            center;
+        }
+
+        .mwsb-related {
+          display:
+            flex;
+
+          flex-wrap:
+            wrap;
+
+          justify-content:
+            center;
+
+          gap:
+            10px 18px;
+
+          margin-top:
+            28px;
+        }
+
+        .mwsb-related a {
+          color:
+            #8fa0ab;
+
+          text-decoration:
+            none;
+
+          font-size:
+            11px;
+
+          font-weight:
+            700;
+        }
+
+        .mwsb-related a:hover {
+          color:
+            var(
+              --mwsb-blue-light
+            );
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (
+          max-width:
+          1100px
+        ) {
+          .mwsb-situation-grid,
+          .mwsb-foundation-grid,
+          .mwsb-growth-grid,
+          .mwsb-process-grid {
+            grid-template-columns:
+              repeat(
+                2,
+                1fr
+              );
           }
         }
 
-        @media (max-width: 760px) {
-          .service-wrap {
-            padding: 46px 16px;
+        @media (
+          max-width:
+          900px
+        ) {
+          .mwsb-hero-inner,
+          .mwsb-maine-grid {
+            grid-template-columns:
+              1fr;
           }
 
-          .intro-card,
-          .content-card,
-          .faq-card,
-          .cta-box {
-            padding: 24px;
+          .mwsb-hero-inner {
+            text-align:
+              center;
           }
 
-          .feature-grid {
-            grid-template-columns: 1fr;
+          .mwsb-hero-badge {
+            margin-left:
+              auto;
+
+            margin-right:
+              auto;
           }
 
-          .intro-card p,
-          .content-card p,
-          .faq-card p,
-          .process-list li {
-            font-size: 18px;
+          .mwsb-hero-copy
+            > p {
+            margin-left:
+              auto;
+
+            margin-right:
+              auto;
+          }
+
+          .mwsb-button-row {
+            justify-content:
+              center;
+          }
+
+          .mwsb-business-stage {
+            min-height:
+              420px;
+          }
+
+          .mwsb-business-type-grid {
+            grid-template-columns:
+              repeat(
+                2,
+                1fr
+              );
           }
         }
 
-        @media (max-width: 520px) {
-          .business-list {
-            grid-template-columns: 1fr;
+        @media (
+          max-width:
+          700px
+        ) {
+          .mwsb-section {
+            padding:
+              70px 16px;
+          }
+
+          .mwsb-hero {
+            min-height:
+              auto;
+          }
+
+          .mwsb-hero-inner {
+            padding:
+              70px 16px;
+          }
+
+          .mwsb-hero h1 {
+            font-size:
+              clamp(
+                46px,
+                14vw,
+                67px
+              );
+          }
+
+          .mwsb-situation-grid,
+          .mwsb-foundation-grid,
+          .mwsb-growth-grid,
+          .mwsb-process-grid,
+          .mwsb-faq-grid,
+          .mwsb-business-type-grid {
+            grid-template-columns:
+              1fr;
+          }
+        }
+
+        @media (
+          max-width:
+          500px
+        ) {
+          .mwsb-business-stage {
+            min-height:
+              355px;
+
+            transform:
+              scale(
+                0.86
+              );
+
+            margin:
+              -20px -25px;
+          }
+
+          .mwsb-floating-tag.one {
+            left:
+              0;
+          }
+
+          .mwsb-floating-tag.two {
+            right:
+              0;
           }
         }
       `}</style>
 
-      <div className="service-page">
-        <SiteHeader />
+      {/* ======================================================
+          HERO
+      ====================================================== */}
 
-        <section className="service-hero">
-          <h1>Small Business Websites Built for Leads and Growth</h1>
-          <p>
-            matthew-web builds affordable small business websites with clear
-            service pages, mobile-friendly layouts, lead forms, SEO-ready
-            structure, and room to grow into custom software.
-          </p>
-        </section>
+      <section
+        className="mwsb-hero"
+        id="small-business-websites"
+      >
+        <div className="mwsb-hero-inner">
+          <div className="mwsb-hero-copy">
+            <div className="mwsb-hero-badge">
+              <span />
+              Small Business Websites • Available Now
+            </div>
 
-        <section className="service-wrap">
-          <article className="intro-card">
-            <h2>A Small Business Website Should Be More Than a Placeholder</h2>
+            <h1>
+              <span>
+                Your Business
+              </span>
+
+              <span className="mwsb-blue">
+                Works Hard.
+              </span>
+
+              <span>
+                Your Website
+              </span>
+
+              <span className="mwsb-orange">
+                Should Too.
+              </span>
+            </h1>
 
             <p>
-              Many small businesses have a website that technically exists but
-              does not do enough. It may have a homepage, a phone number, a few
-              service words, and a contact page, but it does not clearly explain
-              the business, build trust, answer customer questions, or guide
-              visitors toward taking action.
+              Matthew Web builds practical,
+              professional websites for small
+              businesses that need a stronger
+              online presence, clearer customer
+              path, better mobile experience, and
+              room to grow.
             </p>
+
+            <div className="mwsb-button-row">
+              <Link
+                href="/contact-us"
+                className="mwsb-btn mwsb-btn-blue"
+              >
+                Start Your Website
+                <ArrowRight />
+              </Link>
+
+              <Link
+                href="/pricing"
+                className="mwsb-btn mwsb-btn-dark"
+              >
+                View Pricing
+              </Link>
+            </div>
+          </div>
+
+          <div
+            className="mwsb-business-stage"
+            aria-hidden="true"
+          >
+            <div className="mwsb-floating-tag one">
+              <Smartphone />
+              MOBILE READY
+            </div>
+
+            <div className="mwsb-floating-tag two">
+              <SearchCheck />
+              SEARCH READY
+            </div>
+
+            <div className="mwsb-floating-tag three">
+              <MousePointerClick />
+              BUILT FOR LEADS
+            </div>
+
+            <div className="mwsb-business-card">
+              <div className="mwsb-business-top">
+                <div className="mwsb-business-logo">
+                  <div className="mwsb-business-logo-icon">
+                    <Building2 />
+                  </div>
+
+                  SMALL BUSINESS
+                </div>
+
+                <div className="mwsb-online-status">
+                  ONLINE
+                </div>
+              </div>
+
+              <div className="mwsb-demo-hero">
+                <div className="mwsb-demo-title" />
+
+                <div className="mwsb-demo-line" />
+
+                <div className="mwsb-demo-line short" />
+
+                <div className="mwsb-demo-button" />
+              </div>
+
+              <div className="mwsb-demo-grid">
+                <div />
+                <div />
+                <div />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+          BUSINESS SITUATIONS
+      ====================================================== */}
+
+      <section
+        className="mwsb-section mwsb-situations"
+        id="website-situations"
+      >
+        <div className="mwsb-container">
+          <div className="mwsb-heading center">
+            <div className="mwsb-kicker orange">
+              <Wrench />
+              Where Are You Starting?
+            </div>
+
+            <h2>
+              There&apos;s More Than One Reason to{" "}
+              <span className="mwsb-orange">
+                Need a Better Website
+              </span>
+            </h2>
 
             <p>
-              A strong small business website should help people understand what
-              you do, where you work, why they should trust you, and how to
-              contact you. It should also be built with mobile users, search
-              engines, and lead generation in mind.
+              Some businesses need their first
+              site. Others already have one but
+              need specific problems corrected.
             </p>
+          </div>
 
-            <div className="highlight-box">
+          <div className="mwsb-situation-grid">
+            {websiteSituations.map(
+              (item) => {
+                const Icon =
+                  item.icon;
+
+                return (
+                  <div
+                    className={`mwsb-situation-card ${item.accent}`}
+                    key={item.title}
+                  >
+                    <div className="mwsb-situation-icon">
+                      <Icon />
+                    </div>
+
+                    <h3>
+                      {item.title}
+                    </h3>
+
+                    <p>
+                      {item.text}
+                    </p>
+
+                    <span className="mwsb-solution">
+                      {item.solution}
+                    </span>
+                  </div>
+                );
+              }
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+          WEBSITE FOUNDATION
+      ====================================================== */}
+
+      <section
+        className="mwsb-section mwsb-foundation"
+        id="website-foundation"
+      >
+        <div className="mwsb-container">
+          <div className="mwsb-heading">
+            <div className="mwsb-kicker">
+              <MonitorSmartphone />
+              Small Business Foundation
+            </div>
+
+            <h2>
+              The Website Should Make the Business{" "}
+              <span className="mwsb-blue">
+                Easier to Understand.
+              </span>
+            </h2>
+
+            <p>
+              A useful small-business website
+              should answer the questions a
+              potential customer is likely to
+              have before that person needs to
+              call or submit a form.
+            </p>
+          </div>
+
+          <div className="mwsb-foundation-grid">
+            {foundations.map(
+              (item) => {
+                const Icon =
+                  item.icon;
+
+                return (
+                  <div
+                    className="mwsb-foundation-card"
+                    key={item.title}
+                  >
+                    <Icon />
+
+                    <h3>
+                      {item.title}
+                    </h3>
+
+                    <p>
+                      {item.text}
+                    </p>
+                  </div>
+                );
+              }
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+          MAINE FOCUS
+      ====================================================== */}
+
+      <section
+        className="mwsb-section mwsb-maine"
+        id="maine-small-business"
+      >
+        <div className="mwsb-container">
+          <div className="mwsb-maine-grid">
+            <div className="mwsb-maine-copy">
+              <div className="mwsb-kicker orange">
+                <MapPin />
+                Maine Small Businesses
+              </div>
+
+              <h2>
+                Based in Maine.{" "}
+                <span className="mwsb-orange">
+                  Built for Local Business.
+                </span>
+              </h2>
+
               <p>
-                A good small business website should help turn visitors into
-                calls, quote requests, appointments, messages, and real leads.
+                Maine small-business website work
+                is an important Matthew Web
+                focus, especially businesses
+                without websites or with sites
+                that are outdated, broken,
+                difficult on mobile, incomplete,
+                or unclear.
               </p>
-            </div>
-          </article>
 
-          <article className="content-card">
-            <h2>What a Small Business Website Needs</h2>
+              <p>
+                Working with a Maine business can
+                also mean understanding that many
+                local companies depend heavily on
+                reputation, referrals, phone
+                calls, service areas, quote
+                requests, and direct customer
+                relationships.
+              </p>
 
-            <p>
-              Every business is different, but most small business websites need
-              the same core foundation: clear pages, useful content, trust
-              signals, simple navigation, contact options, and a reason for
-              visitors to take the next step.
-            </p>
+              <p>
+                Matthew Web can also work
+                remotely with businesses outside
+                Maine, so the service is not
+                limited by geography.
+              </p>
 
-            <div className="feature-grid">
-              <div className="feature-card">
-                <h3>Clear Homepage</h3>
-                <p>
-                  The homepage should quickly explain who you are, what you do,
-                  where you serve, and what action the visitor should take.
-                </p>
-              </div>
-
-              <div className="feature-card">
-                <h3>Service Pages</h3>
-                <p>
-                  Each main service should have enough helpful information for
-                  customers and search engines to understand the offer.
-                </p>
-              </div>
-
-              <div className="feature-card">
-                <h3>Contact and Quote Forms</h3>
-                <p>
-                  Forms should collect the right information and make it easy
-                  for customers to request help, pricing, or a consultation.
-                </p>
-              </div>
-
-              <div className="feature-card">
-                <h3>Mobile-Friendly Layout</h3>
-                <p>
-                  Visitors should be able to read, tap, call, and submit forms
-                  easily from a phone.
-                </p>
-              </div>
-
-              <div className="feature-card">
-                <h3>Trust Signals</h3>
-                <p>
-                  About pages, reviews, examples, policies, pricing guidance,
-                  and ethics pages help visitors feel safer contacting you.
-                </p>
-              </div>
-
-              <div className="feature-card">
-                <h3>SEO-Ready Structure</h3>
-                <p>
-                  Titles, descriptions, sitemap setup, internal links, and useful
-                  content help search engines understand the website.
-                </p>
+              <div className="mwsb-button-row">
+                <Link
+                  href="/contact-us"
+                  className="mwsb-btn mwsb-btn-orange"
+                >
+                  Talk About Your Business
+                  <ArrowRight />
+                </Link>
               </div>
             </div>
-          </article>
 
-          <article className="content-card">
-            <h2>Who This Is For</h2>
+            <div
+              className="mwsb-local-panel"
+              aria-hidden="true"
+            >
+              <div className="mwsb-local-map">
+                <div className="mwsb-map-center">
+                  <div className="mwsb-map-pin">
+                    <MapPin />
+                  </div>
+                </div>
 
-            <p>
-              This service is for business owners who want a practical website
-              that can help them look professional and get more serious online.
-              You do not need to be a large company to benefit from a better
-              website. A one-person business, contractor, local service company,
-              startup, consultant, property manager, shop, or small agency can
-              all benefit from clear website structure.
-            </p>
-
-            <p>
-              matthew-web can help small businesses that are starting from
-              scratch, moving away from a limited platform, replacing an old
-              website, or adding more useful pages and forms to an existing
-              site.
-            </p>
-
-            <div className="business-list">
-              <span>Contractors</span>
-              <span>Landscapers</span>
-              <span>Roofers</span>
-              <span>Painters</span>
-              <span>Cleaners</span>
-              <span>Property Managers</span>
-              <span>Local Shops</span>
-              <span>Consultants</span>
-              <span>Restaurants</span>
-              <span>Auto Detailers</span>
-              <span>Barbers</span>
-              <span>Small Agencies</span>
+                <div className="mwsb-map-label">
+                  MATTHEW WEB • MAINE
+                </div>
+              </div>
             </div>
-          </article>
+          </div>
+        </div>
+      </section>
 
-          <article className="content-card">
-            <h2>Common Problems With Small Business Websites</h2>
+      {/* ======================================================
+          BUSINESS TYPES
+      ====================================================== */}
 
-            <p>
-              A website can look “done” and still fail to help the business.
-              Many small business websites are too thin, too vague, too slow, or
-              too hard to use on mobile. Others rely only on social media and
-              never build a website they control.
-            </p>
+      <section
+        className="mwsb-section mwsb-businesses"
+        id="business-types"
+      >
+        <div className="mwsb-container">
+          <div className="mwsb-heading center">
+            <div className="mwsb-kicker">
+              <BriefcaseBusiness />
+              Businesses We Can Help
+            </div>
 
-            <ul className="process-list">
-              <li>
-                <strong>Only a Facebook page:</strong> Social media can help,
-                but it should not replace a real business website.
-              </li>
-
-              <li>
-                <strong>Outdated design:</strong> Old layouts, weak images, and
-                hard-to-read pages can make the business look less trustworthy.
-              </li>
-
-              <li>
-                <strong>No clear offer:</strong> Visitors do not quickly
-                understand what the business does or who it helps.
-              </li>
-
-              <li>
-                <strong>No service pages:</strong> All services are crammed into
-                one small section instead of explained clearly.
-              </li>
-
-              <li>
-                <strong>Weak contact flow:</strong> Phone numbers, forms, and
-                calls-to-action are hidden or not easy to use.
-              </li>
-
-              <li>
-                <strong>No SEO foundation:</strong> The site lacks page titles,
-                descriptions, sitemap setup, internal links, or useful original
-                content.
-              </li>
-            </ul>
-          </article>
-
-          <article className="content-card">
-            <h2>Why Small Business Websites Need Original Content</h2>
+            <h2>
+              Different Businesses.{" "}
+              <span className="mwsb-blue">
+                Same Basic Need.
+              </span>
+            </h2>
 
             <p>
-              Original content matters because customers and search engines need
-              real information. A website with only a few short sections may not
-              provide enough value. A business website should explain services,
-              answer questions, show examples, discuss the process, and make the
-              next step clear.
+              Customers need to understand what
+              you do and how to take the next
+              step.
             </p>
+          </div>
+
+          <div className="mwsb-business-type-grid">
+            {businessTypes.map(
+              (business) => {
+                const Icon =
+                  business.icon;
+
+                return (
+                  <div
+                    className="mwsb-business-type"
+                    key={business.label}
+                  >
+                    <Icon />
+
+                    <strong>
+                      {business.label}
+                    </strong>
+                  </div>
+                );
+              }
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+          GROWTH
+      ====================================================== */}
+
+      <section
+        className="mwsb-section mwsb-growth"
+        id="website-growth"
+      >
+        <div className="mwsb-container">
+          <div className="mwsb-heading center">
+            <div className="mwsb-kicker orange">
+              <Code2 />
+              Grow When You Need To
+            </div>
+
+            <h2>
+              Start With a Website.{" "}
+              <span className="mwsb-orange">
+                Add More Later.
+              </span>
+            </h2>
 
             <p>
-              For example, a contractor website should not only say “we do home
-              repairs.” It should explain the repair services, service area,
-              estimate process, project examples, and how customers can request
-              help. A web design website should explain website design, custom
-              software, SEO setup, pricing, examples, and policies clearly.
+              A small business does not need to
+              buy every possible feature on day
+              one. The site can grow as the
+              business proves it needs more.
             </p>
+          </div>
+
+          <div className="mwsb-growth-grid">
+            {growthOptions.map(
+              (item, index) => (
+                <div
+                  className="mwsb-growth-card"
+                  key={item.title}
+                >
+                  <div className="mwsb-growth-number">
+                    GROWTH OPTION{" "}
+                    {String(
+                      index + 1
+                    ).padStart(
+                      2,
+                      "0"
+                    )}
+                  </div>
+
+                  <h3>
+                    {item.title}
+                  </h3>
+
+                  <p>
+                    {item.text}
+                  </p>
+                </div>
+              )
+            )}
+          </div>
+
+          <div className="mwsb-button-row">
+            <Link
+              href="/custom-software"
+              className="mwsb-btn mwsb-btn-dark"
+            >
+              Explore Custom Software
+              <ArrowRight />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+          PROCESS
+      ====================================================== */}
+
+      <section
+        className="mwsb-section mwsb-process"
+        id="small-business-process"
+      >
+        <div className="mwsb-container">
+          <div className="mwsb-heading center">
+            <div className="mwsb-kicker">
+              <CheckCircle2 />
+              How We Build
+            </div>
+
+            <h2>
+              Build Around the{" "}
+              <span className="mwsb-blue">
+                Actual Business.
+              </span>
+            </h2>
 
             <p>
-              This kind of content helps the site feel more complete, more
-              trustworthy, and more useful.
+              The website should reflect how the
+              business operates and what its
+              customers actually need to know.
             </p>
-          </article>
+          </div>
 
-          <article className="content-card">
-            <h2>How matthew-web Builds Small Business Websites</h2>
+          <div className="mwsb-process-grid">
+            {processSteps.map(
+              (step) => (
+                <div
+                  className="mwsb-process-card"
+                  key={step.number}
+                >
+                  <div className="mwsb-process-number">
+                    STEP {step.number}
+                  </div>
+
+                  <h3>
+                    {step.title}
+                  </h3>
+
+                  <p>
+                    {step.text}
+                  </p>
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+          FAQ
+      ====================================================== */}
+
+      <section
+        className="mwsb-section mwsb-faq"
+        id="small-business-faq"
+      >
+        <div className="mwsb-container">
+          <div className="mwsb-heading">
+            <div className="mwsb-kicker orange">
+              <Sparkles />
+              Small Business Website FAQ
+            </div>
+
+            <h2>
+              Common{" "}
+              <span className="mwsb-orange">
+                Questions
+              </span>
+            </h2>
 
             <p>
-              matthew-web builds small business websites with a focus on real
-              usefulness. That means the site should be easy to navigate, easy to
-              read, easy to contact from, and structured in a way that supports
-              search engines and future growth.
+              Small-business websites can start
+              simple and become more advanced as
+              the business grows.
             </p>
+          </div>
 
-            <ul className="process-list">
-              <li>
-                <strong>1. Plan the pages:</strong> Decide what public pages are
-                needed, such as home, services, pricing, examples, blog, about,
-                contact, privacy policy, terms, and trust pages.
-              </li>
+          <div className="mwsb-faq-grid">
+            {faqs.map(
+              (item) => (
+                <div
+                  className="mwsb-faq-card"
+                  key={item.q}
+                >
+                  <h3>
+                    {item.q}
+                  </h3>
 
-              <li>
-                <strong>2. Write useful content:</strong> Build pages with real
-                explanations, examples, FAQs, and calls-to-action instead of
-                short generic sales copy.
-              </li>
+                  <p>
+                    {item.a}
+                  </p>
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      </section>
 
-              <li>
-                <strong>3. Build mobile-first layouts:</strong> Make sure the
-                site works well on phones, tablets, and desktops.
-              </li>
+      {/* ======================================================
+          FINAL CTA
+      ====================================================== */}
 
-              <li>
-                <strong>4. Add lead capture:</strong> Add contact forms, quote
-                forms, booking buttons, phone links, and follow-up options when
-                needed.
-              </li>
+      <section
+        className="mwsb-final"
+        id="start-small-business-website"
+      >
+        <div className="mwsb-final-card">
+          <Zap />
 
-              <li>
-                <strong>5. Set up indexing basics:</strong> Add metadata,
-                sitemap support, robots.txt rules, internal links, and Search
-                Console guidance.
-              </li>
+          <h2>
+            No Website? Old Website?{" "}
+            <span className="mwsb-orange">
+              Let&apos;s Fix That.
+            </span>
+          </h2>
 
-              <li>
-                <strong>6. Leave room to grow:</strong> Start simple if needed,
-                then add CRM dashboards, automation, booking tools, or custom
-                software later.
-              </li>
-            </ul>
-          </article>
+          <p>
+            Tell Matthew Web about your
+            business, the website you have now
+            if there is one, and what you need
+            customers to be able to do. We can
+            determine the most practical next
+            step.
+          </p>
 
-          <article className="content-card">
-            <h2>A Website Can Grow Into a Business System</h2>
+          <div className="mwsb-button-row">
+            <Link
+              href="/contact-us"
+              className="mwsb-btn mwsb-btn-orange"
+            >
+              Start Your Website
+              <ArrowRight />
+            </Link>
 
-            <p>
-              A small business website does not have to stay as a simple
-              brochure. It can grow into a system that helps manage leads,
-              follow-ups, quotes, customer details, booking requests, form
-              submissions, and business tasks.
-            </p>
+            <Link
+              href="/examples"
+              className="mwsb-btn mwsb-btn-dark"
+            >
+              View Examples
+            </Link>
+          </div>
 
-            <p>
-              For example, a form on the website can save a lead into a private
-              CRM dashboard. A quote request can trigger an email notification.
-              A booking form can collect appointment details. An admin page can
-              show new leads, follow-up dates, notes, and status.
-            </p>
+          <nav className="mwsb-related">
+            <Link href="/services">
+              All Services
+            </Link>
 
-            <p>
-              This is useful for small businesses that want to start with a
-              website but eventually need custom software tools.
-            </p>
-          </article>
+            <Link href="/website-design">
+              Website Design
+            </Link>
 
-          <article className="faq-card">
-            <h2>Small Business Website FAQs</h2>
+            <Link href="/custom-software">
+              Custom Software
+            </Link>
 
-            <h3>How many pages does a small business website need?</h3>
-            <p>
-              It depends on the business, but a strong starting point often
-              includes home, services, about, examples, pricing or packages,
-              contact, privacy policy, and helpful content pages. Service
-              businesses may need separate pages for each major service.
-            </p>
+            <Link href="/seo-and-indexing">
+              SEO &amp; Indexing
+            </Link>
 
-            <h3>Can a small business website rank on Google?</h3>
-            <p>
-              A small business website can appear in Google when it is crawlable,
-              indexable, useful, and relevant. Ranking depends on competition,
-              content quality, local signals, reviews, links, and time.
-            </p>
-
-            <h3>Do I need custom code?</h3>
-            <p>
-              Not always. Some businesses only need a simple professional
-              website. Custom code becomes more useful when you need stronger
-              control, custom forms, CRM dashboards, booking tools, automation,
-              or room to build business software.
-            </p>
-
-            <h3>Can matthew-web work with businesses outside Maine?</h3>
-            <p>
-              Yes. matthew-web can build websites and custom tools for small
-              businesses across the United States.
-            </p>
-
-            <h3>Can I add more pages later?</h3>
-            <p>
-              Yes. A good website should be able to grow over time with new
-              service pages, blog articles, examples, FAQs, landing pages, and
-              custom features.
-            </p>
-          </article>
-
-          <section className="cta-box">
-            <h2>Need a Better Small Business Website?</h2>
-            <p>
-              matthew-web builds affordable small business websites, SEO-ready
-              pages, lead forms, service pages, custom-coded layouts, CRM
-              dashboards, booking tools, and automation for businesses across the
-              United States.
-            </p>
-
-            <Link href="/contact-us">Request a Free Website Demo</Link>
-          </section>
-
-          <nav className="link-row">
-            <Link href="/website-design">Website Design</Link>
-            <Link href="/custom-software">Custom Software</Link>
-            <Link href="/seo-and-indexing">SEO and Indexing</Link>
-            <Link href="/services">View All Services</Link>
-            <Link href="/pricing">View Pricing</Link>
+            <Link href="/pricing">
+              Pricing
+            </Link>
           </nav>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      <SiteFooter />
     </main>
   );
 }

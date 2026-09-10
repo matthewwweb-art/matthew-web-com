@@ -1,32 +1,49 @@
+import BreadcrumbSchema from "@/components/BreadcrumbSchema";
+
 export const metadata = {
-  title: "Website Design, SEO & Custom Software Services | matthew-web",
+  title: "Website & Software Services",
+
   description:
-    "Affordable website design, SEO, reputation management, branding, digital strategy, custom software coding, CRM dashboards, AI tools, lead forms, and business automation services.",
-  keywords: [
-    "website design services",
-    "affordable website design",
-    "custom software services",
-    "custom coding services",
-    "custom CRM development",
-    "business dashboards",
-    "AI business tools",
-    "SEO services",
-    "reputation management",
-    "small business web design",
-    "Maine web designer",
-  ],
+    "Explore Matthew Web website design, custom software, CRM dashboards, lead forms, integrations, SEO-ready development, indexing support, and small-business technology services.",
+
   alternates: {
     canonical: "https://matthew-web.com/services",
   },
+
   openGraph: {
-    title: "Website Design, SEO & Custom Software Services | matthew-web",
+    title: "Website & Software Services | Matthew Web",
     description:
-      "Get affordable website design, SEO help, reputation management, custom software coding, CRM dashboards, AI tools, and business automation services.",
+      "Website design, custom software, CRM dashboards, forms, integrations, SEO-ready development, and business technology from Matthew Web.",
     url: "https://matthew-web.com/services",
+    siteName: "Matthew Web",
+    locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/apple-touch-icon.png",
+        alt: "Matthew Web",
+      },
+    ],
   },
 };
 
 export default function ServicesLayout({ children }) {
-  return children;
+  return (
+    <>
+      <BreadcrumbSchema
+        items={[
+          {
+            name: "Home",
+            url: "https://matthew-web.com",
+          },
+          {
+            name: "Services",
+            url: "https://matthew-web.com/services",
+          },
+        ]}
+      />
+
+      {children}
+    </>
+  );
 }

@@ -1,866 +1,3348 @@
 import Link from "next/link";
+
+import {
+  ArrowRight,
+  BadgeDollarSign,
+  CheckCircle2,
+  Code2,
+  CreditCard,
+  FileText,
+  Globe2,
+  Layers3,
+  LifeBuoy,
+  MonitorSmartphone,
+  SearchCheck,
+  Server,
+  Settings2,
+  ShieldCheck,
+  Sparkles,
+  Wrench,
+  Zap,
+} from "lucide-react";
+
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 
-const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "About Us", href: "/about-us" },
-  { label: "Services", href: "/services" },
-  { label: "Examples", href: "/examples" },
-  { label: "Blog", href: "/blog" },
-  { label: "Testimonials", href: "/testimonials" },
-  { label: "Pricing", href: "/pricing" },
-  { label: "Contact Us", href: "/contact-us" },
-];
+/* ============================================================
+   METADATA
+============================================================ */
 
-const images = {
-  logo:
-    "https://d14tal8bchn59o.cloudfront.net/pD8SMCm46GE9kXJfrsm-3pOgtGU_bUZ6M378zAftc-g/w:1920/plain/https://02f0a56ef46d93f03c90-22ac5f107621879d5667e0d7ed595bdb.ssl.cf2.rackcdn.com/sites/115347/photos/23501021/Screenshot_2025-12-19_174653_original.png",
+export const metadata = {
+  title:
+    "Website & Technology Pricing | Matthew Web",
 
-  cta:
-    "https://d14tal8bchn59o.cloudfront.net/CHtN7q4DWtPHAZwDIAxcVv-h8M1_pakHSx7aJ86Il5Q/s:322:225:1/plain/https://02f0a56ef46d93f03c90-22ac5f107621879d5667e0d7ed595bdb.ssl.cf2.rackcdn.com/sites/115347/photos/23374779/website-cta_original.png",
+  description:
+    "Matthew Web pricing for small business websites, website maintenance, custom software, SEO and indexing, forms, integrations, deployment, analytics, and additional business technology.",
+
+  alternates: {
+    canonical:
+      "https://matthew-web.com/pricing",
+  },
+
+  openGraph: {
+    title:
+      "Website & Technology Pricing | Matthew Web",
+
+    description:
+      "Straightforward starting prices for website development and maintenance, with custom quotes for software, integrations, SEO, and additional functionality.",
+
+    url:
+      "https://matthew-web.com/pricing",
+
+    siteName:
+      "Matthew Web",
+
+    type:
+      "website",
+  },
 };
+
+/* ============================================================
+   PRIMARY PRICING
+============================================================ */
 
 const pricingCards = [
   {
-    id: "website-design-setup",
-    title: "Website Design & Setup",
-    price: "$499",
-    priceNote: "one time",
-    colorClass: "orange",
+    id:
+      "website-design",
+
+    icon:
+      MonitorSmartphone,
+
+    label:
+      "WEBSITE DEVELOPMENT",
+
+    title:
+      "Website Design & Setup",
+
+    price:
+      "$499",
+
+    priceNote:
+      "starting point",
+
+    billing:
+      "One-time project",
+
     description:
-      "Establish your online presence and build credibility with a professional, search-optimized website, customized specifically for your small business.",
+      "A practical starting package for small businesses that need a professional, mobile-friendly website with a clear customer path and modern technical foundation.",
+
     includes: [
-      "Professional Site Design",
-      "Includes first 5 pages*",
-      "Professional Stock Photography",
-      "Mobile Optimization",
-      "Content & Copywriting",
-      "Connect Social Media Profiles",
-      "Search Engine Optimization",
-      "Cross Browser Testing",
-      "Connect Your Domain",
+      "Standard small-business website scope",
+      "Up to 5 core pages for qualifying projects",
+      "Responsive desktop, tablet & mobile design",
+      "Business-focused page structure",
+      "Contact and lead-capture options",
+      "Domain connection assistance",
+      "Basic metadata & search-ready structure",
+      "Sitemap and indexing preparation",
+      "Launch and deployment assistance",
     ],
-    smallNote: "* Additional pages: $100 each",
+
+    note:
+      "Larger sites, advanced features, custom integrations, unusual content requirements, or software functionality may require a custom quote.",
+
+    accent:
+      "blue",
   },
+
   {
-    id: "website-monthly-service",
-    title: "Website Monthly Service",
-    price: "$49",
-    priceNote: "/month",
-    colorClass: "blue",
+    id:
+      "monthly-service",
+
+    icon:
+      LifeBuoy,
+
+    label:
+      "ONGOING SERVICE",
+
+    title:
+      "Maintenance & Support",
+
+    price:
+      "$49",
+
+    priceNote:
+      "/ month",
+
+    billing:
+      "Starting monthly service",
+
     description:
-      "Our monthly service fee is required for all websites and includes monthly updates, hosting and site security to keep your site looking great, up-to-date and functioning properly.",
+      "Ongoing website help for businesses that want updates, maintenance, technical support, monitoring, deployment assistance, and continued help after launch.",
+
     includes: [
-      "Worry-Free Cloud Hosting",
-      "SSL Certificate",
-      "Desktop, Tablet & Mobile Optimization",
-      "Cross Browser Testing",
-      "Real-Time Traffic Stats",
-      "Site Login Credentials",
-      "Make Your Own Updates",
-      "We Make Updates for You",
-      "Reliable Local Support",
+      "Routine website updates",
+      "Content changes",
+      "Technical maintenance",
+      "Responsive-layout checks",
+      "Deployment oversight",
+      "Domain and SSL checks",
+      "Basic website monitoring",
+      "Direct Matthew Web support",
+      "Room for additional services",
     ],
-    smallNote: "",
+
+    note:
+      "The exact monthly scope depends on the website and service arrangement. Large additions or new functionality may be quoted separately.",
+
+    accent:
+      "orange",
   },
+
   {
-    id: "reputation-management",
-    title: "Reputation Management",
-    price: "$99",
-    priceNote: "/month",
-    colorClass: "green",
+    id:
+      "custom-software",
+
+    icon:
+      Code2,
+
+    label:
+      "CUSTOM DEVELOPMENT",
+
+    title:
+      "Custom Software",
+
+    price:
+      "Custom",
+
+    priceNote:
+      "quote",
+
+    billing:
+      "Priced by project scope",
+
     description:
-      "Don't let bad online customer reviews destroy your business. Protect your reputation by monitoring your brand, deflecting negative reviews and increasing positive reviews.",
+      "Custom-coded tools for businesses whose needs go beyond ordinary website pages or off-the-shelf website features.",
+
     includes: [
-      "Reputation Assessment",
-      "Review Monitoring",
-      "Daily Reputation Reports",
-      "Automatic Email Notifications",
-      "Review Request Form",
-      "Deter Negative Reviews",
-      "Increase 5-Star Reviews",
-      "Promote on Social Media",
-      "Review Response Coach",
+      "CRM-style dashboards",
+      "Lead tracking systems",
+      "Custom forms",
+      "Business workflows",
+      "Admin tools",
+      "Database-backed functionality",
+      "Integrations",
+      "Automation",
+      "Custom business features",
     ],
-    smallNote: "",
+
+    note:
+      "Custom software is priced after the problem, required features, technical complexity, and delivery scope are understood.",
+
+    accent:
+      "blue",
   },
 ];
 
-const addOns = [
+/* ============================================================
+   ADDITIONAL SERVICES
+============================================================ */
+
+const additionalServices = [
   {
-    id: "custom-software",
-    title: "Custom Software",
-    price: "Price per design",
-    description:
-      "Custom CRM systems, AI tools, customer management dashboards, booking tools, admin panels, lead tracking systems, automation tools, and other business software built around your needs.",
+    icon:
+      Globe2,
+
+    title:
+      "Domain & Deployment",
+
+    price:
+      "Quoted by scope",
+
+    text:
+      "Domain connection, DNS help, deployment, redirects, launch configuration, and related technical setup.",
   },
+
   {
-    id: "basic-logo-creation",
-    title: "Basic Logo Creation",
-    price: "$399",
-    description:
-      "A clean, professional logo concept for your business that can be used on your website, social media, business cards, and basic marketing materials.",
+    icon:
+      SearchCheck,
+
+    title:
+      "SEO & Indexing",
+
+    price:
+      "Quoted by scope",
+
+    text:
+      "Metadata, sitemap setup, Search Console, Bing tools, indexing diagnostics, internal linking, and technical search improvements.",
   },
+
   {
-    id: "website-indexing",
-    title: "Website Indexing",
-    price: "$15",
-    description:
-      "Basic website indexing help for search engines, including submitting your site and sitemap so Google and other search engines can discover your pages faster.",
+    icon:
+      FileText,
+
+    title:
+      "Forms & Lead Capture",
+
+    price:
+      "Quoted by scope",
+
+    text:
+      "Contact forms, quote requests, booking requests, intake forms, lead capture, and structured customer information.",
+  },
+
+  {
+    icon:
+      CreditCard,
+
+    title:
+      "Payment Integration",
+
+    price:
+      "Quoted by scope",
+
+    text:
+      "Payment links, checkout connections, payment-flow setup, and website payment functionality where appropriate.",
+  },
+
+  {
+    icon:
+      Layers3,
+
+    title:
+      "Additional Pages",
+
+    price:
+      "Quoted before work",
+
+    text:
+      "New service pages, landing pages, FAQs, examples, content sections, business information, and other website expansion.",
+  },
+
+  {
+    icon:
+      Settings2,
+
+    title:
+      "Added Functionality",
+
+    price:
+      "Custom quote",
+
+    text:
+      "Booking tools, dashboards, customer systems, integrations, automation, data tools, and other custom website functionality.",
   },
 ];
 
-const comparisonRows = [
+/* ============================================================
+   PRICING PRINCIPLES
+============================================================ */
+
+const pricingPrinciples = [
   {
-    question: "How much to get started?",
-    ourCompany: "$499",
-    competition: "$3,000+",
-    competitionNote: "Average Cost of a Small Business Website",
+    icon:
+      BadgeDollarSign,
+
+    title:
+      "Clear Starting Price",
+
+    text:
+      "Standard website work can begin from a defined starting point instead of forcing every customer into a high-cost agency package.",
   },
+
   {
-    question: "How much per year?",
-    ourCompany: "$49/month",
-    competition: "Thousands",
-    competitionNote: "first year — Hundreds thereafter",
+    icon:
+      FileText,
+
+    title:
+      "Scope Before Extra Work",
+
+    text:
+      "Additional pages, features, integrations, and software should be identified and priced before that additional work is added.",
   },
+
   {
-    question: "What about hosting?",
-    ourCompany: "Included",
-    competition: "+$150 per year",
-    competitionNote: "approx.",
+    icon:
+      ShieldCheck,
+
+    title:
+      "Written Expectations",
+
+    text:
+      "Larger projects should clearly define scope, payment terms, revisions, responsibilities, delivery, and other important project conditions.",
   },
+
   {
-    question: "SSL certificate?",
-    ourCompany: "Included",
-    competition: "+$149 per year",
-    competitionNote: "approx.",
-  },
-  {
-    question: "Is it mobile responsive?",
-    ourCompany: "Yes",
-    competition: "Additional $$$",
-    competitionNote: "Most web designers charge extra for a mobile site",
-  },
-  {
-    question: "How much for ongoing updates?",
-    ourCompany: "Easily make updates yourself or let us do it for you",
-    competition: "$75/hour",
-    competitionNote: "approx. Average hourly rate for web designers",
-  },
-  {
-    question: "What about SEO?",
-    ourCompany: "Included",
-    competition: "$100-300/hour",
-    competitionNote: "approx. Average hourly rate for SEO",
-  },
-  {
-    question: "How long until my new website is live?",
-    ourCompany: "Go live in as little as 1 week!",
-    competition: "60 - 90 days",
-    competitionNote: "approx.",
-  },
-  {
-    question: "The bottom line",
-    ourCompany:
-      "Affordable pricing, must-have features, reliable support and a fast and easy set up process.",
-    competition:
-      "Thousands of dollars upfront, hundreds of dollars a month, pay for updates, and months to build.",
-    competitionNote: "",
+    icon:
+      Wrench,
+
+    title:
+      "Build What Is Needed",
+
+    text:
+      "A business should not automatically pay for features it does not need. The project should match the actual business problem.",
   },
 ];
+
+/* ============================================================
+   PAYMENT PROCESS
+============================================================ */
+
+const paymentSteps = [
+  {
+    number:
+      "01",
+
+    title:
+      "Project Inquiry",
+
+    text:
+      "Tell Matthew Web what you need, what you have now, and what problem the website or software should solve.",
+  },
+
+  {
+    number:
+      "02",
+
+    title:
+      "Define the Scope",
+
+    text:
+      "The required pages, functionality, integrations, content, timeline, and major project requirements are identified.",
+  },
+
+  {
+    number:
+      "03",
+
+    title:
+      "Price & Agreement",
+
+    text:
+      "The project price and applicable deposit, milestone, revision, cancellation, and payment terms are established before committed work begins.",
+  },
+
+  {
+    number:
+      "04",
+
+    title:
+      "Development",
+
+    text:
+      "Matthew Web builds the agreed website, feature, integration, or software based on the defined project scope.",
+  },
+
+  {
+    number:
+      "05",
+
+    title:
+      "Review & Completion",
+
+    text:
+      "The project is reviewed and agreed revisions are handled according to the project arrangement.",
+  },
+
+  {
+    number:
+      "06",
+
+    title:
+      "Launch & Ongoing Service",
+
+    text:
+      "After payment and completion requirements are satisfied, the project can launch and ongoing maintenance or support can continue if desired.",
+  },
+];
+
+/* ============================================================
+   FAQ
+============================================================ */
+
+const faqs = [
+  {
+    q:
+      "Is every website exactly $499?",
+
+    a:
+      "$499 is Matthew Web's standard starting point for a qualifying small-business website scope. Larger websites, advanced functionality, complex integrations, extensive content work, or unusual project requirements may cost more. The scope should be established before work begins.",
+  },
+
+  {
+    q:
+      "What is included in the $499 website starting package?",
+
+    a:
+      "A qualifying standard project can include up to five core pages, responsive design, business-focused structure, contact or lead-capture options, domain connection assistance, search-ready metadata and structure, sitemap preparation, and launch assistance.",
+  },
+
+  {
+    q:
+      "Is the $49 monthly service required?",
+
+    a:
+      "Monthly maintenance and support is an available ongoing service rather than something that should be assumed for every project. The exact ongoing arrangement depends on the website, customer needs, and agreed service terms.",
+  },
+
+  {
+    q:
+      "What happens if I need more pages or features?",
+
+    a:
+      "Additional work can be scoped separately. New service pages, forms, payments, dashboards, booking tools, automation, integrations, or custom functionality can be added when needed.",
+  },
+
+  {
+    q:
+      "How is custom software priced?",
+
+    a:
+      "Custom software is priced after the business problem and technical requirements are understood. A simple internal tool and a larger database-backed business system are very different projects, so one fixed price would not accurately represent both.",
+  },
+
+  {
+    q:
+      "Do I have to buy custom software with a website?",
+
+    a:
+      "No. Many businesses only need a strong website. Custom software should be added when it solves a real workflow, data, customer-management, automation, or integration problem.",
+  },
+
+  {
+    q:
+      "Can I add maintenance later?",
+
+    a:
+      "Yes, when Matthew Web has capacity and the website is supportable. Ongoing service can include updates, maintenance, monitoring, technical help, and additional work.",
+  },
+
+  {
+    q:
+      "When does ownership transfer?",
+
+    a:
+      "Ownership, access, delivery, and transfer conditions should follow the written project agreement and applicable payment terms. Those details should be clear before a project reaches final delivery.",
+  },
+];
+
+/* ============================================================
+   STRUCTURED DATA
+============================================================ */
+
+const pageSchema = {
+  "@context":
+    "https://schema.org",
+
+  "@type":
+    "WebPage",
+
+  name:
+    "Matthew Web Pricing",
+
+  url:
+    "https://matthew-web.com/pricing",
+
+  description:
+    "Website design, maintenance, custom software, SEO, indexing, integrations, and business technology pricing from Matthew Web.",
+};
+
+/* ============================================================
+   PAGE
+============================================================ */
 
 export default function PricingPage() {
   return (
-    <main>
-      <style>{`
-        .site-header {
-          background: #ffffff;
-        }
+    <main className="mwprice-page">
+      <SiteHeader />
 
-        .logo-wrap {
-          padding: 35px 0 35px 7%;
-          background: #ffffff;
-        }
-
-        .logo-link {
-          display: inline-block;
-        }
-
-        .site-logo {
-          display: block;
-          width: 520px;
-          max-width: 90%;
-          height: auto;
-        }
-
-        .main-nav {
-          background: #0f83a6;
-        }
-
-        .nav-inner {
-          display: flex;
-          justify-content: center;
-          align-items: stretch;
-          flex-wrap: wrap;
-        }
-
-        .nav-link {
-          color: #ff7900;
-          text-decoration: none;
-          font-size: 18px;
-          padding: 18px 15px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: 0.2s ease;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-          background: #f57c00;
-          color: #ffffff;
-        }
-
-        .pricing-page-title {
-          background: #f57c00;
-          text-align: center;
-          padding: 52px 20px 78px;
-        }
-
-        .pricing-page-title h1 {
-          margin: 0;
-          color: #ffffff;
-          font-size: 58px;
-          line-height: 1.1;
-          font-weight: 900;
-          letter-spacing: 1px;
-        }
-
-        .pricing-intro {
-          text-align: center;
-          max-width: 1120px;
-          margin: 0 auto;
-          padding: 88px 24px 54px;
-        }
-
-        .pricing-intro h2 {
-          margin: 0 0 20px;
-          color: #2f3135;
-          font-size: clamp(42px, 5vw, 58px);
-          line-height: 1.1;
-          font-weight: 800;
-        }
-
-        .pricing-intro p {
-          margin: 0;
-          color: #444444;
-          font-size: 26px;
-          line-height: 1.35;
-        }
-
-        .pricing-cards-wrap {
-          max-width: 1100px;
-          margin: 0 auto;
-          padding: 0 24px 110px;
-        }
-
-        .pricing-cards {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          border: 1px solid #d6d6d6;
-        }
-
-        .pricing-card {
-          border-right: 1px solid #d6d6d6;
-          text-align: center;
-          background: #ffffff;
-          display: flex;
-          flex-direction: column;
-          scroll-margin-top: 30px;
-        }
-
-        .pricing-card:last-child {
-          border-right: none;
-        }
-
-        .card-header {
-          min-height: 94px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 18px;
-        }
-
-        .card-header h3 {
-          color: #ffffff;
-          font-size: 29px;
-          line-height: 1.15;
-          margin: 0;
-          font-weight: 800;
-        }
-
-        .card-header.orange {
-          background: #f57c00;
-        }
-
-        .card-header.blue {
-          background: #0f83a6;
-        }
-
-        .card-header.green {
-          background: #124d0c;
-        }
-
-        .card-body {
-          padding: 38px 28px 28px;
-          display: flex;
-          flex-direction: column;
-          flex: 1;
-        }
-
-        .price {
-          color: #2f3135;
-          font-size: 62px;
-          font-weight: 800;
-          line-height: 1;
-          margin-bottom: 34px;
-        }
-
-        .price span {
-          font-size: 24px;
-          font-weight: 400;
-          font-style: italic;
-          margin-left: 6px;
-        }
-
-        .pricing-description {
-          color: #4a4a4a;
-          font-size: 18px;
-          line-height: 1.25;
-          margin: 0 0 28px;
-        }
-
-        .includes-title {
-          color: #333333;
-          font-size: 22px;
-          font-weight: 800;
-          margin: 0 0 6px;
-        }
-
-        .includes-list {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-        }
-
-        .includes-list li {
-          color: #4a4a4a;
-          font-size: 18px;
-          line-height: 1.35;
-        }
-
-        .small-note {
-          color: #4a4a4a;
-          font-size: 13px;
-          margin: 10px 0 18px;
-          min-height: 20px;
-        }
-
-        .card-btn-wrap {
-          margin-top: auto;
-          padding-top: 18px;
-        }
-
-        .card-btn {
-          width: 100%;
-          max-width: 275px;
-          text-align: center;
-          margin: 0 auto;
-        }
-
-        .addons-section {
-          max-width: 1100px;
-          margin: 0 auto;
-          padding: 0 24px 100px;
-          scroll-margin-top: 30px;
-        }
-
-        .addons-section h2 {
-          text-align: center;
-          color: #2f3135;
-          font-size: clamp(38px, 5vw, 54px);
-          line-height: 1.15;
-          margin: 0 0 18px;
-          font-weight: 800;
-        }
-
-        .addons-section > p {
-          text-align: center;
-          color: #444444;
-          font-size: 24px;
-          margin: 0 0 42px;
-        }
-
-        .addon-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 26px;
-        }
-
-        .addon-card {
-          border: 1px solid #d6d6d6;
-          border-radius: 8px;
-          padding: 32px 26px;
-          text-align: center;
-          background: #ffffff;
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-          display: flex;
-          flex-direction: column;
-          scroll-margin-top: 30px;
-        }
-
-        .addon-card h3 {
-          color: #f57c00;
-          font-size: 30px;
-          line-height: 1.1;
-          margin: 0 0 18px;
-          font-weight: 800;
-        }
-
-        .addon-price {
-          color: #2f3135;
-          font-size: 36px;
-          font-weight: 800;
-          margin: 0 0 18px;
-        }
-
-        .addon-card p {
-          color: #444444;
-          font-size: 18px;
-          line-height: 1.4;
-          margin: 0 0 24px;
-        }
-
-        .addon-btn-wrap {
-          margin-top: auto;
-          padding-top: 10px;
-        }
-
-        .addon-btn {
-          width: 100%;
-          max-width: 260px;
-          text-align: center;
-          margin: 0 auto;
-        }
-
-        .comparison-section {
-          max-width: 1120px;
-          margin: 0 auto;
-          padding: 8px 24px 80px;
-          scroll-margin-top: 30px;
-        }
-
-        .comparison-section h2 {
-          text-align: center;
-          color: #2f3135;
-          font-size: clamp(38px, 5vw, 54px);
-          line-height: 1.15;
-          margin: 0 0 18px;
-          font-weight: 800;
-        }
-
-        .comparison-section > p {
-          text-align: center;
-          color: #333333;
-          font-size: 26px;
-          margin: 0 0 80px;
-        }
-
-        .comparison-row {
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
-          gap: 70px;
-          margin-bottom: 82px;
-          align-items: start;
-        }
-
-        .comparison-question {
-          color: #f57c00;
-          font-size: 30px;
-          line-height: 1.25;
-          font-weight: 800;
-        }
-
-        .comparison-col-title {
-          color: #1f2933;
-          font-size: 30px;
-          line-height: 1.2;
-          margin-bottom: 18px;
-        }
-
-        .comparison-answer {
-          color: #f57c00;
-          font-size: 26px;
-          line-height: 1.2;
-          font-weight: 800;
-        }
-
-        .competition-answer {
-          color: #1f2933;
-          font-size: 26px;
-          line-height: 1.2;
-          font-weight: 800;
-        }
-
-        .comparison-note {
-          color: #1f2933;
-          font-size: 18px;
-          line-height: 1.25;
-          font-weight: 400;
-        }
-
-        .pricing-cta-parallax {
-          min-height: 390px;
-          background-image: linear-gradient(
-              rgba(0, 0, 0, 0.48),
-              rgba(0, 0, 0, 0.48)
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(
+              pageSchema
             ),
-            url("${images.cta}");
-          background-size: cover;
-          background-position: center;
-          background-attachment: fixed;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          padding: 65px 20px;
-          scroll-margin-top: 30px;
+        }}
+      />
+
+      <style>{`
+        :root {
+          --mwp-black:
+            #020304;
+
+          --mwp-panel:
+            #091117;
+
+          --mwp-muted:
+            #aebbc5;
+
+          --mwp-blue:
+            #08b9f4;
+
+          --mwp-blue-light:
+            #38d7ff;
+
+          --mwp-orange:
+            #ff7900;
+
+          --mwp-orange-light:
+            #ffab31;
+
+          --mwp-green:
+            #35e07e;
+
+          --mwp-border:
+            rgba(
+              255,
+              255,
+              255,
+              0.09
+            );
         }
 
-        .pricing-cta-overlay h2 {
-          color: #ffffff;
-          font-size: clamp(36px, 5vw, 58px);
-          line-height: 1.1;
-          margin: 0 0 22px;
-          font-weight: 900;
-          letter-spacing: 1px;
+        body {
+          margin: 0;
+          background:
+            var(--mwp-black);
         }
 
-        .pricing-cta-overlay p {
-          color: #ffffff;
-          font-size: clamp(23px, 3vw, 31px);
-          line-height: 1.25;
-          margin: 0 auto 38px;
-          max-width: 1050px;
+        .mwprice-page {
+          min-height:
+            100vh;
+
+          overflow:
+            hidden;
+
+          color:
+            #ffffff;
+
+          background:
+            var(--mwp-black);
         }
 
-        .btn-primary {
-          display: inline-block;
-          background: #f57c00;
-          color: #ffffff;
-          text-decoration: none;
-          font-size: 24px;
-          padding: 22px 58px;
-          border-radius: 8px;
-          font-weight: 600;
+        .mwp-container {
+          width:
+            100%;
+
+          max-width:
+            1380px;
+
+          margin:
+            0 auto;
         }
 
-        .site-footer {
-          background: #f57c00;
-          color: #ffffff;
-          padding: 52px 32px 34px;
+        .mwp-section {
+          position:
+            relative;
+
+          padding:
+            100px
+            clamp(
+              20px,
+              5vw,
+              80px
+            );
         }
 
-        .footer-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 70px;
-          max-width: 1120px;
-          margin: 0 auto;
+        .mwp-blue {
+          color:
+            var(--mwp-blue-light);
         }
 
-        .footer-grid h3 {
-          font-size: 24px;
-          margin: 0 0 18px;
-          color: #ffffff;
+        .mwp-orange {
+          color:
+            var(--mwp-orange);
         }
 
-        .footer-grid p,
-        .footer-grid a {
-          color: #ffffff;
-          font-size: 21px;
-          line-height: 1.6;
+        /* =====================================================
+           COMMON
+        ===================================================== */
+
+        .mwp-kicker {
+          display:
+            inline-flex;
+
+          align-items:
+            center;
+
+          gap:
+            8px;
+
+          margin-bottom:
+            14px;
+
+          color:
+            var(--mwp-blue-light);
+
+          font-size:
+            11px;
+
+          font-weight:
+            900;
+
+          letter-spacing:
+            0.16em;
+
+          text-transform:
+            uppercase;
         }
 
-        .footer-grid a {
-          text-decoration: underline;
+        .mwp-kicker.orange {
+          color:
+            var(--mwp-orange-light);
         }
 
-        .footer-contact {
-          margin: 0 0 14px;
+        .mwp-kicker svg {
+          width:
+            18px;
+
+          height:
+            18px;
         }
 
-        .social-row {
-          display: flex;
-          gap: 16px;
-          margin-top: 24px;
+        .mwp-heading {
+          max-width:
+            900px;
+
+          margin-bottom:
+            48px;
         }
 
-        .social-row span {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          background: #ffffff;
-          color: #f57c00;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 25px;
-          font-weight: 800;
+        .mwp-heading.center {
+          margin-left:
+            auto;
+
+          margin-right:
+            auto;
+
+          text-align:
+            center;
         }
 
-        .footer-nav {
-          display: flex;
-          justify-content: center;
-          gap: 22px;
-          flex-wrap: wrap;
-          margin-top: 42px;
+        .mwp-heading h2 {
+          margin:
+            0 0 18px;
+
+          font-size:
+            clamp(
+              38px,
+              4.7vw,
+              68px
+            );
+
+          line-height:
+            1.02;
+
+          letter-spacing:
+            -0.05em;
         }
 
-        .footer-nav a {
-          color: #ffffff;
-          font-size: 18px;
-          text-decoration: none;
+        .mwp-heading p {
+          max-width:
+            800px;
+
+          margin:
+            0;
+
+          color:
+            var(--mwp-muted);
+
+          font-size:
+            clamp(
+              15px,
+              1.35vw,
+              19px
+            );
+
+          line-height:
+            1.75;
         }
 
-        .footer-nav a:hover {
-          text-decoration: underline;
+        .mwp-heading.center p {
+          margin-left:
+            auto;
+
+          margin-right:
+            auto;
         }
 
-        .copyright {
-          text-align: center;
-          font-size: 12px;
-          margin: 22px 0 0;
-          color: #ffffff;
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        .mwp-button-row {
+          display:
+            flex;
+
+          flex-wrap:
+            wrap;
+
+          gap:
+            13px;
+
+          margin-top:
+            29px;
         }
 
-        @media (max-width: 980px) {
-          .logo-wrap {
-            padding: 30px 24px;
-            text-align: center;
+        .mwp-btn {
+          min-height:
+            53px;
+
+          display:
+            inline-flex;
+
+          align-items:
+            center;
+
+          justify-content:
+            center;
+
+          gap:
+            9px;
+
+          padding:
+            0 22px;
+
+          border-radius:
+            9px;
+
+          color:
+            #ffffff;
+
+          text-decoration:
+            none;
+
+          font-size:
+            14px;
+
+          font-weight:
+            850;
+
+          transition:
+            transform
+              0.2s ease,
+            box-shadow
+              0.2s ease,
+            border-color
+              0.2s ease;
+        }
+
+        .mwp-btn svg {
+          width:
+            18px;
+
+          height:
+            18px;
+        }
+
+        .mwp-btn-blue {
+          border:
+            1px solid
+            rgba(
+              56,
+              215,
+              255,
+              0.55
+            );
+
+          background:
+            linear-gradient(
+              180deg,
+              #0ab6ed,
+              #0789b6
+            );
+
+          box-shadow:
+            0 0 16px
+            rgba(
+              8,
+              185,
+              244,
+              0.28
+            );
+        }
+
+        .mwp-btn-orange {
+          border:
+            1px solid
+            rgba(
+              255,
+              176,
+              49,
+              0.6
+            );
+
+          background:
+            linear-gradient(
+              180deg,
+              #ff9519,
+              #f16600
+            );
+
+          box-shadow:
+            0 0 16px
+            rgba(
+              255,
+              121,
+              0,
+              0.27
+            );
+        }
+
+        .mwp-btn-dark {
+          border:
+            1px solid
+            rgba(
+              255,
+              255,
+              255,
+              0.13
+            );
+
+          background:
+            rgba(
+              255,
+              255,
+              255,
+              0.035
+            );
+        }
+
+        .mwp-btn:hover {
+          transform:
+            translateY(-2px);
+        }
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .mwp-hero {
+          position:
+            relative;
+
+          min-height:
+            650px;
+
+          display:
+            flex;
+
+          align-items:
+            center;
+
+          overflow:
+            hidden;
+
+          border-bottom:
+            1px solid
+            rgba(
+              8,
+              185,
+              244,
+              0.16
+            );
+
+          background:
+            radial-gradient(
+              ellipse at
+              18% 42%,
+              rgba(
+                8,
+                185,
+                244,
+                0.16
+              ),
+              transparent
+              36%
+            ),
+            radial-gradient(
+              ellipse at
+              82% 48%,
+              rgba(
+                255,
+                121,
+                0,
+                0.08
+              ),
+              transparent
+              32%
+            ),
+            linear-gradient(
+              180deg,
+              #020304,
+              #03080c,
+              #020304
+            );
+        }
+
+        .mwp-hero::before {
+          content:
+            "";
+
+          position:
+            absolute;
+
+          inset:
+            0;
+
+          opacity:
+            0.27;
+
+          pointer-events:
+            none;
+
+          background-image:
+            linear-gradient(
+              rgba(
+                8,
+                185,
+                244,
+                0.055
+              )
+              1px,
+              transparent
+              1px
+            ),
+            linear-gradient(
+              90deg,
+              rgba(
+                8,
+                185,
+                244,
+                0.055
+              )
+              1px,
+              transparent
+              1px
+            );
+
+          background-size:
+            76px 76px;
+
+          mask-image:
+            radial-gradient(
+              ellipse at center,
+              black,
+              transparent 80%
+            );
+        }
+
+        .mwp-hero-inner {
+          position:
+            relative;
+
+          z-index:
+            3;
+
+          display:
+            grid;
+
+          grid-template-columns:
+            minmax(
+              0,
+              1.04fr
+            )
+            minmax(
+              420px,
+              0.96fr
+            );
+
+          align-items:
+            center;
+
+          gap:
+            clamp(
+              45px,
+              6vw,
+              95px
+            );
+
+          width:
+            100%;
+
+          max-width:
+            1380px;
+
+          margin:
+            0 auto;
+
+          padding:
+            95px
+            clamp(
+              20px,
+              5vw,
+              80px
+            );
+        }
+
+        .mwp-hero-badge {
+          display:
+            inline-flex;
+
+          align-items:
+            center;
+
+          gap:
+            8px;
+
+          width:
+            fit-content;
+
+          margin-bottom:
+            21px;
+
+          padding:
+            8px 12px;
+
+          border:
+            1px solid
+            rgba(
+              8,
+              185,
+              244,
+              0.28
+            );
+
+          border-radius:
+            999px;
+
+          color:
+            #d9f8ff;
+
+          background:
+            rgba(
+              8,
+              185,
+              244,
+              0.055
+            );
+
+          font-size:
+            10px;
+
+          font-weight:
+            900;
+
+          letter-spacing:
+            0.14em;
+
+          text-transform:
+            uppercase;
+        }
+
+        .mwp-hero-badge span {
+          width:
+            7px;
+
+          height:
+            7px;
+
+          border-radius:
+            50%;
+
+          background:
+            var(--mwp-green);
+
+          box-shadow:
+            0 0 9px
+            rgba(
+              53,
+              224,
+              126,
+              0.8
+            );
+        }
+
+        .mwp-hero h1 {
+          max-width:
+            920px;
+
+          margin:
+            0;
+
+          font-size:
+            clamp(
+              50px,
+              6vw,
+              91px
+            );
+
+          line-height:
+            0.97;
+
+          letter-spacing:
+            -0.06em;
+        }
+
+        .mwp-hero h1 span {
+          display:
+            block;
+        }
+
+        .mwp-hero-copy > p {
+          max-width:
+            760px;
+
+          margin:
+            25px 0 0;
+
+          color:
+            #b8c6cf;
+
+          font-size:
+            clamp(
+              16px,
+              1.4vw,
+              20px
+            );
+
+          line-height:
+            1.72;
+        }
+
+        /* =====================================================
+           HERO PRICE VISUAL
+        ===================================================== */
+
+        .mwp-price-stage {
+          position:
+            relative;
+
+          min-height:
+            440px;
+
+          display:
+            grid;
+
+          place-items:
+            center;
+        }
+
+        .mwp-price-display {
+          position:
+            relative;
+
+          width:
+            min(
+              100%,
+              480px
+            );
+
+          padding:
+            30px;
+
+          border:
+            1px solid
+            rgba(
+              8,
+              185,
+              244,
+              0.3
+            );
+
+          border-radius:
+            21px;
+
+          background:
+            radial-gradient(
+              circle at
+              20% 15%,
+              rgba(
+                8,
+                185,
+                244,
+                0.12
+              ),
+              transparent
+              34%
+            ),
+            linear-gradient(
+              145deg,
+              #0c171e,
+              #04080b
+            );
+
+          box-shadow:
+            0 30px 70px
+            rgba(
+              0,
+              0,
+              0,
+              0.48
+            );
+        }
+
+        .mwp-price-display-top {
+          display:
+            flex;
+
+          align-items:
+            center;
+
+          justify-content:
+            space-between;
+
+          margin-bottom:
+            30px;
+        }
+
+        .mwp-price-display-top strong {
+          color:
+            #82939d;
+
+          font-size:
+            9px;
+
+          letter-spacing:
+            0.13em;
+        }
+
+        .mwp-live-dot {
+          display:
+            inline-flex;
+
+          align-items:
+            center;
+
+          gap:
+            6px;
+
+          color:
+            #a8bac4;
+
+          font-size:
+            8px;
+
+          font-weight:
+            900;
+
+          letter-spacing:
+            0.09em;
+        }
+
+        .mwp-live-dot::before {
+          content:
+            "";
+
+          width:
+            6px;
+
+          height:
+            6px;
+
+          border-radius:
+            50%;
+
+          background:
+            var(--mwp-green);
+
+          box-shadow:
+            0 0 7px
+            rgba(
+              53,
+              224,
+              126,
+              0.7
+            );
+        }
+
+        .mwp-big-price {
+          text-align:
+            center;
+        }
+
+        .mwp-big-price-label {
+          color:
+            #81929c;
+
+          font-size:
+            9px;
+
+          font-weight:
+            900;
+
+          letter-spacing:
+            0.13em;
+
+          text-transform:
+            uppercase;
+        }
+
+        .mwp-big-price-value {
+          margin-top:
+            8px;
+
+          font-size:
+            clamp(
+              68px,
+              8vw,
+              108px
+            );
+
+          line-height:
+            1;
+
+          font-weight:
+            950;
+
+          letter-spacing:
+            -0.07em;
+        }
+
+        .mwp-big-price-value span {
+          color:
+            var(--mwp-blue-light);
+        }
+
+        .mwp-price-caption {
+          margin-top:
+            11px;
+
+          color:
+            #91a1aa;
+
+          font-size:
+            11px;
+
+          line-height:
+            1.5;
+
+          text-align:
+            center;
+        }
+
+        .mwp-price-mini-grid {
+          display:
+            grid;
+
+          grid-template-columns:
+            repeat(
+              2,
+              1fr
+            );
+
+          gap:
+            10px;
+
+          margin-top:
+            27px;
+        }
+
+        .mwp-price-mini {
+          min-height:
+            76px;
+
+          padding:
+            13px;
+
+          border:
+            1px solid
+            rgba(
+              255,
+              255,
+              255,
+              0.08
+            );
+
+          border-radius:
+            9px;
+
+          background:
+            #081117;
+        }
+
+        .mwp-price-mini span {
+          display:
+            block;
+
+          color:
+            #71838d;
+
+          font-size:
+            8px;
+
+          font-weight:
+            900;
+
+          letter-spacing:
+            0.09em;
+        }
+
+        .mwp-price-mini strong {
+          display:
+            block;
+
+          margin-top:
+            7px;
+
+          color:
+            var(--mwp-orange-light);
+
+          font-size:
+            17px;
+        }
+
+        .mwp-price-mini:first-child strong {
+          color:
+            var(--mwp-blue-light);
+        }
+
+        /* =====================================================
+           PRIMARY PRICING
+        ===================================================== */
+
+        .mwp-plans {
+          background:
+            linear-gradient(
+              180deg,
+              #020304,
+              #04090d,
+              #020304
+            );
+        }
+
+        .mwp-plan-grid {
+          display:
+            grid;
+
+          grid-template-columns:
+            repeat(
+              3,
+              minmax(
+                0,
+                1fr
+              )
+            );
+
+          gap:
+            16px;
+        }
+
+        .mwp-plan-card {
+          position:
+            relative;
+
+          display:
+            flex;
+
+          flex-direction:
+            column;
+
+          min-height:
+            700px;
+
+          padding:
+            28px;
+
+          border:
+            1px solid
+            var(--mwp-border);
+
+          border-radius:
+            18px;
+
+          background:
+            linear-gradient(
+              145deg,
+              #0a1218,
+              #04080b
+            );
+
+          transition:
+            transform
+              0.22s ease,
+            border-color
+              0.22s ease;
+        }
+
+        .mwp-plan-card:hover {
+          transform:
+            translateY(-5px);
+        }
+
+        .mwp-plan-card.blue:hover {
+          border-color:
+            rgba(
+              8,
+              185,
+              244,
+              0.36
+            );
+        }
+
+        .mwp-plan-card.orange:hover {
+          border-color:
+            rgba(
+              255,
+              121,
+              0,
+              0.36
+            );
+        }
+
+        .mwp-plan-icon {
+          width:
+            58px;
+
+          height:
+            58px;
+
+          display:
+            grid;
+
+          place-items:
+            center;
+
+          margin-bottom:
+            19px;
+
+          border-radius:
+            14px;
+        }
+
+        .mwp-plan-card.blue .mwp-plan-icon {
+          border:
+            1px solid
+            rgba(
+              8,
+              185,
+              244,
+              0.3
+            );
+
+          color:
+            var(--mwp-blue-light);
+
+          background:
+            rgba(
+              8,
+              185,
+              244,
+              0.055
+            );
+        }
+
+        .mwp-plan-card.orange .mwp-plan-icon {
+          border:
+            1px solid
+            rgba(
+              255,
+              121,
+              0,
+              0.3
+            );
+
+          color:
+            var(--mwp-orange-light);
+
+          background:
+            rgba(
+              255,
+              121,
+              0,
+              0.05
+            );
+        }
+
+        .mwp-plan-icon svg {
+          width:
+            29px;
+
+          height:
+            29px;
+        }
+
+        .mwp-plan-label {
+          margin-bottom:
+            9px;
+
+          color:
+            #7d8e98;
+
+          font-size:
+            8px;
+
+          font-weight:
+            950;
+
+          letter-spacing:
+            0.13em;
+        }
+
+        .mwp-plan-card h3 {
+          margin:
+            0;
+
+          font-size:
+            27px;
+
+          line-height:
+            1.08;
+
+          letter-spacing:
+            -0.035em;
+        }
+
+        .mwp-plan-price {
+          display:
+            flex;
+
+          align-items:
+            flex-end;
+
+          gap:
+            9px;
+
+          margin-top:
+            24px;
+        }
+
+        .mwp-plan-price strong {
+          font-size:
+            58px;
+
+          line-height:
+            0.95;
+
+          letter-spacing:
+            -0.055em;
+        }
+
+        .mwp-plan-price span {
+          padding-bottom:
+            5px;
+
+          color:
+            #8798a2;
+
+          font-size:
+            11px;
+
+          font-weight:
+            800;
+        }
+
+        .mwp-plan-billing {
+          margin-top:
+            9px;
+
+          color:
+            var(--mwp-blue-light);
+
+          font-size:
+            10px;
+
+          font-weight:
+            900;
+
+          letter-spacing:
+            0.08em;
+
+          text-transform:
+            uppercase;
+        }
+
+        .mwp-plan-card.orange .mwp-plan-billing {
+          color:
+            var(--mwp-orange-light);
+        }
+
+        .mwp-plan-description {
+          margin:
+            21px 0 0;
+
+          color:
+            var(--mwp-muted);
+
+          font-size:
+            13px;
+
+          line-height:
+            1.7;
+        }
+
+        .mwp-plan-divider {
+          height:
+            1px;
+
+          margin:
+            24px 0;
+
+          background:
+            rgba(
+              255,
+              255,
+              255,
+              0.07
+            );
+        }
+
+        .mwp-includes-title {
+          margin-bottom:
+            13px;
+
+          color:
+            #ffffff;
+
+          font-size:
+            11px;
+
+          font-weight:
+            900;
+
+          letter-spacing:
+            0.09em;
+
+          text-transform:
+            uppercase;
+        }
+
+        .mwp-plan-list {
+          display:
+            grid;
+
+          gap:
+            10px;
+
+          margin:
+            0;
+
+          padding:
+            0;
+
+          list-style:
+            none;
+        }
+
+        .mwp-plan-list li {
+          display:
+            flex;
+
+          align-items:
+            flex-start;
+
+          gap:
+            9px;
+
+          color:
+            #c0ccd2;
+
+          font-size:
+            12px;
+
+          line-height:
+            1.5;
+        }
+
+        .mwp-plan-list svg {
+          width:
+            15px;
+
+          height:
+            15px;
+
+          flex:
+            0 0 auto;
+
+          margin-top:
+            1px;
+
+          color:
+            var(--mwp-blue-light);
+        }
+
+        .mwp-plan-card.orange .mwp-plan-list svg {
+          color:
+            var(--mwp-orange-light);
+        }
+
+        .mwp-plan-note {
+          margin:
+            23px 0 0;
+
+          padding:
+            13px;
+
+          border:
+            1px solid
+            rgba(
+              255,
+              255,
+              255,
+              0.07
+            );
+
+          border-radius:
+            9px;
+
+          color:
+            #84959f;
+
+          background:
+            rgba(
+              255,
+              255,
+              255,
+              0.018
+            );
+
+          font-size:
+            10px;
+
+          line-height:
+            1.6;
+        }
+
+        .mwp-plan-bottom {
+          margin-top:
+            auto;
+
+          padding-top:
+            25px;
+        }
+
+        .mwp-plan-bottom .mwp-btn {
+          width:
+            100%;
+
+          box-sizing:
+            border-box;
+        }
+
+        /* =====================================================
+           ADDITIONAL SERVICES
+        ===================================================== */
+
+        .mwp-addons {
+          background:
+            #020304;
+        }
+
+        .mwp-addon-grid {
+          display:
+            grid;
+
+          grid-template-columns:
+            repeat(
+              3,
+              minmax(
+                0,
+                1fr
+              )
+            );
+
+          gap:
+            14px;
+        }
+
+        .mwp-addon-card {
+          min-height:
+            255px;
+
+          padding:
+            24px;
+
+          border:
+            1px solid
+            var(--mwp-border);
+
+          border-radius:
+            14px;
+
+          background:
+            rgba(
+              255,
+              255,
+              255,
+              0.018
+            );
+        }
+
+        .mwp-addon-card svg {
+          width:
+            29px;
+
+          height:
+            29px;
+
+          margin-bottom:
+            17px;
+
+          color:
+            var(--mwp-blue-light);
+        }
+
+        .mwp-addon-card:nth-child(even) svg {
+          color:
+            var(--mwp-orange-light);
+        }
+
+        .mwp-addon-card h3 {
+          margin:
+            0 0 9px;
+
+          font-size:
+            18px;
+        }
+
+        .mwp-addon-price {
+          margin-bottom:
+            12px;
+
+          color:
+            var(--mwp-orange-light);
+
+          font-size:
+            10px;
+
+          font-weight:
+            900;
+
+          letter-spacing:
+            0.08em;
+
+          text-transform:
+            uppercase;
+        }
+
+        .mwp-addon-card:nth-child(odd) .mwp-addon-price {
+          color:
+            var(--mwp-blue-light);
+        }
+
+        .mwp-addon-card p {
+          margin:
+            0;
+
+          color:
+            var(--mwp-muted);
+
+          font-size:
+            13px;
+
+          line-height:
+            1.68;
+        }
+
+        /* =====================================================
+           PRICING PRINCIPLES
+        ===================================================== */
+
+        .mwp-principles {
+          background:
+            linear-gradient(
+              180deg,
+              #020304,
+              #04090d,
+              #020304
+            );
+        }
+
+        .mwp-principle-grid {
+          display:
+            grid;
+
+          grid-template-columns:
+            repeat(
+              4,
+              minmax(
+                0,
+                1fr
+              )
+            );
+
+          gap:
+            13px;
+        }
+
+        .mwp-principle-card {
+          min-height:
+            230px;
+
+          padding:
+            23px;
+
+          border:
+            1px solid
+            rgba(
+              8,
+              185,
+              244,
+              0.15
+            );
+
+          border-radius:
+            14px;
+
+          background:
+            rgba(
+              8,
+              185,
+              244,
+              0.02
+            );
+        }
+
+        .mwp-principle-card:nth-child(even) {
+          border-color:
+            rgba(
+              255,
+              121,
+              0,
+              0.15
+            );
+
+          background:
+            rgba(
+              255,
+              121,
+              0,
+              0.018
+            );
+        }
+
+        .mwp-principle-card svg {
+          width:
+            29px;
+
+          height:
+            29px;
+
+          margin-bottom:
+            17px;
+
+          color:
+            var(--mwp-blue-light);
+        }
+
+        .mwp-principle-card:nth-child(even) svg {
+          color:
+            var(--mwp-orange-light);
+        }
+
+        .mwp-principle-card h3 {
+          margin:
+            0 0 9px;
+
+          font-size:
+            17px;
+        }
+
+        .mwp-principle-card p {
+          margin:
+            0;
+
+          color:
+            var(--mwp-muted);
+
+          font-size:
+            12px;
+
+          line-height:
+            1.68;
+        }
+
+        /* =====================================================
+           PAYMENT PROCESS
+        ===================================================== */
+
+        .mwp-process {
+          background:
+            radial-gradient(
+              ellipse at
+              80% 45%,
+              rgba(
+                255,
+                121,
+                0,
+                0.05
+              ),
+              transparent
+              31%
+            ),
+            #020304;
+        }
+
+        .mwp-process-grid {
+          display:
+            grid;
+
+          grid-template-columns:
+            repeat(
+              3,
+              minmax(
+                0,
+                1fr
+              )
+            );
+
+          gap:
+            13px;
+        }
+
+        .mwp-process-card {
+          min-height:
+            245px;
+
+          padding:
+            25px;
+
+          border:
+            1px solid
+            rgba(
+              8,
+              185,
+              244,
+              0.16
+            );
+
+          border-radius:
+            14px;
+
+          background:
+            rgba(
+              8,
+              185,
+              244,
+              0.02
+            );
+        }
+
+        .mwp-process-card:nth-child(even) {
+          border-color:
+            rgba(
+              255,
+              121,
+              0,
+              0.16
+            );
+
+          background:
+            rgba(
+              255,
+              121,
+              0,
+              0.018
+            );
+        }
+
+        .mwp-process-number {
+          margin-bottom:
+            17px;
+
+          color:
+            var(--mwp-blue-light);
+
+          font-size:
+            11px;
+
+          font-weight:
+            950;
+
+          letter-spacing:
+            0.14em;
+        }
+
+        .mwp-process-card:nth-child(even)
+          .mwp-process-number {
+          color:
+            var(--mwp-orange-light);
+        }
+
+        .mwp-process-card h3 {
+          margin:
+            0 0 10px;
+
+          font-size:
+            19px;
+        }
+
+        .mwp-process-card p {
+          margin:
+            0;
+
+          color:
+            var(--mwp-muted);
+
+          font-size:
+            13px;
+
+          line-height:
+            1.68;
+        }
+
+        /* =====================================================
+           IMPORTANT NOTE
+        ===================================================== */
+
+        .mwp-note-section {
+          padding:
+            80px
+            clamp(
+              20px,
+              5vw,
+              80px
+            );
+
+          background:
+            #020304;
+        }
+
+        .mwp-note-card {
+          max-width:
+            1120px;
+
+          margin:
+            0 auto;
+
+          display:
+            grid;
+
+          grid-template-columns:
+            auto 1fr;
+
+          align-items:
+            center;
+
+          gap:
+            25px;
+
+          padding:
+            clamp(
+              32px,
+              5vw,
+              52px
+            );
+
+          border:
+            1px solid
+            rgba(
+              255,
+              121,
+              0,
+              0.22
+            );
+
+          border-radius:
+            20px;
+
+          background:
+            radial-gradient(
+              circle at
+              90% 50%,
+              rgba(
+                255,
+                121,
+                0,
+                0.07
+              ),
+              transparent
+              28%
+            ),
+            linear-gradient(
+              145deg,
+              #08131a,
+              #04080b
+            );
+        }
+
+        .mwp-note-icon {
+          width:
+            72px;
+
+          height:
+            72px;
+
+          display:
+            grid;
+
+          place-items:
+            center;
+
+          border:
+            1px solid
+            rgba(
+              255,
+              121,
+              0,
+              0.3
+            );
+
+          border-radius:
+            17px;
+
+          color:
+            var(--mwp-orange);
+
+          background:
+            rgba(
+              255,
+              121,
+              0,
+              0.055
+            );
+        }
+
+        .mwp-note-icon svg {
+          width:
+            35px;
+
+          height:
+            35px;
+        }
+
+        .mwp-note-copy h2 {
+          margin:
+            0 0 10px;
+
+          font-size:
+            clamp(
+              28px,
+              3vw,
+              43px
+            );
+
+          letter-spacing:
+            -0.04em;
+        }
+
+        .mwp-note-copy p {
+          margin:
+            0;
+
+          color:
+            var(--mwp-muted);
+
+          font-size:
+            14px;
+
+          line-height:
+            1.72;
+        }
+
+        /* =====================================================
+           FAQ
+        ===================================================== */
+
+        .mwp-faq {
+          background:
+            linear-gradient(
+              180deg,
+              #020304,
+              #04090d,
+              #020304
+            );
+        }
+
+        .mwp-faq-grid {
+          display:
+            grid;
+
+          grid-template-columns:
+            repeat(
+              2,
+              minmax(
+                0,
+                1fr
+              )
+            );
+
+          gap:
+            14px;
+        }
+
+        .mwp-faq-card {
+          padding:
+            24px;
+
+          border:
+            1px solid
+            var(--mwp-border);
+
+          border-radius:
+            14px;
+
+          background:
+            linear-gradient(
+              145deg,
+              #0a1218,
+              #04080b
+            );
+        }
+
+        .mwp-faq-card h3 {
+          margin:
+            0 0 10px;
+
+          font-size:
+            16px;
+        }
+
+        .mwp-faq-card p {
+          margin:
+            0;
+
+          color:
+            var(--mwp-muted);
+
+          font-size:
+            13px;
+
+          line-height:
+            1.7;
+        }
+
+        /* =====================================================
+           FINAL CTA
+        ===================================================== */
+
+        .mwp-final {
+          padding:
+            95px
+            clamp(
+              20px,
+              5vw,
+              80px
+            );
+
+          background:
+            radial-gradient(
+              ellipse at
+              20% 50%,
+              rgba(
+                8,
+                185,
+                244,
+                0.1
+              ),
+              transparent
+              32%
+            ),
+            radial-gradient(
+              ellipse at
+              80% 50%,
+              rgba(
+                255,
+                121,
+                0,
+                0.075
+              ),
+              transparent
+              32%
+            ),
+            #020304;
+        }
+
+        .mwp-final-card {
+          max-width:
+            1100px;
+
+          margin:
+            0 auto;
+
+          padding:
+            clamp(
+              42px,
+              6vw,
+              72px
+            );
+
+          border:
+            1px solid
+            rgba(
+              255,
+              121,
+              0,
+              0.24
+            );
+
+          border-radius:
+            22px;
+
+          text-align:
+            center;
+
+          background:
+            linear-gradient(
+              145deg,
+              #09131a,
+              #04080b
+            );
+
+          box-shadow:
+            0 30px 80px
+            rgba(
+              0,
+              0,
+              0,
+              0.34
+            );
+        }
+
+        .mwp-final-card > svg {
+          width:
+            43px;
+
+          height:
+            43px;
+
+          margin-bottom:
+            19px;
+
+          color:
+            var(--mwp-orange);
+        }
+
+        .mwp-final-card h2 {
+          margin:
+            0;
+
+          font-size:
+            clamp(
+              38px,
+              5vw,
+              67px
+            );
+
+          line-height:
+            1.03;
+
+          letter-spacing:
+            -0.05em;
+        }
+
+        .mwp-final-card p {
+          max-width:
+            740px;
+
+          margin:
+            18px auto 0;
+
+          color:
+            var(--mwp-muted);
+
+          font-size:
+            15px;
+
+          line-height:
+            1.75;
+        }
+
+        .mwp-final-card .mwp-button-row {
+          justify-content:
+            center;
+        }
+
+        .mwp-related {
+          display:
+            flex;
+
+          flex-wrap:
+            wrap;
+
+          justify-content:
+            center;
+
+          gap:
+            10px 18px;
+
+          margin-top:
+            28px;
+        }
+
+        .mwp-related a {
+          color:
+            #8fa0ab;
+
+          text-decoration:
+            none;
+
+          font-size:
+            11px;
+
+          font-weight:
+            700;
+        }
+
+        .mwp-related a:hover {
+          color:
+            var(--mwp-blue-light);
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (
+          max-width:
+          1100px
+        ) {
+          .mwp-plan-grid,
+          .mwp-addon-grid,
+          .mwp-process-grid {
+            grid-template-columns:
+              repeat(
+                2,
+                1fr
+              );
           }
 
-          .site-logo {
-            width: min(520px, 92vw);
-            margin: 0 auto;
+          .mwp-principle-grid {
+            grid-template-columns:
+              repeat(
+                2,
+                1fr
+              );
           }
 
-          .nav-link {
-            font-size: 18px;
-            padding: 14px 12px;
-          }
+          .mwp-plan-card:last-child {
+            grid-column:
+              1 / -1;
 
-          .pricing-page-title h1 {
-            font-size: 48px;
-          }
-
-          .pricing-cards,
-          .addon-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .pricing-card {
-            border-right: none;
-            border-bottom: 1px solid #d6d6d6;
-          }
-
-          .pricing-card:last-child {
-            border-bottom: none;
-          }
-
-          .comparison-row {
-            grid-template-columns: 1fr;
-            gap: 18px;
-            margin-bottom: 58px;
-          }
-
-          .footer-grid {
-            grid-template-columns: 1fr;
-            gap: 30px;
-          }
-
-          .pricing-cta-parallax {
-            background-attachment: scroll;
+            min-height:
+              600px;
           }
         }
 
-        @media (max-width: 620px) {
-          .logo-wrap {
-            padding: 24px 18px;
+        @media (
+          max-width:
+          900px
+        ) {
+          .mwp-hero-inner {
+            grid-template-columns:
+              1fr;
           }
 
-          .pricing-page-title {
-            padding: 38px 18px;
+          .mwp-hero-inner {
+            text-align:
+              center;
           }
 
-          .pricing-page-title h1 {
-            font-size: 42px;
+          .mwp-hero-badge {
+            margin-left:
+              auto;
+
+            margin-right:
+              auto;
           }
 
-          .pricing-intro {
-            padding: 60px 16px 42px;
+          .mwp-hero-copy > p {
+            margin-left:
+              auto;
+
+            margin-right:
+              auto;
           }
 
-          .pricing-intro p,
-          .comparison-section > p,
-          .addons-section > p {
-            font-size: 20px;
+          .mwp-button-row {
+            justify-content:
+              center;
           }
 
-          .pricing-cards-wrap,
-          .addons-section,
-          .comparison-section {
-            padding-left: 16px;
-            padding-right: 16px;
+          .mwp-price-stage {
+            min-height:
+              410px;
+          }
+        }
+
+        @media (
+          max-width:
+          700px
+        ) {
+          .mwp-section {
+            padding:
+              70px 16px;
           }
 
-          .price {
-            font-size: 54px;
+          .mwp-hero {
+            min-height:
+              auto;
           }
 
-          .comparison-question,
-          .comparison-col-title {
-            font-size: 26px;
+          .mwp-hero-inner {
+            padding:
+              70px 16px;
           }
 
-          .comparison-answer,
-          .competition-answer {
-            font-size: 23px;
+          .mwp-hero h1 {
+            font-size:
+              clamp(
+                46px,
+                14vw,
+                67px
+              );
           }
 
-          .btn-primary {
-            font-size: 20px;
-            padding: 18px 34px;
+          .mwp-plan-grid,
+          .mwp-addon-grid,
+          .mwp-principle-grid,
+          .mwp-process-grid,
+          .mwp-faq-grid {
+            grid-template-columns:
+              1fr;
           }
 
-          .footer-grid p,
-          .footer-grid a {
-            font-size: 18px;
+          .mwp-plan-card:last-child {
+            grid-column:
+              auto;
+          }
+
+          .mwp-note-card {
+            grid-template-columns:
+              1fr;
+
+            text-align:
+              center;
+          }
+
+          .mwp-note-icon {
+            margin:
+              0 auto;
+          }
+        }
+
+        @media (
+          max-width:
+          500px
+        ) {
+          .mwp-price-stage {
+            min-height:
+              360px;
+
+            transform:
+              scale(
+                0.9
+              );
+
+            margin:
+              -10px -20px;
+          }
+
+          .mwp-price-mini-grid {
+            grid-template-columns:
+              1fr;
+          }
+
+          .mwp-plan-price strong {
+            font-size:
+              51px;
           }
         }
       `}</style>
 
-      <SiteHeader />
+      {/* ======================================================
+          HERO
+      ====================================================== */}
 
-      <section className="pricing-page-title" id="pricing">
-        <h1>Pricing</h1>
-      </section>
-
-      <section className="pricing-intro" id="simple-affordable-pricing">
-        <h2>Simple, Affordable Pricing</h2>
-        <p>No contracts. Cancel anytime. 100% satisfaction guaranteed.</p>
-      </section>
-
-      <section className="pricing-cards-wrap" id="pricing-plans">
-        <div className="pricing-cards">
-          {pricingCards.map((card) => (
-            <article className="pricing-card" id={card.id} key={card.title}>
-              <div className={`card-header ${card.colorClass}`}>
-                <h3>{card.title}</h3>
-              </div>
-
-              <div className="card-body">
-                <div className="price">
-                  {card.price}
-                  <span>{card.priceNote}</span>
-                </div>
-
-                <p className="pricing-description">{card.description}</p>
-
-                <h4 className="includes-title">Includes:</h4>
-
-                <ul className="includes-list">
-                  {card.includes.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-
-                <p className="small-note">
-                  {card.smallNote ? card.smallNote : "\u00A0"}
-                </p>
-
-                <div className="card-btn-wrap">
-                  <Link href="/contact-us" className="btn-primary card-btn">
-                    Get Started Now
-                  </Link>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="addons-section" id="additional-services">
-        <h2>Additional Services</h2>
-        <p>
-          Add extra business tools, branding, and search setup when you need
-          them.
-        </p>
-
-        <div className="addon-grid">
-          {addOns.map((item) => (
-            <article className="addon-card" id={item.id} key={item.title}>
-              <h3>{item.title}</h3>
-              <div className="addon-price">{item.price}</div>
-              <p>{item.description}</p>
-
-              <div className="addon-btn-wrap">
-                <Link href="/contact-us" className="btn-primary addon-btn">
-                  Get Started Now
-                </Link>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="comparison-section" id="website-cost-comparison">
-        <h2>Website Cost Comparison</h2>
-        <p>See how our pricing stacks up against the competition.</p>
-
-        {comparisonRows.map((row) => (
-          <div className="comparison-row" key={row.question}>
-            <div className="comparison-question">{row.question}</div>
-
-            <div>
-              <div className="comparison-col-title">Our Company:</div>
-              <div className="comparison-answer">{row.ourCompany}</div>
+      <section
+        className="mwp-hero"
+        id="pricing"
+      >
+        <div className="mwp-hero-inner">
+          <div className="mwp-hero-copy">
+            <div className="mwp-hero-badge">
+              <span />
+              Website • Software • Support
             </div>
 
-            <div>
-              <div className="comparison-col-title">The Competition:</div>
-              <div className="competition-answer">{row.competition}</div>
-              {row.competitionNote ? (
-                <div className="comparison-note">{row.competitionNote}</div>
-              ) : null}
+            <h1>
+              <span>
+                Practical
+              </span>
+
+              <span className="mwp-blue">
+                Starting Prices.
+              </span>
+
+              <span>
+                Flexible
+              </span>
+
+              <span className="mwp-orange">
+                Technology.
+              </span>
+            </h1>
+
+            <p>
+              Start with what your business
+              actually needs. Standard website
+              projects have a clear starting
+              point, while larger websites,
+              software, integrations, and custom
+              functionality are priced according
+              to scope.
+            </p>
+
+            <div className="mwp-button-row">
+              <Link
+                href="/contact-us"
+                className="mwp-btn mwp-btn-blue"
+              >
+                Request a Project Quote
+                <ArrowRight />
+              </Link>
+
+              <Link
+                href="/services"
+                className="mwp-btn mwp-btn-dark"
+              >
+                View Services
+              </Link>
             </div>
           </div>
-        ))}
+
+          <div
+            className="mwp-price-stage"
+            aria-hidden="true"
+          >
+            <div className="mwp-price-display">
+              <div className="mwp-price-display-top">
+                <strong>
+                  WEBSITE STARTING POINT
+                </strong>
+
+                <div className="mwp-live-dot">
+                  AVAILABLE
+                </div>
+              </div>
+
+              <div className="mwp-big-price">
+                <div className="mwp-big-price-label">
+                  Standard Website
+                </div>
+
+                <div className="mwp-big-price-value">
+                  <span>$</span>
+                  499
+                </div>
+
+                <div className="mwp-price-caption">
+                  Standard qualifying
+                  small-business website scope
+                </div>
+              </div>
+
+              <div className="mwp-price-mini-grid">
+                <div className="mwp-price-mini">
+                  <span>
+                    ONGOING SERVICE
+                  </span>
+
+                  <strong>
+                    $49 / MONTH
+                  </strong>
+                </div>
+
+                <div className="mwp-price-mini">
+                  <span>
+                    CUSTOM DEVELOPMENT
+                  </span>
+
+                  <strong>
+                    QUOTED
+                  </strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section className="pricing-cta-parallax" id="free-website-mockup">
-        <div className="pricing-cta-overlay">
-          <h2>GET YOUR FREE WEBSITE MOCKUP</h2>
+      {/* ======================================================
+          PRIMARY PLANS
+      ====================================================== */}
+
+      <section
+        className="mwp-section mwp-plans"
+        id="pricing-plans"
+      >
+        <div className="mwp-container">
+          <div className="mwp-heading center">
+            <div className="mwp-kicker">
+              <BadgeDollarSign />
+              Current Services
+            </div>
+
+            <h2>
+              Choose the{" "}
+              <span className="mwp-blue">
+                Right Starting Point
+              </span>
+            </h2>
+
+            <p>
+              Not every business needs the same
+              project. These options cover the
+              three main ways customers can work
+              with Matthew Web today.
+            </p>
+          </div>
+
+          <div className="mwp-plan-grid">
+            {pricingCards.map(
+              (card) => {
+                const Icon =
+                  card.icon;
+
+                return (
+                  <article
+                    className={`mwp-plan-card ${card.accent}`}
+                    id={card.id}
+                    key={card.id}
+                  >
+                    <div className="mwp-plan-icon">
+                      <Icon />
+                    </div>
+
+                    <div className="mwp-plan-label">
+                      {card.label}
+                    </div>
+
+                    <h3>
+                      {card.title}
+                    </h3>
+
+                    <div className="mwp-plan-price">
+                      <strong>
+                        {card.price}
+                      </strong>
+
+                      <span>
+                        {card.priceNote}
+                      </span>
+                    </div>
+
+                    <div className="mwp-plan-billing">
+                      {card.billing}
+                    </div>
+
+                    <p className="mwp-plan-description">
+                      {card.description}
+                    </p>
+
+                    <div className="mwp-plan-divider" />
+
+                    <div className="mwp-includes-title">
+                      Can Include
+                    </div>
+
+                    <ul className="mwp-plan-list">
+                      {card.includes.map(
+                        (item) => (
+                          <li key={item}>
+                            <CheckCircle2 />
+                            {item}
+                          </li>
+                        )
+                      )}
+                    </ul>
+
+                    <div className="mwp-plan-note">
+                      {card.note}
+                    </div>
+
+                    <div className="mwp-plan-bottom">
+                      <Link
+                        href="/contact-us"
+                        className={
+                          card.accent ===
+                          "orange"
+                            ? "mwp-btn mwp-btn-orange"
+                            : "mwp-btn mwp-btn-blue"
+                        }
+                      >
+                        Request Pricing
+                        <ArrowRight />
+                      </Link>
+                    </div>
+                  </article>
+                );
+              }
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+          ADDITIONAL SERVICES
+      ====================================================== */}
+
+      <section
+        className="mwp-section mwp-addons"
+        id="additional-services"
+      >
+        <div className="mwp-container">
+          <div className="mwp-heading">
+            <div className="mwp-kicker orange">
+              <Settings2 />
+              Additional Services
+            </div>
+
+            <h2>
+              Add What the Business{" "}
+              <span className="mwp-orange">
+                Actually Needs
+              </span>
+            </h2>
+
+            <p>
+              These services can be added to a
+              new website or, when technically
+              practical, provided for an existing
+              website without requiring a
+              complete rebuild.
+            </p>
+          </div>
+
+          <div className="mwp-addon-grid">
+            {additionalServices.map(
+              (item) => {
+                const Icon =
+                  item.icon;
+
+                return (
+                  <div
+                    className="mwp-addon-card"
+                    key={item.title}
+                  >
+                    <Icon />
+
+                    <h3>
+                      {item.title}
+                    </h3>
+
+                    <div className="mwp-addon-price">
+                      {item.price}
+                    </div>
+
+                    <p>
+                      {item.text}
+                    </p>
+                  </div>
+                );
+              }
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+          PRICING PRINCIPLES
+      ====================================================== */}
+
+      <section
+        className="mwp-section mwp-principles"
+        id="pricing-approach"
+      >
+        <div className="mwp-container">
+          <div className="mwp-heading center">
+            <div className="mwp-kicker">
+              <ShieldCheck />
+              Pricing Approach
+            </div>
+
+            <h2>
+              Clear Scope Before{" "}
+              <span className="mwp-blue">
+                Surprise Charges
+              </span>
+            </h2>
+
+            <p>
+              The goal is to understand the work
+              first and establish expectations
+              before adding extra features,
+              development, or cost.
+            </p>
+          </div>
+
+          <div className="mwp-principle-grid">
+            {pricingPrinciples.map(
+              (item) => {
+                const Icon =
+                  item.icon;
+
+                return (
+                  <div
+                    className="mwp-principle-card"
+                    key={item.title}
+                  >
+                    <Icon />
+
+                    <h3>
+                      {item.title}
+                    </h3>
+
+                    <p>
+                      {item.text}
+                    </p>
+                  </div>
+                );
+              }
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+          PAYMENT PROCESS
+      ====================================================== */}
+
+      <section
+        className="mwp-section mwp-process"
+        id="project-payment-process"
+      >
+        <div className="mwp-container">
+          <div className="mwp-heading center">
+            <div className="mwp-kicker orange">
+              <FileText />
+              Project &amp; Payment Process
+            </div>
+
+            <h2>
+              Know What Is Being Built{" "}
+              <span className="mwp-orange">
+                Before It Is Built
+              </span>
+            </h2>
+
+            <p>
+              Professional project controls help
+              protect both the customer and
+              Matthew Web by making scope,
+              payment, revisions, and delivery
+              expectations clearer.
+            </p>
+          </div>
+
+          <div className="mwp-process-grid">
+            {paymentSteps.map(
+              (step) => (
+                <div
+                  className="mwp-process-card"
+                  key={step.number}
+                >
+                  <div className="mwp-process-number">
+                    STEP {step.number}
+                  </div>
+
+                  <h3>
+                    {step.title}
+                  </h3>
+
+                  <p>
+                    {step.text}
+                  </p>
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+          IMPORTANT PRICING NOTE
+      ====================================================== */}
+
+      <section className="mwp-note-section">
+        <div className="mwp-note-card">
+          <div className="mwp-note-icon">
+            <BadgeDollarSign />
+          </div>
+
+          <div className="mwp-note-copy">
+            <h2>
+              Starting Price Does Not Mean{" "}
+              <span className="mwp-orange">
+                Every Project Is Identical.
+              </span>
+            </h2>
+
+            <p>
+              The $499 website price is a useful
+              starting point for a standard
+              qualifying small-business website.
+              A project requiring substantial
+              custom development, many additional
+              pages, advanced integrations,
+              specialized software, unusual
+              content work, or other expanded
+              requirements may receive a
+              different quote before that work is
+              started.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+          FAQ
+      ====================================================== */}
+
+      <section
+        className="mwp-section mwp-faq"
+        id="pricing-faq"
+      >
+        <div className="mwp-container">
+          <div className="mwp-heading">
+            <div className="mwp-kicker">
+              <Sparkles />
+              Pricing FAQ
+            </div>
+
+            <h2>
+              Common{" "}
+              <span className="mwp-blue">
+                Pricing Questions
+              </span>
+            </h2>
+
+            <p>
+              Clear pricing works best when the
+              customer understands what the base
+              price covers and when additional
+              scope changes the project.
+            </p>
+          </div>
+
+          <div className="mwp-faq-grid">
+            {faqs.map(
+              (item) => (
+                <div
+                  className="mwp-faq-card"
+                  key={item.q}
+                >
+                  <h3>
+                    {item.q}
+                  </h3>
+
+                  <p>
+                    {item.a}
+                  </p>
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+          FINAL CTA
+      ====================================================== */}
+
+      <section
+        className="mwp-final"
+        id="request-pricing"
+      >
+        <div className="mwp-final-card">
+          <Zap />
+
+          <h2>
+            Know What You Need?{" "}
+            <span className="mwp-orange">
+              Let&apos;s Price It.
+            </span>
+          </h2>
+
           <p>
-            Interested in seeing how your new website can look? Contact us
-            today to request your{" "}
-            <strong>FREE no-obligation website mockup.</strong>
+            Tell Matthew Web about your business,
+            website, software need, or technical
+            problem. We can determine whether the
+            standard website starting package
+            fits or whether the project needs a
+            custom scope.
           </p>
 
-          <Link href="/contact-us" className="btn-primary">
-            Get Started Now
-          </Link>
+          <div className="mwp-button-row">
+            <Link
+              href="/contact-us"
+              className="mwp-btn mwp-btn-orange"
+            >
+              Request a Quote
+              <ArrowRight />
+            </Link>
+
+            <Link
+              href="/examples"
+              className="mwp-btn mwp-btn-dark"
+            >
+              View Examples
+            </Link>
+          </div>
+
+          <nav className="mwp-related">
+            <Link href="/website-design">
+              Website Design
+            </Link>
+
+            <Link href="/custom-software">
+              Custom Software
+            </Link>
+
+            <Link href="/seo-and-indexing">
+              SEO &amp; Indexing
+            </Link>
+
+            <Link href="/small-business-websites">
+              Small Business Websites
+            </Link>
+
+            <Link href="/contact-us">
+              Contact
+            </Link>
+          </nav>
         </div>
       </section>
 

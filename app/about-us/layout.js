@@ -1,29 +1,49 @@
+import BreadcrumbSchema from "@/components/BreadcrumbSchema";
+
 export const metadata = {
-  title: "About matthew-web | Maine Website Designer & Custom Coder",
+  title: "About Matthew Web",
+
   description:
-    "Learn about matthew-web, a Maine-based website designer and custom coder helping small businesses with affordable websites, SEO, lead forms, dashboards, CRM tools, and custom software.",
-  keywords: [
-    "about matthew-web",
-    "Maine website designer",
-    "Madison Maine web designer",
-    "small business website designer",
-    "custom software coder",
-    "affordable website design",
-    "custom CRM tools",
-    "business website help",
-  ],
+    "Learn about Matthew Web, a founder-led Maine technology business building websites, custom software, games, educational technology, and computer hardware research projects.",
+
   alternates: {
     canonical: "https://matthew-web.com/about-us",
   },
+
   openGraph: {
-    title: "About matthew-web | Maine Website Designer & Custom Coder",
+    title: "About Matthew Web",
     description:
-      "matthew-web helps small businesses get professional websites, SEO help, custom code, dashboards, lead forms, CRM tools, and digital business tools.",
+      "Learn about Matthew Web, its founder, current technology work, and long-term development roadmap.",
     url: "https://matthew-web.com/about-us",
+    siteName: "Matthew Web",
+    locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/apple-touch-icon.png",
+        alt: "Matthew Web",
+      },
+    ],
   },
 };
 
 export default function AboutUsLayout({ children }) {
-  return children;
+  return (
+    <>
+      <BreadcrumbSchema
+        items={[
+          {
+            name: "Home",
+            url: "https://matthew-web.com",
+          },
+          {
+            name: "About Us",
+            url: "https://matthew-web.com/about-us",
+          },
+        ]}
+      />
+
+      {children}
+    </>
+  );
 }

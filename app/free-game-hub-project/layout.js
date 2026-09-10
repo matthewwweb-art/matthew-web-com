@@ -1,6 +1,6 @@
 import BreadcrumbSchema from "@/components/BreadcrumbSchema";
 
-export default function BlogLayout({ children }) {
+export default function FreeGameHubProjectLayout({ children }) {
   return (
     <>
       <BreadcrumbSchema
@@ -10,8 +10,8 @@ export default function BlogLayout({ children }) {
             url: "https://matthew-web.com",
           },
           {
-            name: "Blog",
-            url: "https://matthew-web.com/blog",
+            name: "Free Game Hub Project",
+            url: "https://matthew-web.com/free-game-hub-project",
           },
         ]}
       />

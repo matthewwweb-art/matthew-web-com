@@ -1,6 +1,6 @@
 import BreadcrumbSchema from "@/components/BreadcrumbSchema";
 
-export default function BlogLayout({ children }) {
+export default function CustomSoftwareLayout({ children }) {
   return (
     <>
       <BreadcrumbSchema
@@ -10,8 +10,12 @@ export default function BlogLayout({ children }) {
             url: "https://matthew-web.com",
           },
           {
-            name: "Blog",
-            url: "https://matthew-web.com/blog",
+            name: "Services",
+            url: "https://matthew-web.com/services",
+          },
+          {
+            name: "Custom Software",
+            url: "https://matthew-web.com/custom-software",
           },
         ]}
       />
