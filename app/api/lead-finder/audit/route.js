@@ -1,478 +1,1828 @@
-import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { lookup } from "node:dns/promises";
+import net from "node:net";
+import { requireAdminApi } from "@/lib/requireAdminApi";
 
-function isPrivateOrLocalHost(hostname) {
-  const lower = hostname.toLowerCase();
+/* ============================================================
+   MATTHEW WEB — WEBSITE AUDIT API
+
+   PRIVATE ADMIN ROUTE
+
+   Security:
+   - Requires authenticated Matthew Web admin
+   - Rejects localhost
+   - Rejects private/internal IP addresses
+   - Re-checks redirect destinations
+   - Does not expose Supabase service credentials
+
+   Current CRM-compatible fields:
+   - has_website
+   - has_https
+   - has_contact_form
+   - has_booking
+   - has_phone_number
+   - has_meta_title
+   - has_meta_description
+   - has_favicon
+   - mobile_issue
+   - speed_issue
+   - outdated_design
+   - issues_json
+   - audit_summary
+
+   Additional useful audit fields are also returned.
+============================================================ */
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+const MAX_REDIRECTS = 5;
+const FETCH_TIMEOUT_MS = 12000;
+const MAX_HTML_LENGTH = 2_000_000;
+
+/* ============================================================
+   BASIC HELPERS
+============================================================ */
+
+function clamp(number, min = 0, max = 100) {
+  return Math.max(
+    min,
+    Math.min(max, Math.round(number))
+  );
+}
+
+function normalizeText(value) {
+  return String(value || "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function decodeBasicHtml(value) {
+  return normalizeText(value)
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">");
+}
+
+function stripHtml(html) {
+  return normalizeText(
+    String(html || "")
+      .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
+      .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
+      .replace(/<noscript\b[^>]*>[\s\S]*?<\/noscript>/gi, " ")
+      .replace(/<[^>]+>/g, " ")
+  );
+}
+
+function countMatches(text, regex) {
+  return (String(text || "").match(regex) || []).length;
+}
+
+function includesAny(text, terms) {
+  const lower = String(text || "").toLowerCase();
+
+  return terms.some((term) =>
+    lower.includes(term.toLowerCase())
+  );
+}
+
+function extractTitle(html) {
+  const match = String(html || "").match(
+    /<title[^>]*>([\s\S]*?)<\/title>/i
+  );
+
+  return match
+    ? decodeBasicHtml(match[1])
+    : "";
+}
+
+function extractMetaDescription(html) {
+  const source = String(html || "");
+
+  const matchA = source.match(
+    /<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["'][^>]*>/i
+  );
+
+  if (matchA) {
+    return decodeBasicHtml(matchA[1]);
+  }
+
+  const matchB = source.match(
+    /<meta[^>]+content=["']([^"']*)["'][^>]+name=["']description["'][^>]*>/i
+  );
+
+  return matchB
+    ? decodeBasicHtml(matchB[1])
+    : "";
+}
+
+function extractViewport(html) {
+  return /<meta[^>]+name=["']viewport["'][^>]*>/i.test(
+    String(html || "")
+  );
+}
+
+function extractH1Count(html) {
+  return countMatches(
+    html,
+    /<h1\b[^>]*>/gi
+  );
+}
+
+function extractLinksCount(html) {
+  return countMatches(
+    html,
+    /<a\b[^>]*href=/gi
+  );
+}
+
+function extractImageCount(html) {
+  return countMatches(
+    html,
+    /<img\b[^>]*>/gi
+  );
+}
+
+function hasFaviconMarkup(html) {
+  return /<link[^>]+rel=["'][^"']*(?:icon|shortcut icon)[^"']*["'][^>]*>/i.test(
+    String(html || "")
+  );
+}
+
+function hasSchemaMarkup(html) {
+  return (
+    /application\/ld\+json/i.test(html) ||
+    /itemscope/i.test(html)
+  );
+}
+
+/* ============================================================
+   NETWORK / SSRF PROTECTION
+============================================================ */
+
+function isPrivateIPv4(ip) {
+  const parts = ip
+    .split(".")
+    .map((part) => Number(part));
 
   if (
-    lower === "localhost" ||
-    lower === "127.0.0.1" ||
-    lower === "0.0.0.0" ||
-    lower.endsWith(".local")
+    parts.length !== 4 ||
+    parts.some(
+      (part) =>
+        !Number.isInteger(part) ||
+        part < 0 ||
+        part > 255
+    )
   ) {
     return true;
   }
 
-  if (/^10\./.test(lower)) return true;
-  if (/^192\.168\./.test(lower)) return true;
-  if (/^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(lower)) return true;
+  const [a, b] = parts;
+
+  if (a === 0) return true;
+  if (a === 10) return true;
+  if (a === 127) return true;
+
+  if (
+    a === 169 &&
+    b === 254
+  ) {
+    return true;
+  }
+
+  if (
+    a === 172 &&
+    b >= 16 &&
+    b <= 31
+  ) {
+    return true;
+  }
+
+  if (
+    a === 192 &&
+    b === 168
+  ) {
+    return true;
+  }
+
+  if (
+    a === 100 &&
+    b >= 64 &&
+    b <= 127
+  ) {
+    return true;
+  }
+
+  if (
+    a === 192 &&
+    b === 0
+  ) {
+    return true;
+  }
+
+  if (
+    a === 192 &&
+    b === 0 &&
+    parts[2] === 2
+  ) {
+    return true;
+  }
+
+  if (
+    a === 198 &&
+    (
+      b === 18 ||
+      b === 19
+    )
+  ) {
+    return true;
+  }
+
+  if (
+    a === 198 &&
+    b === 51 &&
+    parts[2] === 100
+  ) {
+    return true;
+  }
+
+  if (
+    a === 203 &&
+    b === 0 &&
+    parts[2] === 113
+  ) {
+    return true;
+  }
+
+  if (a >= 224) {
+    return true;
+  }
 
   return false;
 }
 
-function normalizeUrl(input) {
-  if (!input) return null;
+function isPrivateIPv6(ip) {
+  const normalized =
+    String(ip || "").toLowerCase();
 
-  let clean = input.trim();
-
-  if (!clean.startsWith("http://") && !clean.startsWith("https://")) {
-    clean = `https://${clean}`;
+  if (
+    normalized === "::1" ||
+    normalized === "::"
+  ) {
+    return true;
   }
+
+  if (
+    normalized.startsWith("fc") ||
+    normalized.startsWith("fd")
+  ) {
+    return true;
+  }
+
+  if (
+    normalized.startsWith("fe8") ||
+    normalized.startsWith("fe9") ||
+    normalized.startsWith("fea") ||
+    normalized.startsWith("feb")
+  ) {
+    return true;
+  }
+
+  const mapped =
+    normalized.match(
+      /^::ffff:(\d+\.\d+\.\d+\.\d+)$/
+    );
+
+  if (mapped) {
+    return isPrivateIPv4(mapped[1]);
+  }
+
+  return false;
+}
+
+function isPrivateIp(ip) {
+  const type =
+    net.isIP(ip);
+
+  if (type === 4) {
+    return isPrivateIPv4(ip);
+  }
+
+  if (type === 6) {
+    return isPrivateIPv6(ip);
+  }
+
+  return true;
+}
+
+async function validatePublicUrl(rawUrl) {
+  if (
+    !rawUrl ||
+    typeof rawUrl !== "string"
+  ) {
+    throw new Error(
+      "Website URL is required."
+    );
+  }
+
+  let value =
+    rawUrl.trim();
+
+  if (!value) {
+    throw new Error(
+      "Website URL is required."
+    );
+  }
+
+  if (
+    !/^https?:\/\//i.test(value)
+  ) {
+    value =
+      `https://${value}`;
+  }
+
+  let url;
 
   try {
-    const parsed = new URL(clean);
-
-    if (!["http:", "https:"].includes(parsed.protocol)) {
-      return null;
-    }
-
-    if (isPrivateOrLocalHost(parsed.hostname)) {
-      return null;
-    }
-
-    return parsed.toString();
+    url = new URL(value);
   } catch {
-    return null;
+    throw new Error(
+      "Invalid website URL."
+    );
   }
+
+  if (
+    url.protocol !== "http:" &&
+    url.protocol !== "https:"
+  ) {
+    throw new Error(
+      "Only HTTP and HTTPS websites can be audited."
+    );
+  }
+
+  if (
+    url.username ||
+    url.password
+  ) {
+    throw new Error(
+      "Website URLs containing credentials are not allowed."
+    );
+  }
+
+  const hostname =
+    url.hostname.toLowerCase();
+
+  if (
+    hostname === "localhost" ||
+    hostname.endsWith(".localhost") ||
+    hostname.endsWith(".local") ||
+    hostname.endsWith(".internal")
+  ) {
+    throw new Error(
+      "Private or local network websites cannot be audited."
+    );
+  }
+
+  if (net.isIP(hostname)) {
+    if (isPrivateIp(hostname)) {
+      throw new Error(
+        "Private or local network websites cannot be audited."
+      );
+    }
+
+    return url;
+  }
+
+  let addresses;
+
+  try {
+    addresses = await lookup(
+      hostname,
+      {
+        all: true,
+        verbatim: true,
+      }
+    );
+  } catch {
+    throw new Error(
+      "The website hostname could not be resolved."
+    );
+  }
+
+  if (
+    !addresses ||
+    addresses.length === 0
+  ) {
+    throw new Error(
+      "The website hostname could not be resolved."
+    );
+  }
+
+  for (const entry of addresses) {
+    if (
+      !entry?.address ||
+      isPrivateIp(entry.address)
+    ) {
+      throw new Error(
+        "Private or local network websites cannot be audited."
+      );
+    }
+  }
+
+  return url;
 }
 
-function getMetaContent(html, name) {
-  const regex = new RegExp(
-    `<meta[^>]+(?:name|property)=["']${name}["'][^>]+content=["']([^"']*)["'][^>]*>`,
-    "i"
+/* ============================================================
+   SAFE WEBSITE FETCH
+============================================================ */
+
+async function fetchWebsite(startUrl) {
+  let currentUrl =
+    await validatePublicUrl(startUrl);
+
+  let redirects = 0;
+
+  while (
+    redirects <= MAX_REDIRECTS
+  ) {
+    currentUrl =
+      await validatePublicUrl(
+        currentUrl.toString()
+      );
+
+    const controller =
+      new AbortController();
+
+    const timeout =
+      setTimeout(
+        () => controller.abort(),
+        FETCH_TIMEOUT_MS
+      );
+
+    const startedAt =
+      Date.now();
+
+    let response;
+
+    try {
+      response = await fetch(
+        currentUrl.toString(),
+        {
+          method: "GET",
+
+          redirect: "manual",
+
+          signal:
+            controller.signal,
+
+          headers: {
+            "User-Agent":
+              "Matthew-Web-Website-Audit/1.0",
+
+            Accept:
+              "text/html,application/xhtml+xml;q=0.9,*/*;q=0.5",
+          },
+
+          cache: "no-store",
+        }
+      );
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    const elapsedMs =
+      Date.now() - startedAt;
+
+    if (
+      response.status >= 300 &&
+      response.status < 400
+    ) {
+      const location =
+        response.headers.get(
+          "location"
+        );
+
+      if (!location) {
+        throw new Error(
+          `Website returned redirect status ${response.status} without a destination.`
+        );
+      }
+
+      redirects += 1;
+
+      if (
+        redirects > MAX_REDIRECTS
+      ) {
+        throw new Error(
+          "Website redirected too many times."
+        );
+      }
+
+      currentUrl =
+        new URL(
+          location,
+          currentUrl
+        );
+
+      continue;
+    }
+
+    const contentType =
+      response.headers.get(
+        "content-type"
+      ) || "";
+
+    if (!response.ok) {
+      throw new Error(
+        `Website returned HTTP ${response.status}.`
+      );
+    }
+
+    if (
+      contentType &&
+      !contentType
+        .toLowerCase()
+        .includes("text/html") &&
+      !contentType
+        .toLowerCase()
+        .includes("application/xhtml+xml")
+    ) {
+      throw new Error(
+        "The supplied URL did not return an HTML webpage."
+      );
+    }
+
+    let html =
+      await response.text();
+
+    if (
+      html.length >
+      MAX_HTML_LENGTH
+    ) {
+      html =
+        html.slice(
+          0,
+          MAX_HTML_LENGTH
+        );
+    }
+
+    return {
+      html,
+      finalUrl:
+        currentUrl.toString(),
+      status:
+        response.status,
+      elapsedMs,
+      contentType,
+      redirects,
+    };
+  }
+
+  throw new Error(
+    "Website redirected too many times."
   );
-
-  const reverseRegex = new RegExp(
-    `<meta[^>]+content=["']([^"']*)["'][^>]+(?:name|property)=["']${name}["'][^>]*>`,
-    "i"
-  );
-
-  return html.match(regex)?.[1] || html.match(reverseRegex)?.[1] || "";
 }
 
-function getTitle(html) {
-  return html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.trim() || "";
-}
+/* ============================================================
+   PAGE SIGNAL DETECTION
+============================================================ */
 
-function hasAny(html, terms) {
-  const lower = html.toLowerCase();
-  return terms.some((term) => lower.includes(term));
-}
+function analyzeHtml(
+  html,
+  finalUrl,
+  elapsedMs
+) {
+  const lowerHtml =
+    String(html || "")
+      .toLowerCase();
 
-function countMatches(html, regex) {
-  return (html.match(regex) || []).length;
-}
+  const visibleText =
+    stripHtml(html)
+      .toLowerCase();
 
-function calculateAuditScores(checks) {
-  let seoScore = 100;
-  let conversionScore = 100;
-  let trustScore = 100;
+  const title =
+    extractTitle(html);
 
-  if (!checks.has_meta_title) seoScore -= 30;
-  if (!checks.has_meta_description) seoScore -= 30;
-  if (!checks.has_h1) seoScore -= 15;
-  if (!checks.has_structured_data) seoScore -= 10;
-  if (!checks.has_local_keywords) seoScore -= 10;
-  if (checks.title_too_short) seoScore -= 10;
-  if (checks.description_too_short) seoScore -= 10;
+  const metaDescription =
+    extractMetaDescription(html);
 
-  if (!checks.has_contact_form) conversionScore -= 25;
-  if (!checks.has_booking) conversionScore -= 15;
-  if (!checks.has_phone_number) conversionScore -= 20;
-  if (!checks.has_clear_cta) conversionScore -= 20;
-  if (!checks.has_email) conversionScore -= 10;
-  if (!checks.has_service_words) conversionScore -= 10;
+  const h1Count =
+    extractH1Count(html);
 
-  if (!checks.has_https) trustScore -= 35;
-  if (!checks.has_favicon) trustScore -= 15;
-  if (!checks.has_privacy_policy) trustScore -= 10;
-  if (!checks.has_reviews_or_testimonials) trustScore -= 15;
-  if (!checks.has_social_links) trustScore -= 10;
-  if (!checks.has_address_or_location) trustScore -= 10;
+  const linkCount =
+    extractLinksCount(html);
 
-  seoScore = Math.max(seoScore, 0);
-  conversionScore = Math.max(conversionScore, 0);
-  trustScore = Math.max(trustScore, 0);
+  const imageCount =
+    extractImageCount(html);
 
-  const websiteScore = Math.round(
-    seoScore * 0.34 + conversionScore * 0.43 + trustScore * 0.23
-  );
+  const hasViewport =
+    extractViewport(html);
+
+  const hasFavicon =
+    hasFaviconMarkup(html);
+
+  const hasSchema =
+    hasSchemaMarkup(html);
+
+  /* ==========================================================
+     CONTACT / CONVERSION SIGNALS
+  ========================================================== */
+
+  const hasForm =
+    /<form\b/i.test(html);
+
+  const hasContactLanguage =
+    includesAny(
+      visibleText,
+      [
+        "contact us",
+        "contact",
+        "request a quote",
+        "get a quote",
+        "free quote",
+        "send message",
+        "send us a message",
+        "get in touch",
+        "request service",
+        "request an estimate",
+        "get an estimate",
+      ]
+    );
+
+  const hasContactForm =
+    hasForm &&
+    (
+      hasContactLanguage ||
+      /type=["'](?:email|tel)["']/i.test(
+        html
+      ) ||
+      /name=["'][^"']*(?:email|phone|message|contact)[^"']*["']/i.test(
+        html
+      )
+    );
+
+  const hasBooking =
+    includesAny(
+      lowerHtml,
+      [
+        "book now",
+        "book online",
+        "schedule now",
+        "schedule online",
+        "schedule appointment",
+        "book appointment",
+        "calendly",
+        "acuityscheduling",
+        "square.site/appointments",
+        "squareup.com/appointments",
+        "booking-widget",
+        "appointment",
+      ]
+    );
+
+  const hasPhoneNumber =
+    /(?:\+?1[\s.-]?)?(?:\(?\d{3}\)?[\s.-]?)\d{3}[\s.-]?\d{4}/.test(
+      visibleText
+    ) ||
+    /href=["']tel:/i.test(
+      html
+    );
+
+  const hasEmail =
+    /href=["']mailto:/i.test(
+      html
+    ) ||
+    /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(
+      visibleText
+    );
+
+  const hasClearCta =
+    includesAny(
+      visibleText,
+      [
+        "contact us",
+        "get started",
+        "request a quote",
+        "get a quote",
+        "call now",
+        "book now",
+        "schedule",
+        "request service",
+        "request an estimate",
+        "get an estimate",
+        "learn more",
+      ]
+    );
+
+  /* ==========================================================
+     TRUST SIGNALS
+  ========================================================== */
+
+  const hasReviews =
+    includesAny(
+      visibleText,
+      [
+        "reviews",
+        "testimonials",
+        "testimonial",
+        "what our customers say",
+        "what our clients say",
+        "customer reviews",
+        "client reviews",
+      ]
+    );
+
+  const hasPrivacy =
+    includesAny(
+      lowerHtml,
+      [
+        "privacy policy",
+        "/privacy",
+        "/privacy-policy",
+      ]
+    );
+
+  const hasLocationSignal =
+    includesAny(
+      visibleText,
+      [
+        "serving",
+        "service area",
+        "service areas",
+        "located in",
+        "based in",
+        "maine",
+      ]
+    ) ||
+    /address/i.test(
+      lowerHtml
+    );
+
+  const hasSocialLinks =
+    includesAny(
+      lowerHtml,
+      [
+        "facebook.com/",
+        "instagram.com/",
+        "linkedin.com/",
+        "youtube.com/",
+        "tiktok.com/",
+        "x.com/",
+        "twitter.com/",
+        "yelp.com/",
+      ]
+    );
+
+  /* ==========================================================
+     BUSINESS / LOCAL CONTENT SIGNALS
+  ========================================================== */
+
+  const serviceWords = [
+    "services",
+    "service",
+    "repair",
+    "installation",
+    "maintenance",
+    "contractor",
+    "construction",
+    "roofing",
+    "plumbing",
+    "electrical",
+    "cleaning",
+    "landscaping",
+    "painting",
+    "remodeling",
+    "booking",
+    "consultation",
+    "estimate",
+    "quote",
+  ];
+
+  const localWords = [
+    "near me",
+    "serving",
+    "service area",
+    "local",
+    "maine",
+    "county",
+    "city",
+    "town",
+  ];
+
+  const hasServiceWords =
+    includesAny(
+      visibleText,
+      serviceWords
+    );
+
+  const hasLocalKeywords =
+    includesAny(
+      visibleText,
+      localWords
+    );
+
+  /* ==========================================================
+     TECHNICAL / SEO SIGNALS
+  ========================================================== */
+
+  const hasMetaTitle =
+    title.length > 0;
+
+  const hasMetaDescription =
+    metaDescription.length > 0;
+
+  const hasHttps =
+    finalUrl
+      .toLowerCase()
+      .startsWith("https://");
+
+  const mobileIssue =
+    !hasViewport;
+
+  const speedIssue =
+    elapsedMs > 4000;
+
+  /*
+    This is intentionally conservative.
+
+    We cannot reliably decide that a design is "outdated"
+    from raw HTML alone, so this only flags very weak legacy
+    signals instead of pretending we performed a visual review.
+  */
+
+  const legacySignals = [
+    /<font\b/i,
+    /<center\b/i,
+    /<marquee\b/i,
+    /<frameset\b/i,
+    /<frame\b/i,
+  ];
+
+  const legacySignalCount =
+    legacySignals.filter(
+      (regex) =>
+        regex.test(html)
+    ).length;
+
+  const outdatedDesign =
+    legacySignalCount >= 2;
 
   return {
-    website_score: websiteScore,
-    seo_score: seoScore,
-    conversion_score: conversionScore,
-    trust_score: trustScore,
+    title,
+    title_length:
+      title.length,
+
+    meta_description:
+      metaDescription,
+
+    meta_description_length:
+      metaDescription.length,
+
+    has_https:
+      hasHttps,
+
+    has_contact_form:
+      hasContactForm,
+
+    has_booking:
+      hasBooking,
+
+    has_phone_number:
+      hasPhoneNumber,
+
+    has_email:
+      hasEmail,
+
+    has_meta_title:
+      hasMetaTitle,
+
+    has_meta_description:
+      hasMetaDescription,
+
+    has_favicon:
+      hasFavicon,
+
+    has_viewport:
+      hasViewport,
+
+    has_h1:
+      h1Count > 0,
+
+    h1_count:
+      h1Count,
+
+    has_clear_cta:
+      hasClearCta,
+
+    has_reviews:
+      hasReviews,
+
+    has_privacy_policy:
+      hasPrivacy,
+
+    has_location_signal:
+      hasLocationSignal,
+
+    has_schema:
+      hasSchema,
+
+    has_social_links:
+      hasSocialLinks,
+
+    has_service_words:
+      hasServiceWords,
+
+    has_local_keywords:
+      hasLocalKeywords,
+
+    link_count:
+      linkCount,
+
+    image_count:
+      imageCount,
+
+    load_time_ms:
+      elapsedMs,
+
+    mobile_issue:
+      mobileIssue,
+
+    speed_issue:
+      speedIssue,
+
+    outdated_design:
+      outdatedDesign,
   };
 }
 
-function buildProblemList(checks) {
-  const problems = [];
+/* ============================================================
+   SCORING
+============================================================ */
 
-  if (!checks.has_https) problems.push("Website does not appear to use HTTPS.");
-  if (!checks.has_meta_title) problems.push("Missing or weak SEO title.");
-  if (!checks.has_meta_description)
-    problems.push("Missing or weak meta description.");
-  if (!checks.has_h1) problems.push("Missing a clear main H1 heading.");
-  if (!checks.has_favicon) problems.push("Missing favicon/brand icon.");
-  if (!checks.has_phone_number) problems.push("No clear phone number detected.");
-  if (!checks.has_email) problems.push("No email address detected.");
-  if (!checks.has_contact_form) problems.push("No contact/quote form detected.");
-  if (!checks.has_booking) problems.push("No booking or scheduling option detected.");
-  if (!checks.has_clear_cta)
-    problems.push("No strong call-to-action detected, such as Get Quote or Book Now.");
-  if (!checks.has_reviews_or_testimonials)
-    problems.push("No testimonials/reviews section detected.");
-  if (!checks.has_privacy_policy) problems.push("No privacy policy detected.");
-  if (!checks.has_address_or_location)
-    problems.push("No clear address, city, service area, or location signal detected.");
-  if (!checks.has_structured_data)
-    problems.push("No structured data/schema detected.");
-  if (!checks.has_social_links)
-    problems.push("No obvious social/business profile links detected.");
+function scoreAudit(signals) {
+  let seo = 0;
 
-  if (problems.length === 0) {
-    problems.push(
-      "No major basic technical issues detected. Manual review may still find design, speed, SEO, or conversion problems."
+  if (signals.has_https) {
+    seo += 15;
+  }
+
+  if (signals.has_meta_title) {
+    seo += 20;
+  }
+
+  if (
+    signals.title_length >= 20 &&
+    signals.title_length <= 65
+  ) {
+    seo += 10;
+  }
+
+  if (
+    signals.has_meta_description
+  ) {
+    seo += 15;
+  }
+
+  if (
+    signals.meta_description_length >= 70 &&
+    signals.meta_description_length <= 170
+  ) {
+    seo += 10;
+  }
+
+  if (signals.has_h1) {
+    seo += 10;
+  }
+
+  if (signals.h1_count === 1) {
+    seo += 5;
+  }
+
+  if (signals.has_schema) {
+    seo += 10;
+  }
+
+  if (
+    signals.has_local_keywords
+  ) {
+    seo += 5;
+  }
+
+  let conversion = 0;
+
+  if (
+    signals.has_contact_form
+  ) {
+    conversion += 25;
+  }
+
+  if (signals.has_booking) {
+    conversion += 15;
+  }
+
+  if (
+    signals.has_phone_number
+  ) {
+    conversion += 15;
+  }
+
+  if (signals.has_email) {
+    conversion += 10;
+  }
+
+  if (
+    signals.has_clear_cta
+  ) {
+    conversion += 20;
+  }
+
+  if (
+    signals.has_service_words
+  ) {
+    conversion += 15;
+  }
+
+  let trust = 0;
+
+  if (signals.has_https) {
+    trust += 20;
+  }
+
+  if (signals.has_reviews) {
+    trust += 20;
+  }
+
+  if (
+    signals.has_privacy_policy
+  ) {
+    trust += 20;
+  }
+
+  if (
+    signals.has_location_signal
+  ) {
+    trust += 15;
+  }
+
+  if (
+    signals.has_phone_number
+  ) {
+    trust += 10;
+  }
+
+  if (signals.has_email) {
+    trust += 5;
+  }
+
+  if (
+    signals.has_social_links
+  ) {
+    trust += 10;
+  }
+
+  const seoScore =
+    clamp(seo);
+
+  const conversionScore =
+    clamp(conversion);
+
+  const trustScore =
+    clamp(trust);
+
+  let technical = 100;
+
+  if (
+    signals.mobile_issue
+  ) {
+    technical -= 25;
+  }
+
+  if (
+    signals.speed_issue
+  ) {
+    technical -= 20;
+  }
+
+  if (
+    !signals.has_https
+  ) {
+    technical -= 20;
+  }
+
+  if (
+    !signals.has_favicon
+  ) {
+    technical -= 10;
+  }
+
+  if (
+    !signals.has_h1
+  ) {
+    technical -= 15;
+  }
+
+  if (
+    signals.h1_count > 1
+  ) {
+    technical -= 5;
+  }
+
+  if (
+    signals.outdated_design
+  ) {
+    technical -= 10;
+  }
+
+  const technicalScore =
+    clamp(technical);
+
+  const websiteScore =
+    clamp(
+      (
+        seoScore +
+        conversionScore +
+        trustScore +
+        technicalScore
+      ) / 4
+    );
+
+  return {
+    website_score:
+      websiteScore,
+
+    seo_score:
+      seoScore,
+
+    conversion_score:
+      conversionScore,
+
+    trust_score:
+      trustScore,
+
+    technical_score:
+      technicalScore,
+  };
+}
+
+/* ============================================================
+   ISSUE GENERATION
+============================================================ */
+
+function buildIssues(signals) {
+  const issues = [];
+
+  if (!signals.has_https) {
+    issues.push(
+      "Website is not using HTTPS."
     );
   }
 
-  return problems;
+  if (
+    !signals.has_contact_form
+  ) {
+    issues.push(
+      "No clear contact or lead form was detected."
+    );
+  }
+
+  if (!signals.has_booking) {
+    issues.push(
+      "No booking or scheduling option was detected."
+    );
+  }
+
+  if (
+    !signals.has_phone_number
+  ) {
+    issues.push(
+      "No clear phone number was detected."
+    );
+  }
+
+  if (
+    !signals.has_meta_title
+  ) {
+    issues.push(
+      "No page title was detected."
+    );
+  } else if (
+    signals.title_length < 20
+  ) {
+    issues.push(
+      "The page title may be too short to clearly describe the page."
+    );
+  } else if (
+    signals.title_length > 65
+  ) {
+    issues.push(
+      "The page title may be longer than ideal for search-result display."
+    );
+  }
+
+  if (
+    !signals.has_meta_description
+  ) {
+    issues.push(
+      "No meta description was detected."
+    );
+  }
+
+  if (!signals.has_favicon) {
+    issues.push(
+      "No favicon markup was detected."
+    );
+  }
+
+  if (!signals.has_h1) {
+    issues.push(
+      "No H1 heading was detected."
+    );
+  }
+
+  if (signals.h1_count > 1) {
+    issues.push(
+      `Multiple H1 headings were detected (${signals.h1_count}).`
+    );
+  }
+
+  if (
+    !signals.has_clear_cta
+  ) {
+    issues.push(
+      "No strong call-to-action signal was detected."
+    );
+  }
+
+  if (!signals.has_reviews) {
+    issues.push(
+      "No testimonial or customer-review section was detected."
+    );
+  }
+
+  if (
+    !signals.has_privacy_policy
+  ) {
+    issues.push(
+      "No clear privacy-policy link was detected."
+    );
+  }
+
+  if (
+    !signals.has_location_signal
+  ) {
+    issues.push(
+      "No clear location or service-area signal was detected."
+    );
+  }
+
+  if (!signals.has_schema) {
+    issues.push(
+      "No structured-data/schema markup was detected."
+    );
+  }
+
+  if (
+    !signals.has_social_links
+  ) {
+    issues.push(
+      "No social-profile links were detected."
+    );
+  }
+
+  if (
+    !signals.has_service_words
+  ) {
+    issues.push(
+      "The page may not clearly explain its services or customer offer."
+    );
+  }
+
+  if (
+    signals.mobile_issue
+  ) {
+    issues.push(
+      "No viewport tag was detected, which may indicate a mobile usability problem."
+    );
+  }
+
+  if (
+    signals.speed_issue
+  ) {
+    issues.push(
+      `The initial HTML request took about ${(signals.load_time_ms / 1000).toFixed(1)} seconds.`
+    );
+  }
+
+  if (
+    signals.outdated_design
+  ) {
+    issues.push(
+      "Legacy HTML elements were detected that may indicate an older technical foundation."
+    );
+  }
+
+  return issues;
 }
 
-function buildSalesAngle(checks, scores) {
-  if (scores.conversion_score <= 55) {
-    return "This business may already be getting visitors, but the website is not set up strongly enough to turn those visitors into calls, quote requests, bookings, or leads.";
+/* ============================================================
+   SALES GUIDANCE
+
+   These are intentionally cautious.
+   The audit should identify observable opportunities without
+   inventing revenue loss, traffic, rankings, or business facts.
+============================================================ */
+
+function buildSalesGuidance(
+  signals,
+  scores,
+  issues
+) {
+  const opportunities = [];
+
+  if (
+    !signals.has_contact_form ||
+    !signals.has_clear_cta
+  ) {
+    opportunities.push(
+      "improving the path from visitor to inquiry"
+    );
   }
 
-  if (scores.seo_score <= 55) {
-    return "This business may be hard to find in Google because the website has weak SEO signals, missing metadata, or limited local search structure.";
+  if (
+    signals.mobile_issue
+  ) {
+    opportunities.push(
+      "improving the mobile foundation"
+    );
   }
 
-  if (scores.trust_score <= 55) {
-    return "This website may not build enough trust because it is missing important brand, security, review, privacy, or business credibility signals.";
+  if (
+    !signals.has_meta_title ||
+    !signals.has_meta_description ||
+    !signals.has_schema
+  ) {
+    opportunities.push(
+      "strengthening the search and indexing foundation"
+    );
   }
 
-  if (!checks.has_booking && checks.has_phone_number) {
-    return "This business has a way for people to call, but could likely capture more leads with a quote form, booking option, and automated follow-up.";
+  if (
+    !signals.has_booking
+  ) {
+    opportunities.push(
+      "adding a clearer booking or request process where appropriate"
+    );
   }
 
-  return "This website has some basics in place, but there may still be room to improve design, SEO, conversion flow, lead capture, and follow-up.";
+  if (
+    !signals.has_reviews ||
+    !signals.has_privacy_policy ||
+    !signals.has_location_signal
+  ) {
+    opportunities.push(
+      "strengthening trust and business information"
+    );
+  }
+
+  if (
+    signals.speed_issue
+  ) {
+    opportunities.push(
+      "reviewing page performance"
+    );
+  }
+
+  const topOpportunities =
+    opportunities
+      .slice(0, 3);
+
+  let salesAngle;
+
+  if (
+    topOpportunities.length === 0
+  ) {
+    salesAngle =
+      "The website already shows several useful fundamentals. Any outreach should focus on specific improvements that can be verified rather than assuming the site needs a complete rebuild.";
+  } else {
+    salesAngle =
+      `The website may have an opportunity for ${topOpportunities.join(
+        ", "
+      )}. Outreach should focus on these observable areas without making claims about the business's traffic, revenue, or results.`;
+  }
+
+  let recommendedOffer;
+
+  if (
+    scores.website_score < 45
+  ) {
+    recommendedOffer =
+      "Consider discussing a broader website rebuild or modernization after confirming the business's actual goals and needs.";
+  } else if (
+    scores.website_score < 70
+  ) {
+    recommendedOffer =
+      "Consider a focused website improvement package covering the verified technical, conversion, and search issues found in the audit.";
+  } else {
+    recommendedOffer =
+      "Consider targeted improvements rather than automatically proposing a full rebuild.";
+  }
+
+  let suggestedPackage;
+
+  if (
+    scores.website_score < 45
+  ) {
+    suggestedPackage =
+      "Website redesign / rebuild discussion";
+  } else if (
+    issues.length >= 4
+  ) {
+    suggestedPackage =
+      "Website improvement / optimization discussion";
+  } else {
+    suggestedPackage =
+      "Targeted website improvement discussion";
+  }
+
+  return {
+    sales_angle:
+      salesAngle,
+
+    recommended_offer:
+      recommendedOffer,
+
+    suggested_package:
+      suggestedPackage,
+  };
 }
 
-function buildRecommendedOffer(checks, scores) {
-  if (!checks.has_contact_form && !checks.has_booking) {
-    return "Website rebuild or upgrade with a quote form, booking option, lead notifications, CRM tracking, and SEO cleanup.";
-  }
+/* ============================================================
+   HUMAN-READABLE SUMMARY
+============================================================ */
 
-  if (scores.seo_score <= 55) {
-    return "SEO cleanup package with better page titles, meta descriptions, service-area content, schema, sitemap/indexing review, and local landing pages.";
-  }
+function buildSummary(
+  scores,
+  issues,
+  sales
+) {
+  const issueLines =
+    issues.length > 0
+      ? issues
+          .map(
+            (issue) =>
+              `- ${issue}`
+          )
+          .join("\n")
+      : "- No major issues were detected by this automated scan.";
 
-  if (scores.conversion_score <= 60) {
-    return "Conversion upgrade with stronger call-to-action buttons, contact form, phone placement, quote request flow, and lead follow-up system.";
-  }
-
-  if (scores.trust_score <= 60) {
-    return "Trust upgrade with reviews/testimonials, privacy policy, favicon/branding, social links, and stronger business credibility sections.";
-  }
-
-  return "Free website audit first, then pitch website improvements, SEO cleanup, CRM, booking, or custom automation based on manual review.";
+  return [
+    `Website Score: ${scores.website_score}/100`,
+    "",
+    `SEO Score: ${scores.seo_score}/100`,
+    `Conversion Score: ${scores.conversion_score}/100`,
+    `Trust Score: ${scores.trust_score}/100`,
+    "",
+    "Problems Found:",
+    issueLines,
+    "",
+    "Sales Angle:",
+    sales.sales_angle,
+    "",
+    "Recommended Offer:",
+    sales.recommended_offer,
+    "",
+    "Suggested Package:",
+    sales.suggested_package,
+  ].join("\n");
 }
 
-function buildSuggestedPrice(checks, scores) {
-  if (!checks.has_contact_form && !checks.has_booking && scores.website_score <= 55) {
-    return "$2,500–$7,500";
-  }
-
-  if (scores.website_score <= 45) {
-    return "$3,500–$10,000";
-  }
-
-  if (scores.seo_score <= 55) {
-    return "$750–$2,500";
-  }
-
-  if (scores.conversion_score <= 60) {
-    return "$1,500–$5,000";
-  }
-
-  if (scores.trust_score <= 60) {
-    return "$750–$2,500";
-  }
-
-  return "$500–$2,500";
-}
-
-function buildSummary(scores, problems, salesAngle, recommendedOffer, suggestedPrice) {
-  const topProblems = problems.slice(0, 6);
-
-  return `Website Score: ${scores.website_score}/100
-
-SEO Score: ${scores.seo_score}/100
-Conversion Score: ${scores.conversion_score}/100
-Trust Score: ${scores.trust_score}/100
-
-Problems Found:
-- ${topProblems.join("\n- ")}
-
-Sales Angle:
-${salesAngle}
-
-Recommended Offer:
-${recommendedOffer}
-
-Suggested Package:
-${suggestedPrice}`;
-}
+/* ============================================================
+   POST
+============================================================ */
 
 export async function POST(request) {
   try {
-    const authHeader = request.headers.get("authorization") || "";
-    const token = authHeader.replace("Bearer ", "").trim();
+    /* ========================================================
+       1. ADMIN AUTHORIZATION
+    ======================================================== */
 
-    if (!token) {
-      return NextResponse.json(
-        { ok: false, error: "Missing admin session." },
-        { status: 401 }
+    const adminAuth =
+      await requireAdminApi(
+        request
+      );
+
+    if (!adminAuth.ok) {
+      return Response.json(
+        {
+          ok: false,
+          error:
+            adminAuth.error,
+        },
+        {
+          status:
+            adminAuth.status,
+        }
       );
     }
 
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    );
+    /* ========================================================
+       2. REQUEST BODY
+    ======================================================== */
 
-    const { data: userData, error: userError } = await supabase.auth.getUser(
-      token
-    );
+    let body;
 
-    if (userError || !userData?.user) {
-      return NextResponse.json(
-        { ok: false, error: "Invalid admin session." },
-        { status: 401 }
+    try {
+      body =
+        await request.json();
+    } catch {
+      return Response.json(
+        {
+          ok: false,
+          error:
+            "Invalid request body.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
-    const body = await request.json();
-    const targetUrl = normalizeUrl(body.website_url);
+    const suppliedUrl =
+      body?.website_url;
 
-    if (!targetUrl) {
-      return NextResponse.json(
-        { ok: false, error: "Enter a valid public website URL." },
-        { status: 400 }
+    if (
+      !suppliedUrl ||
+      typeof suppliedUrl !==
+        "string"
+    ) {
+      return Response.json(
+        {
+          ok: false,
+          error:
+            "website_url is required.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
-    const startedAt = Date.now();
+    /* ========================================================
+       3. VALIDATE TARGET
+    ======================================================== */
 
-    const response = await fetch(targetUrl, {
-      method: "GET",
-      redirect: "follow",
-      headers: {
-        "User-Agent": "Mozilla/5.0 matthew-web lead finder website audit bot",
-        Accept: "text/html,application/xhtml+xml",
-      },
-      signal: AbortSignal.timeout(12000),
-    });
+    let normalizedUrl;
 
-    const finalUrl = response.url || targetUrl;
-    const html = await response.text();
-    const loadTimeMs = Date.now() - startedAt;
+    try {
+      normalizedUrl =
+        await validatePublicUrl(
+          suppliedUrl
+        );
+    } catch (error) {
+      return Response.json(
+        {
+          ok: false,
+          error:
+            error?.message ||
+            "Invalid website URL.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
-    const title = getTitle(html);
-    const description =
-      getMetaContent(html, "description") ||
-      getMetaContent(html, "og:description");
+    /* ========================================================
+       4. FETCH WEBSITE
+    ======================================================== */
 
-    const h1Count = countMatches(html, /<h1[\s>]/gi);
-    const linkCount = countMatches(html, /<a[\s>]/gi);
-    const imageCount = countMatches(html, /<img[\s>]/gi);
+    let fetched;
 
-    const checks = {
-      has_website: response.ok,
-      has_https: finalUrl.startsWith("https://"),
+    try {
+      fetched =
+        await fetchWebsite(
+          normalizedUrl.toString()
+        );
+    } catch (error) {
+      return Response.json(
+        {
+          ok: false,
+          error:
+            error?.name ===
+            "AbortError"
+              ? "The website took too long to respond."
+              : error?.message ||
+                "The website could not be loaded.",
+        },
+        {
+          status: 502,
+        }
+      );
+    }
+
+    /* ========================================================
+       5. ANALYZE WEBSITE
+    ======================================================== */
+
+    const signals =
+      analyzeHtml(
+        fetched.html,
+        fetched.finalUrl,
+        fetched.elapsedMs
+      );
+
+    const scores =
+      scoreAudit(signals);
+
+    const issues =
+      buildIssues(signals);
+
+    const sales =
+      buildSalesGuidance(
+        signals,
+        scores,
+        issues
+      );
+
+    const auditSummary =
+      buildSummary(
+        scores,
+        issues,
+        sales
+      );
+
+    /* ========================================================
+       6. BUILD CRM-COMPATIBLE AUDIT OBJECT
+    ======================================================== */
+
+    const audit = {
+      /* Existing database-compatible fields */
+
+      has_website: true,
+
+      has_https:
+        signals.has_https,
+
       has_contact_form:
-        hasAny(html, [
-          "<form",
-          "contact form",
-          "request a quote",
-          "get a quote",
-          "free estimate",
-          "estimate form",
-          "contact us",
-          "send message",
-        ]) || false,
-      has_booking: hasAny(html, [
-        "book now",
-        "schedule",
-        "appointment",
-        "booking",
-        "calendar",
-        "calendly",
-        "square.site/appointments",
-        "acuityscheduling",
-        "setmore",
-        "youcanbook",
-      ]),
-      has_phone_number: /(\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/.test(
-        html
-      ),
-      has_email: /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(html),
-      has_meta_title: Boolean(title && title.length > 8),
-      has_meta_description: Boolean(description && description.length > 40),
-      has_favicon: hasAny(html, [
-        'rel="icon"',
-        "rel='icon'",
-        'rel="shortcut icon"',
-        "rel='shortcut icon'",
-        "favicon.ico",
-        "apple-touch-icon",
-      ]),
-      has_h1: h1Count > 0,
-      has_clear_cta: hasAny(html, [
-        "get a quote",
-        "request a quote",
-        "free estimate",
-        "schedule now",
-        "book now",
-        "call now",
-        "contact us",
-        "get started",
-        "request service",
-        "start today",
-      ]),
-      has_reviews_or_testimonials: hasAny(html, [
-        "reviews",
-        "testimonials",
-        "what our customers say",
-        "what clients say",
-        "google reviews",
-        "rated",
-      ]),
-      has_privacy_policy: hasAny(html, [
-        "privacy policy",
-        "/privacy",
-        "privacy-policy",
-      ]),
-      has_address_or_location:
-        hasAny(html, [
-          "service area",
-          "serving",
-          "located in",
-          "address",
-          "directions",
-        ]) ||
-        /\b[A-Z]{2}\s+\d{5}\b/.test(html),
-      has_structured_data: hasAny(html, [
-        "application/ld+json",
-        "schema.org",
-        "LocalBusiness",
-        "Organization",
-      ]),
-      has_social_links: hasAny(html, [
-        "facebook.com",
-        "instagram.com",
-        "linkedin.com",
-        "yelp.com",
-        "youtube.com",
-        "tiktok.com",
-        "twitter.com",
-        "x.com",
-      ]),
-      has_service_words: hasAny(html, [
-        "services",
-        "repair",
-        "installation",
-        "maintenance",
-        "contractor",
-        "roofing",
-        "landscaping",
-        "plumbing",
-        "electrical",
-        "painting",
-        "hvac",
-        "cleaning",
-        "remodeling",
-      ]),
-      has_local_keywords: hasAny(html, [
-        "near me",
-        "local",
-        "service area",
-        "serving",
-        "county",
-        "city",
-        "town",
-      ]),
-      title_too_short: Boolean(title && title.length < 20),
-      description_too_short: Boolean(description && description.length < 80),
-      mobile_issue: false,
-      speed_issue: loadTimeMs > 5000,
-      outdated_design: false,
-    };
+        signals.has_contact_form,
 
-    const scores = calculateAuditScores(checks);
-    const problems = buildProblemList(checks);
-    const salesAngle = buildSalesAngle(checks, scores);
-    const recommendedOffer = buildRecommendedOffer(checks, scores);
-    const suggestedPrice = buildSuggestedPrice(checks, scores);
+      has_booking:
+        signals.has_booking,
 
-    const auditSummary = buildSummary(
-      scores,
-      problems,
-      salesAngle,
-      recommendedOffer,
-      suggestedPrice
-    );
+      has_phone_number:
+        signals.has_phone_number,
 
-    const issues = {
-      final_url: finalUrl,
-      status: response.status,
-      title,
-      description,
-      h1_count: h1Count,
-      link_count: linkCount,
-      image_count: imageCount,
-      load_time_ms: loadTimeMs,
-      website_score: scores.website_score,
-      seo_score: scores.seo_score,
-      conversion_score: scores.conversion_score,
-      trust_score: scores.trust_score,
-      problems,
-      sales_angle: salesAngle,
-      recommended_offer: recommendedOffer,
-      suggested_price_range: suggestedPrice,
-      checked_at: new Date().toISOString(),
-    };
+      has_meta_title:
+        signals.has_meta_title,
 
-    return NextResponse.json({
-      ok: true,
-      audit: {
-        ...checks,
-        issues_json: issues,
-        audit_summary: auditSummary,
+      has_meta_description:
+        signals.has_meta_description,
+
+      has_favicon:
+        signals.has_favicon,
+
+      mobile_issue:
+        signals.mobile_issue,
+
+      speed_issue:
+        signals.speed_issue,
+
+      outdated_design:
+        signals.outdated_design,
+
+      issues_json: {
+        issues,
+
+        scores,
+
+        signals: {
+          has_email:
+            signals.has_email,
+
+          has_viewport:
+            signals.has_viewport,
+
+          has_h1:
+            signals.has_h1,
+
+          h1_count:
+            signals.h1_count,
+
+          has_clear_cta:
+            signals.has_clear_cta,
+
+          has_reviews:
+            signals.has_reviews,
+
+          has_privacy_policy:
+            signals.has_privacy_policy,
+
+          has_location_signal:
+            signals.has_location_signal,
+
+          has_schema:
+            signals.has_schema,
+
+          has_social_links:
+            signals.has_social_links,
+
+          has_service_words:
+            signals.has_service_words,
+
+          has_local_keywords:
+            signals.has_local_keywords,
+
+          link_count:
+            signals.link_count,
+
+          image_count:
+            signals.image_count,
+
+          title:
+            signals.title,
+
+          title_length:
+            signals.title_length,
+
+          meta_description:
+            signals.meta_description,
+
+          meta_description_length:
+            signals.meta_description_length,
+
+          load_time_ms:
+            signals.load_time_ms,
+        },
+
+        final_url:
+          fetched.finalUrl,
+
+        http_status:
+          fetched.status,
+
+        redirect_count:
+          fetched.redirects,
       },
+
+      audit_summary:
+        auditSummary,
+
+      /* Additional fields available to newer UI */
+
+      website_score:
+        scores.website_score,
+
+      seo_score:
+        scores.seo_score,
+
+      conversion_score:
+        scores.conversion_score,
+
+      trust_score:
+        scores.trust_score,
+
+      technical_score:
+        scores.technical_score,
+
+      problems_found:
+        issues,
+
+      sales_angle:
+        sales.sales_angle,
+
+      recommended_offer:
+        sales.recommended_offer,
+
+      suggested_package:
+        sales.suggested_package,
+
+      final_url:
+        fetched.finalUrl,
+
+      load_time_ms:
+        fetched.elapsedMs,
+    };
+
+    return Response.json({
+      ok: true,
+      audit,
     });
   } catch (error) {
-    return NextResponse.json(
+    console.error(
+      "Lead Finder website audit error:",
+      error
+    );
+
+    return Response.json(
       {
         ok: false,
         error:
-          error?.name === "TimeoutError"
-            ? "Website audit timed out. The site may be slow or blocking requests."
-            : error?.message || "Website audit failed.",
+          "Website audit failed.",
       },
-      { status: 500 }
+      {
+        status: 500,
+      }
     );
   }
 }

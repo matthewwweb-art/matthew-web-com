@@ -1,9 +1,15 @@
 export const metadata = {
-  title: "Admin Dashboard | matthew-web",
-  description: "Private matthew-web lead dashboard.",
+  title: "Mission Control | Matthew Web",
+  description: "Private Matthew Web administration system.",
   robots: {
     index: false,
     follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+    },
   },
 };
 

@@ -1,165 +1,459 @@
-import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { requireAdminApi } from "@/lib/requireAdminApi";
 
-function safeText(value) {
-  return value ? String(value).trim() : "";
+/* ============================================================
+   MATTHEW WEB — AI OUTREACH API
+
+   PRIVATE ADMIN ROUTE
+
+   Security:
+   - Requires a valid Supabase session
+   - Requires the signed-in user's email to exist in admin_users
+   - OPENAI_API_KEY remains server-side only
+
+   Expected output:
+   - facebook_dm
+   - email_subject
+   - email_message
+   - phone_script
+   - follow_up
+   - sales_angle
+   - recommended_offer
+============================================================ */
+
+/* ============================================================
+   EXTRACT TEXT FROM OPENAI RESPONSES API
+============================================================ */
+
+function extractResponseText(data) {
+  if (
+    typeof data?.output_text === "string" &&
+    data.output_text.trim()
+  ) {
+    return data.output_text.trim();
+  }
+
+  const pieces = [];
+
+  if (Array.isArray(data?.output)) {
+    for (const outputItem of data.output) {
+      if (!Array.isArray(outputItem?.content)) {
+        continue;
+      }
+
+      for (const contentItem of outputItem.content) {
+        if (
+          contentItem?.type === "output_text" &&
+          typeof contentItem?.text === "string"
+        ) {
+          pieces.push(contentItem.text);
+        }
+      }
+    }
+  }
+
+  return pieces.join("\n").trim();
 }
+
+/* ============================================================
+   CLEAN POSSIBLE MARKDOWN CODE FENCES
+============================================================ */
+
+function cleanJsonText(text) {
+  if (!text) {
+    return "";
+  }
+
+  return text
+    .trim()
+    .replace(/^```json\s*/i, "")
+    .replace(/^```\s*/i, "")
+    .replace(/\s*```$/i, "")
+    .trim();
+}
+
+/* ============================================================
+   API ROUTE
+============================================================ */
 
 export async function POST(request) {
   try {
-    const authHeader = request.headers.get("authorization") || "";
-    const token = authHeader.replace("Bearer ", "").trim();
+    /* ========================================================
+       1. VERIFY MATTHEW WEB ADMIN
+    ======================================================== */
 
-    if (!token) {
-      return NextResponse.json(
-        { ok: false, error: "Missing admin session." },
-        { status: 401 }
+    const adminAuth = await requireAdminApi(request);
+
+    if (!adminAuth.ok) {
+      return Response.json(
+        {
+          ok: false,
+          error: adminAuth.error,
+        },
+        {
+          status: adminAuth.status,
+        }
       );
     }
 
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    );
+    /* ========================================================
+       2. CHECK OPENAI CONFIGURATION
+    ======================================================== */
 
-    const { data: userData, error: userError } = await supabase.auth.getUser(
-      token
-    );
+    const openaiApiKey =
+      process.env.OPENAI_API_KEY;
 
-    if (userError || !userData?.user) {
-      return NextResponse.json(
-        { ok: false, error: "Invalid admin session." },
-        { status: 401 }
+    if (!openaiApiKey) {
+      return Response.json(
+        {
+          ok: false,
+          error:
+            "OPENAI_API_KEY is not configured on the server.",
+        },
+        {
+          status: 500,
+        }
       );
     }
 
-    if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json(
-        { ok: false, error: "Missing OPENAI_API_KEY." },
-        { status: 500 }
+    /* ========================================================
+       3. READ LEAD DATA
+    ======================================================== */
+
+    let body;
+
+    try {
+      body = await request.json();
+    } catch {
+      return Response.json(
+        {
+          ok: false,
+          error: "Invalid request body.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
-    const body = await request.json();
-    const lead = body.lead || {};
+    const lead = body?.lead;
 
-    const prompt = `
-Create custom outreach messages for this sales lead.
+    if (
+      !lead ||
+      typeof lead !== "object"
+    ) {
+      return Response.json(
+        {
+          ok: false,
+          error: "Lead information is required.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
-Business:
-${safeText(lead.business_name)}
+    /* ========================================================
+       4. BUILD LEAD CONTEXT
+    ======================================================== */
 
-Category:
-${safeText(lead.category)}
+    const leadContext = `
+BUSINESS NAME:
+${lead.business_name || "Unknown"}
 
-Location:
-${[lead.city, lead.state].filter(Boolean).join(", ") || "Unknown"}
+CATEGORY:
+${lead.category || "Unknown"}
 
-Phone:
-${safeText(lead.phone)}
+CONTACT NAME:
+${lead.contact_name || "Unknown"}
 
-Website:
-${safeText(lead.website_url)}
+CITY:
+${lead.city || "Unknown"}
 
-Google rating:
-${safeText(lead.rating)}
+STATE:
+${lead.state || "Unknown"}
 
-Review count:
-${safeText(lead.review_count)}
+PHONE:
+${lead.phone || "Unknown"}
 
-Lead score:
-${safeText(lead.lead_score)}
+EMAIL:
+${lead.email || "Unknown"}
 
-Estimated offer value:
-${safeText(lead.estimated_offer_value)}
+WEBSITE:
+${lead.website_url || "Unknown"}
 
-Problem found:
-${safeText(lead.problem_summary)}
+GOOGLE MAPS:
+${lead.google_maps_url || "Unknown"}
 
-Offer idea:
-${safeText(lead.offer_idea)}
+FACEBOOK:
+${lead.facebook_url || "Unknown"}
 
-Notes:
-${safeText(lead.notes)}
+YELP:
+${lead.yelp_url || "Unknown"}
 
-Write messages for matthew-web, a custom website and software business.
+GOOGLE RATING:
+${lead.rating ?? "Unknown"}
+
+REVIEW COUNT:
+${lead.review_count ?? "Unknown"}
+
+LEAD SCORE:
+${lead.lead_score ?? "Unknown"}
+
+ESTIMATED OFFER VALUE:
+${lead.estimated_offer_value ?? "Unknown"}
+
+PROBLEM FOUND:
+${lead.problem_summary || lead.problem_found || "None recorded"}
+
+OFFER IDEA:
+${lead.offer_idea || "None recorded"}
+
+STATUS:
+${lead.status || "Unknown"}
+
+NOTES:
+${lead.notes || "None"}
+`.trim();
+
+    /* ========================================================
+       5. AI INSTRUCTIONS
+    ======================================================== */
+
+    const instructions = `
+You create practical personalized sales outreach for Matthew Web.
+
+Matthew Web provides website design, website redesign, custom software,
+CRM dashboards, lead forms, business automation, integrations,
+SEO-ready website structure, and indexing support.
+
+Write like a real small-business owner contacting another business.
 
 Rules:
-- Sound human, direct, and not spammy.
-- Mention the business by name.
-- Do not overpromise results.
-- Keep it short enough for real outreach.
-- Push a free quick website/software audit.
-- Focus on websites, forms, SEO, booking, CRM, missed leads, or custom software only when relevant.
-- Return valid JSON only.
-- Use this exact JSON shape:
+
+- Be useful, respectful, and concise.
+- Do not sound like mass spam.
+- Do not invent facts about the prospect.
+- Do not claim you personally inspected something unless the supplied
+  lead information supports that claim.
+- Do not invent revenue, traffic, rankings, customer counts, losses,
+  conversion rates, or business problems.
+- Do not promise Google rankings or guaranteed financial results.
+- Mention observable or supplied problems naturally.
+- Do not insult the prospect's current website.
+- Do not use fake urgency.
+- Do not pretend Matthew Web has employees, partnerships,
+  certifications, or capabilities that have not been supplied.
+- Keep the Facebook DM relatively short.
+- Keep the email professional and easy to read.
+- Keep the phone script conversational rather than robotic.
+- Make the follow-up polite and shorter than the original message.
+- The sales angle should explain the practical opportunity.
+- The recommended offer should fit the supplied lead information.
+- When evidence is limited, use careful language such as
+  "may," "could," or "it looks like."
+
+Return ONLY valid JSON.
+
+Do not include markdown.
+Do not include code fences.
+Do not include commentary outside the JSON.
+
+Return exactly these keys:
+
 {
-  "facebook_dm": "...",
-  "email_subject": "...",
-  "email_message": "...",
-  "phone_script": "...",
-  "follow_up": "...",
-  "sales_angle": "...",
-  "recommended_offer": "..."
+  "facebook_dm": "",
+  "email_subject": "",
+  "email_message": "",
+  "phone_script": "",
+  "follow_up": "",
+  "sales_angle": "",
+  "recommended_offer": ""
 }
-`;
+`.trim();
 
-    const openaiResponse = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-5-mini",
-        instructions:
-          "You write practical sales outreach for a web design and custom software business. Return valid JSON only.",
-        input: prompt,
-      }),
-    });
+    const input = `
+Create personalized Matthew Web outreach for this lead.
 
-    const openaiData = await openaiResponse.json();
+${leadContext}
+
+Use only the information supplied above.
+`.trim();
+
+    /* ========================================================
+       6. CALL OPENAI RESPONSES API
+    ======================================================== */
+
+    const openaiResponse = await fetch(
+      "https://api.openai.com/v1/responses",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:
+            `Bearer ${openaiApiKey}`,
+        },
+
+        body: JSON.stringify({
+          model: "gpt-5-mini",
+          instructions,
+          input,
+        }),
+      }
+    );
+
+    let openaiData;
+
+    try {
+      openaiData =
+        await openaiResponse.json();
+    } catch {
+      return Response.json(
+        {
+          ok: false,
+          error:
+            "OpenAI returned an unreadable response.",
+        },
+        {
+          status: 502,
+        }
+      );
+    }
+
+    /* ========================================================
+       7. HANDLE OPENAI ERRORS
+    ======================================================== */
 
     if (!openaiResponse.ok) {
-      return NextResponse.json(
+      console.error(
+        "OpenAI AI outreach error:",
+        openaiData
+      );
+
+      return Response.json(
         {
           ok: false,
           error:
             openaiData?.error?.message ||
-            "OpenAI request failed. Check your API key.",
+            "OpenAI could not generate outreach.",
         },
-        { status: openaiResponse.status }
+        {
+          status:
+            openaiResponse.status || 500,
+        }
       );
     }
 
-    const text = openaiData.output_text || "";
+    /* ========================================================
+       8. EXTRACT AI OUTPUT
+    ======================================================== */
 
-    let parsed;
+    const rawText =
+      extractResponseText(openaiData);
 
-    try {
-      parsed = JSON.parse(text);
-    } catch {
-      return NextResponse.json(
+    if (!rawText) {
+      console.error(
+        "OpenAI response contained no text:",
+        openaiData
+      );
+
+      return Response.json(
         {
           ok: false,
-          error: "AI returned text that was not valid JSON.",
-          raw: text,
+          error:
+            "OpenAI returned an empty outreach response.",
         },
-        { status: 500 }
+        {
+          status: 502,
+        }
       );
     }
 
-    return NextResponse.json({
+    /* ========================================================
+       9. PARSE JSON
+    ======================================================== */
+
+    const cleanedText =
+      cleanJsonText(rawText);
+
+    let outreach;
+
+    try {
+      outreach =
+        JSON.parse(cleanedText);
+    } catch (error) {
+      console.error(
+        "AI outreach JSON parse error:",
+        error
+      );
+
+      console.error(
+        "Raw AI outreach:",
+        rawText
+      );
+
+      return Response.json(
+        {
+          ok: false,
+          error:
+            "OpenAI returned outreach in an invalid format.",
+        },
+        {
+          status: 502,
+        }
+      );
+    }
+
+    /* ========================================================
+       10. NORMALIZE EXPECTED FIELDS
+    ======================================================== */
+
+    const normalizedOutreach = {
+      facebook_dm:
+        outreach?.facebook_dm || "",
+
+      email_subject:
+        outreach?.email_subject || "",
+
+      email_message:
+        outreach?.email_message || "",
+
+      phone_script:
+        outreach?.phone_script || "",
+
+      follow_up:
+        outreach?.follow_up || "",
+
+      sales_angle:
+        outreach?.sales_angle || "",
+
+      recommended_offer:
+        outreach?.recommended_offer || "",
+    };
+
+    /* ========================================================
+       11. SUCCESS
+    ======================================================== */
+
+    return Response.json({
       ok: true,
-      outreach: parsed,
+      outreach: normalizedOutreach,
     });
   } catch (error) {
-    return NextResponse.json(
+    console.error(
+      "AI outreach route error:",
+      error
+    );
+
+    return Response.json(
       {
         ok: false,
-        error: error?.message || "AI outreach failed.",
+        error:
+          "Failed to generate AI outreach.",
       },
-      { status: 500 }
+      {
+        status: 500,
+      }
     );
   }
 }
