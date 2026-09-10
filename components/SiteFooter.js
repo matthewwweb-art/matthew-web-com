@@ -13,15 +13,13 @@ import {
   GraduationCap,
   Heart,
   MapPin,
-  MonitorSmartphone,
   Phone,
   Search,
-  ShieldCheck,
   Sparkles,
 } from "lucide-react";
 
 /* ============================================================
-   LINKS
+   INTERNAL LINKS
 ============================================================ */
 
 const exploreLinks = [
@@ -36,22 +34,10 @@ const exploreLinks = [
 ];
 
 const serviceLinks = [
-  {
-    label: "All Services",
-    href: "/services",
-  },
-  {
-    label: "Website Design",
-    href: "/website-design",
-  },
-  {
-    label: "Custom Software",
-    href: "/custom-software",
-  },
-  {
-    label: "SEO & Indexing",
-    href: "/seo-and-indexing",
-  },
+  { label: "All Services", href: "/services" },
+  { label: "Website Design", href: "/website-design" },
+  { label: "Custom Software", href: "/custom-software" },
+  { label: "SEO & Indexing", href: "/seo-and-indexing" },
   {
     label: "Small Business Websites",
     href: "/small-business-websites",
@@ -85,6 +71,63 @@ const legalLinks = [
   {
     label: "Code of Ethics",
     href: "/code-of-ethics",
+  },
+];
+
+/* ============================================================
+   MATTHEW WEB NETWORK / PRODUCTS
+============================================================ */
+
+const productNetworkLinks = [
+  {
+    label: "Free Game Hub",
+    href: "https://games.matthew-web.com",
+    description: "Matthew Web game website",
+  },
+  {
+    label: "TankCPU Education — itch.io",
+    href:
+      "https://matthew-web.itch.io/tankcpu-education-v10-hands-on-8-bit-cpu-course-for-logisim-evolution",
+    description: "Educational CPU product",
+  },
+  {
+    label: "8-Bit Educational CPU — Classful",
+    href:
+      "https://classful.com/product/8-bit-educational-cpu-build-program-understand-a-real-cpu-learn-computer-architecture-by-exploring-and-programming-a-working-8-bit-cpu-built-specifically-for-education/",
+    description: "Educational CPU listing",
+  },
+  {
+    label: "Matthew Web on itch.io",
+    href: "https://matthew-web.itch.io",
+    description: "Games and educational products",
+  },
+  {
+    label: "Matthew Web on GitHub",
+    href: "https://github.com/matthewwweb-art",
+    description: "Software and development projects",
+  },
+];
+
+/* ============================================================
+   SOCIAL / PROFILE LINKS
+============================================================ */
+
+const socialLinks = [
+  {
+    label: "Facebook",
+    href:
+      "https://www.facebook.com/profile.php?id=61585865428354",
+    mark: "f",
+  },
+  {
+    label: "GitHub",
+    href: "https://github.com/matthewwweb-art",
+    mark: "GH",
+  },
+  {
+    label: "itch.io",
+    href: "https://matthew-web.itch.io",
+    mark: "i",
   },
 ];
 
@@ -123,15 +166,23 @@ export default function SiteFooter() {
   return (
     <>
       <style jsx global>{`
+        :root {
+          --mwf-black: #020304;
+          --mwf-blue: #08b9f4;
+          --mwf-blue-light: #38d7ff;
+          --mwf-orange: #ff7900;
+          --mwf-orange-light: #ff9c22;
+          --mwf-text: #dbe7ed;
+          --mwf-muted: #8fa0aa;
+        }
+
         /* =====================================================
            FOOTER
         ===================================================== */
 
         .mwf-footer {
           position: relative;
-
           overflow: hidden;
-
           color: white;
 
           background:
@@ -153,19 +204,14 @@ export default function SiteFooter() {
             );
 
           border-top:
-            1px solid
-            rgba(8, 185, 244, 0.23);
+            1px solid rgba(8, 185, 244, 0.23);
         }
 
         .mwf-footer::before {
           content: "";
-
           position: absolute;
-
           inset: 0;
-
           pointer-events: none;
-
           opacity: 0.18;
 
           background-image:
@@ -179,8 +225,7 @@ export default function SiteFooter() {
               transparent 1px
             );
 
-          background-size:
-            72px 72px;
+          background-size: 72px 72px;
 
           mask-image:
             linear-gradient(
@@ -190,47 +235,36 @@ export default function SiteFooter() {
             );
         }
 
-        /* =====================================================
-           TOP GLOW LINE
-        ===================================================== */
-
         .mwf-top-line {
           position: absolute;
-
           left: 0;
           right: 0;
           top: 0;
-
           height: 2px;
 
           background:
             linear-gradient(
               90deg,
               transparent 0%,
-              #08b9f4 22%,
-              #38d7ff 42%,
-              #ff7900 64%,
+              var(--mwf-blue) 22%,
+              var(--mwf-blue-light) 42%,
+              var(--mwf-orange) 64%,
               transparent 100%
             );
 
           box-shadow:
-            0 0 16px
-            rgba(8, 185, 244, 0.42),
-            0 0 22px
-            rgba(255, 121, 0, 0.2);
+            0 0 16px rgba(8, 185, 244, 0.42),
+            0 0 22px rgba(255, 121, 0, 0.2);
         }
 
         /* =====================================================
-           CTA
+           TOP CTA
         ===================================================== */
 
         .mwf-cta-wrap {
           position: relative;
-
           z-index: 2;
-
           max-width: 1380px;
-
           margin: 0 auto;
 
           padding:
@@ -241,14 +275,9 @@ export default function SiteFooter() {
 
         .mwf-cta {
           position: relative;
-
           display: grid;
-
-          grid-template-columns:
-            1fr auto;
-
+          grid-template-columns: 1fr auto;
           align-items: center;
-
           gap: 30px;
 
           padding:
@@ -261,8 +290,7 @@ export default function SiteFooter() {
           overflow: hidden;
 
           border:
-            1px solid
-            rgba(8, 185, 244, 0.28);
+            1px solid rgba(8, 185, 244, 0.28);
 
           border-radius: 22px;
 
@@ -284,87 +312,65 @@ export default function SiteFooter() {
             );
 
           box-shadow:
-            0 25px 60px
-            rgba(0, 0, 0, 0.32),
+            0 25px 60px rgba(0, 0, 0, 0.32),
             inset 0 0 40px
-            rgba(8, 185, 244, 0.025);
+              rgba(8, 185, 244, 0.025);
+        }
+
+        .mwf-cta::before,
+        .mwf-cta::after {
+          content: "";
+          position: absolute;
+          border-radius: 50%;
+          pointer-events: none;
         }
 
         .mwf-cta::before {
-          content: "";
-
-          position: absolute;
-
           width: 210px;
           height: 210px;
-
           right: -60px;
           top: -90px;
 
-          border-radius: 50%;
-
           border:
-            1px dashed
-            rgba(255, 121, 0, 0.16);
+            1px dashed rgba(255, 121, 0, 0.16);
 
           animation:
-            mwfRotate
-            18s linear
-            infinite;
+            mwfRotate 18s linear infinite;
         }
 
         .mwf-cta::after {
-          content: "";
-
-          position: absolute;
-
           width: 140px;
           height: 140px;
-
           right: -25px;
           top: -55px;
 
-          border-radius: 50%;
-
           border:
-            1px solid
-            rgba(8, 185, 244, 0.13);
+            1px solid rgba(8, 185, 244, 0.13);
 
           animation:
-            mwfRotate
-            13s linear
-            infinite reverse;
+            mwfRotate 13s linear infinite reverse;
         }
 
         @keyframes mwfRotate {
           to {
-            transform:
-              rotate(360deg);
+            transform: rotate(360deg);
           }
         }
 
         .mwf-cta-copy {
           position: relative;
-
           z-index: 2;
         }
 
         .mwf-cta-kicker {
           display: inline-flex;
-
           align-items: center;
-
           gap: 8px;
-
           margin-bottom: 11px;
-
-          color: #38d7ff;
-
+          color: var(--mwf-blue-light);
           font-size: 10px;
           font-weight: 900;
-
           letter-spacing: 0.16em;
-
           text-transform: uppercase;
         }
 
@@ -384,69 +390,46 @@ export default function SiteFooter() {
             );
 
           line-height: 1.05;
-
           letter-spacing: -0.045em;
         }
 
         .mwf-cta h2 span {
-          color: #ff7900;
-
-          text-shadow:
-            0 0 18px
-            rgba(255, 121, 0, 0.2);
+          color: var(--mwf-orange);
         }
 
         .mwf-cta p {
           max-width: 740px;
-
-          margin:
-            14px 0 0;
-
+          margin: 14px 0 0;
           color: #aebbc5;
-
           font-size: 14px;
-
           line-height: 1.7;
         }
 
         .mwf-cta-buttons {
           position: relative;
-
           z-index: 3;
-
           display: flex;
-
           flex-wrap: wrap;
-
           gap: 11px;
         }
 
         .mwf-btn {
           display: inline-flex;
-
           align-items: center;
           justify-content: center;
-
           gap: 9px;
-
           min-height: 50px;
-
-          padding:
-            0 19px;
-
+          padding: 0 19px;
           border-radius: 9px;
-
           text-decoration: none;
-
+          color: white;
           font-size: 13px;
           font-weight: 850;
-
           white-space: nowrap;
 
           transition:
             transform 0.2s ease,
-            box-shadow 0.2s ease,
-            border-color 0.2s ease;
+            box-shadow 0.2s ease;
         }
 
         .mwf-btn svg {
@@ -455,11 +438,8 @@ export default function SiteFooter() {
         }
 
         .mwf-btn-blue {
-          color: white;
-
           border:
-            1px solid
-            rgba(56, 215, 255, 0.55);
+            1px solid rgba(56, 215, 255, 0.55);
 
           background:
             linear-gradient(
@@ -469,25 +449,19 @@ export default function SiteFooter() {
             );
 
           box-shadow:
-            0 0 15px
-            rgba(8, 185, 244, 0.27);
+            0 0 15px rgba(8, 185, 244, 0.27);
         }
 
         .mwf-btn-blue:hover {
-          transform:
-            translateY(-2px);
+          transform: translateY(-2px);
 
           box-shadow:
-            0 0 23px
-            rgba(8, 185, 244, 0.46);
+            0 0 23px rgba(8, 185, 244, 0.46);
         }
 
         .mwf-btn-orange {
-          color: white;
-
           border:
-            1px solid
-            rgba(255, 175, 49, 0.65);
+            1px solid rgba(255, 175, 49, 0.65);
 
           background:
             linear-gradient(
@@ -497,30 +471,24 @@ export default function SiteFooter() {
             );
 
           box-shadow:
-            0 0 15px
-            rgba(255, 121, 0, 0.29);
+            0 0 15px rgba(255, 121, 0, 0.29);
         }
 
         .mwf-btn-orange:hover {
-          transform:
-            translateY(-2px);
+          transform: translateY(-2px);
 
           box-shadow:
-            0 0 23px
-            rgba(255, 121, 0, 0.48);
+            0 0 23px rgba(255, 121, 0, 0.48);
         }
 
         /* =====================================================
-           MAIN FOOTER GRID
+           MAIN GRID
         ===================================================== */
 
         .mwf-main {
           position: relative;
-
           z-index: 2;
-
           max-width: 1380px;
-
           margin: 0 auto;
 
           padding:
@@ -533,17 +501,17 @@ export default function SiteFooter() {
           display: grid;
 
           grid-template-columns:
-            minmax(280px, 1.55fr)
-            minmax(140px, 0.7fr)
-            minmax(175px, 0.85fr)
-            minmax(170px, 0.85fr)
-            minmax(250px, 1.1fr);
+            minmax(260px, 1.45fr)
+            minmax(135px, 0.7fr)
+            minmax(165px, 0.85fr)
+            minmax(175px, 0.9fr)
+            minmax(230px, 1.15fr);
 
           gap:
             clamp(
               28px,
-              4vw,
-              65px
+              3.7vw,
+              56px
             );
         }
 
@@ -553,13 +521,9 @@ export default function SiteFooter() {
 
         .mwf-brand-name {
           display: inline-flex;
-
           align-items: baseline;
-
           margin-bottom: 17px;
-
           text-decoration: none;
-
           font-family:
             Arial,
             Helvetica,
@@ -573,90 +537,60 @@ export default function SiteFooter() {
             );
 
           font-weight: 900;
-
-          letter-spacing:
-            -0.055em;
+          letter-spacing: -0.055em;
         }
 
         .mwf-brand-blue {
-          color: #38d7ff;
-
-          text-shadow:
-            0 0 14px
-            rgba(8, 185, 244, 0.23);
+          color: var(--mwf-blue-light);
         }
 
         .mwf-brand-orange {
-          color: #ff7900;
-
-          text-shadow:
-            0 0 14px
-            rgba(255, 121, 0, 0.23);
+          color: var(--mwf-orange);
         }
 
         .mwf-brand-copy {
           max-width: 400px;
-
           margin: 0;
-
           color: #aebbc5;
-
           font-size: 14px;
-
           line-height: 1.72;
         }
 
         /* =====================================================
-           TECHNOLOGY TAGS
+           TECH TAGS
         ===================================================== */
 
         .mwf-tech-row {
           display: flex;
-
           flex-wrap: wrap;
-
           gap: 7px;
-
           margin-top: 22px;
         }
 
         .mwf-tech-tag {
           display: inline-flex;
-
           align-items: center;
-
           gap: 6px;
-
           min-height: 31px;
-
-          padding:
-            0 9px;
-
+          padding: 0 9px;
           border-radius: 6px;
-
           color: #dfeaf0;
-
           background:
             rgba(255, 255, 255, 0.025);
-
           font-size: 9px;
           font-weight: 850;
-
           letter-spacing: 0.07em;
-
           text-transform: uppercase;
         }
 
         .mwf-tech-tag.blue {
           border:
-            1px solid
-            rgba(8, 185, 244, 0.2);
+            1px solid rgba(8, 185, 244, 0.2);
         }
 
         .mwf-tech-tag.orange {
           border:
-            1px solid
-            rgba(255, 121, 0, 0.2);
+            1px solid rgba(255, 121, 0, 0.2);
         }
 
         .mwf-tech-tag svg {
@@ -665,36 +599,45 @@ export default function SiteFooter() {
         }
 
         .mwf-tech-tag.blue svg {
-          color: #38d7ff;
+          color: var(--mwf-blue-light);
         }
 
         .mwf-tech-tag.orange svg {
-          color: #ff9c22;
+          color: var(--mwf-orange-light);
         }
 
         /* =====================================================
            SOCIAL
         ===================================================== */
 
+        .mwf-social-title {
+          margin:
+            25px 0
+            10px;
+
+          color: #70828d;
+          font-size: 9px;
+          font-weight: 900;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+        }
+
         .mwf-social-row {
           display: flex;
-
-          gap: 9px;
-
-          margin-top: 24px;
+          flex-wrap: wrap;
+          gap: 8px;
         }
 
         .mwf-social {
-          width: 39px;
-          height: 39px;
-
-          display: grid;
-
-          place-items: center;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 7px;
+          min-height: 39px;
+          padding: 0 11px;
 
           border:
-            1px solid
-            rgba(255, 255, 255, 0.11);
+            1px solid rgba(255, 255, 255, 0.11);
 
           border-radius: 9px;
 
@@ -705,104 +648,73 @@ export default function SiteFooter() {
 
           text-decoration: none;
 
-          font-size: 14px;
-          font-weight: 900;
+          font-size: 11px;
+          font-weight: 850;
 
           transition:
             transform 0.2s ease,
-            color 0.2s ease,
             border-color 0.2s ease,
-            box-shadow 0.2s ease;
+            color 0.2s ease;
         }
 
         .mwf-social:hover {
-          transform:
-            translateY(-3px);
-
-          color: #38d7ff;
+          transform: translateY(-2px);
+          color: var(--mwf-blue-light);
 
           border-color:
             rgba(8, 185, 244, 0.4);
-
-          box-shadow:
-            0 0 14px
-            rgba(8, 185, 244, 0.14);
         }
 
-        .mwf-social:nth-child(even):hover {
-          color: #ff9c22;
-
-          border-color:
-            rgba(255, 121, 0, 0.4);
-
-          box-shadow:
-            0 0 14px
-            rgba(255, 121, 0, 0.13);
+        .mwf-social-mark {
+          color: var(--mwf-orange-light);
+          font-weight: 900;
         }
 
         /* =====================================================
-           LINK COLUMNS
+           COLUMNS
         ===================================================== */
 
         .mwf-column h3 {
           position: relative;
-
-          margin:
-            5px 0 20px;
-
+          margin: 5px 0 20px;
           padding-bottom: 11px;
-
           color: white;
-
           font-size: 14px;
           font-weight: 850;
-
           letter-spacing: 0.035em;
         }
 
         .mwf-column h3::after {
           content: "";
-
           position: absolute;
-
           left: 0;
           bottom: 0;
-
           width: 38px;
           height: 2px;
-
           border-radius: 999px;
 
           background:
             linear-gradient(
               90deg,
-              #08b9f4,
-              #ff7900
+              var(--mwf-blue),
+              var(--mwf-orange)
             );
         }
 
         .mwf-links {
           display: grid;
-
           gap: 11px;
         }
 
         .mwf-links a {
           display: inline-flex;
-
           align-items: center;
-
           gap: 7px;
-
           width: fit-content;
-
           color: #9faeb8;
-
           text-decoration: none;
-
           font-size: 13px;
-
-          line-height: 1.35;
+          line-height: 1.4;
 
           transition:
             color 0.18s ease,
@@ -811,68 +723,146 @@ export default function SiteFooter() {
 
         .mwf-links a::before {
           content: "";
-
           width: 4px;
           height: 4px;
-
           flex: 0 0 auto;
-
           border-radius: 50%;
-
-          background: #08b9f4;
+          background: var(--mwf-blue);
 
           box-shadow:
-            0 0 5px
-            rgba(8, 185, 244, 0.5);
+            0 0 5px rgba(8, 185, 244, 0.5);
         }
 
         .mwf-links a:nth-child(even)::before {
-          background: #ff7900;
+          background: var(--mwf-orange);
 
           box-shadow:
-            0 0 5px
-            rgba(255, 121, 0, 0.45);
+            0 0 5px rgba(255, 121, 0, 0.45);
         }
 
         .mwf-links a:hover {
           color: white;
+          transform: translateX(4px);
+        }
 
-          transform:
-            translateX(4px);
+        .mwf-links svg {
+          width: 12px;
+          height: 12px;
+          flex: 0 0 auto;
+        }
+
+        /* =====================================================
+           NETWORK
+        ===================================================== */
+
+        .mwf-network-list {
+          display: grid;
+          gap: 10px;
+        }
+
+        .mwf-network-card {
+          display: block;
+          padding: 11px 12px;
+
+          border:
+            1px solid rgba(255, 255, 255, 0.075);
+
+          border-radius: 9px;
+
+          background:
+            rgba(255, 255, 255, 0.018);
+
+          text-decoration: none;
+
+          transition:
+            transform 0.18s ease,
+            border-color 0.18s ease,
+            background 0.18s ease;
+        }
+
+        .mwf-network-card:hover {
+          transform: translateY(-2px);
+
+          border-color:
+            rgba(8, 185, 244, 0.3);
+
+          background:
+            rgba(8, 185, 244, 0.045);
+        }
+
+        .mwf-network-name {
+          display: flex;
+          align-items: center;
+          gap: 7px;
+          color: #dce8ee;
+          font-size: 12px;
+          font-weight: 800;
+          line-height: 1.4;
+        }
+
+        .mwf-network-name svg {
+          width: 13px;
+          height: 13px;
+          flex: 0 0 auto;
+          color: var(--mwf-orange-light);
+        }
+
+        .mwf-network-description {
+          display: block;
+          margin-top: 4px;
+          color: #72838d;
+          font-size: 9px;
+          line-height: 1.45;
         }
 
         /* =====================================================
            CONTACT
         ===================================================== */
 
-        .mwf-contact-list {
+        .mwf-contact-column {
+          grid-column:
+            1 / -1;
+
+          padding-top: 15px;
+        }
+
+        .mwf-contact-shell {
           display: grid;
 
-          gap: 17px;
+          grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+
+          gap: 15px;
         }
 
         .mwf-contact-item {
           display: grid;
 
           grid-template-columns:
-            34px 1fr;
+            38px 1fr;
 
-          align-items: start;
+          gap: 11px;
 
-          gap: 10px;
+          padding: 14px;
+
+          border:
+            1px solid rgba(255, 255, 255, 0.07);
+
+          border-radius: 10px;
+
+          background:
+            rgba(255, 255, 255, 0.018);
         }
 
         .mwf-contact-icon {
-          width: 34px;
-          height: 34px;
+          width: 38px;
+          height: 38px;
 
           display: grid;
-
           place-items: center;
 
           border:
-            1px solid
-            rgba(8, 185, 244, 0.19);
+            1px solid rgba(8, 185, 244, 0.2);
 
           border-radius: 8px;
 
@@ -889,55 +879,43 @@ export default function SiteFooter() {
         }
 
         .mwf-contact-icon svg {
-          width: 17px;
-          height: 17px;
-
-          color: #38d7ff;
+          width: 18px;
+          height: 18px;
+          color: var(--mwf-blue-light);
         }
 
         .mwf-contact-icon.orange svg {
-          color: #ff9c22;
+          color: var(--mwf-orange-light);
         }
 
         .mwf-contact-label {
           display: block;
-
-          margin-bottom: 3px;
-
+          margin-bottom: 4px;
           color: #71818c;
-
           font-size: 9px;
           font-weight: 850;
-
           letter-spacing: 0.1em;
-
           text-transform: uppercase;
         }
 
         .mwf-contact-value,
         .mwf-contact-value a {
-          color: #dbe5ea;
-
+          color: var(--mwf-text);
           text-decoration: none;
-
           font-size: 12px;
-
           line-height: 1.55;
         }
 
         .mwf-contact-value a:hover {
-          color: #38d7ff;
+          color: var(--mwf-blue-light);
         }
 
         .mwf-location-note {
-          margin-top: 18px;
-
-          padding:
-            12px 13px;
+          margin-top: 15px;
+          padding: 12px 13px;
 
           border:
-            1px solid
-            rgba(255, 255, 255, 0.07);
+            1px solid rgba(255, 255, 255, 0.07);
 
           border-radius: 8px;
 
@@ -947,21 +925,17 @@ export default function SiteFooter() {
             rgba(255, 255, 255, 0.018);
 
           font-size: 10px;
-
           line-height: 1.6;
         }
 
         /* =====================================================
-           R&D NOTICE
+           R&D
         ===================================================== */
 
         .mwf-rd-note {
           position: relative;
-
           z-index: 2;
-
           max-width: 1380px;
-
           margin: 0 auto;
 
           padding:
@@ -972,17 +946,12 @@ export default function SiteFooter() {
 
         .mwf-rd-inner {
           display: flex;
-
           align-items: flex-start;
-
           gap: 11px;
-
-          padding:
-            14px 16px;
+          padding: 14px 16px;
 
           border:
-            1px solid
-            rgba(255, 121, 0, 0.15);
+            1px solid rgba(255, 121, 0, 0.15);
 
           border-radius: 9px;
 
@@ -992,31 +961,26 @@ export default function SiteFooter() {
             rgba(255, 121, 0, 0.025);
 
           font-size: 10px;
-
           line-height: 1.6;
         }
 
         .mwf-rd-inner svg {
           width: 18px;
           height: 18px;
-
           flex: 0 0 auto;
-
-          color: #ff7900;
+          color: var(--mwf-orange);
         }
 
         /* =====================================================
-           BOTTOM BAR
+           BOTTOM
         ===================================================== */
 
         .mwf-bottom {
           position: relative;
-
           z-index: 2;
 
           border-top:
-            1px solid
-            rgba(255, 255, 255, 0.065);
+            1px solid rgba(255, 255, 255, 0.065);
 
           background:
             rgba(0, 0, 0, 0.25);
@@ -1024,16 +988,11 @@ export default function SiteFooter() {
 
         .mwf-bottom-inner {
           max-width: 1380px;
-
           margin: 0 auto;
-
           min-height: 78px;
-
           display: flex;
-
           align-items: center;
           justify-content: space-between;
-
           gap: 25px;
 
           padding:
@@ -1043,31 +1002,22 @@ export default function SiteFooter() {
 
         .mwf-copyright {
           margin: 0;
-
           color: #71818b;
-
           font-size: 10px;
-
           line-height: 1.6;
         }
 
         .mwf-bottom-links {
           display: flex;
-
           flex-wrap: wrap;
-
           align-items: center;
-
           justify-content: flex-end;
-
           gap: 7px 17px;
         }
 
         .mwf-bottom-links a {
           color: #8998a2;
-
           text-decoration: none;
-
           font-size: 10px;
 
           transition:
@@ -1075,30 +1025,36 @@ export default function SiteFooter() {
         }
 
         .mwf-bottom-links a:hover {
-          color: #38d7ff;
+          color: var(--mwf-blue-light);
+        }
+
+        .mwf-google-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+        }
+
+        .mwf-google-link svg {
+          width: 11px;
+          height: 11px;
         }
 
         .mwf-built {
           display: inline-flex;
-
+          flex-wrap: wrap;
           align-items: center;
-
           gap: 5px;
-
           color: #667680;
-
           font-size: 10px;
         }
 
-        .mwf-built span:first-child {
-          color: #38d7ff;
-
+        .mwf-built-blue {
+          color: var(--mwf-blue-light);
           font-weight: 850;
         }
 
-        .mwf-built span:last-child {
-          color: #ff7900;
-
+        .mwf-built-orange {
+          color: var(--mwf-orange);
           font-weight: 850;
         }
 
@@ -1109,36 +1065,15 @@ export default function SiteFooter() {
         @media (max-width: 1180px) {
           .mwf-grid {
             grid-template-columns:
-              1.4fr
-              0.8fr
-              0.9fr
-              1fr;
+              repeat(2, minmax(0, 1fr));
+          }
+
+          .mwf-brand-column {
+            grid-column:
+              1 / -1;
           }
 
           .mwf-contact-column {
-            grid-column:
-              1 / -1;
-
-            display: grid;
-
-            grid-template-columns:
-              170px 1fr;
-
-            gap: 30px;
-
-            padding-top: 10px;
-          }
-
-          .mwf-contact-column h3 {
-            margin-top: 0;
-          }
-
-          .mwf-contact-list {
-            grid-template-columns:
-              repeat(3, 1fr);
-          }
-
-          .mwf-location-note {
             grid-column:
               1 / -1;
           }
@@ -1150,33 +1085,17 @@ export default function SiteFooter() {
               1fr;
           }
 
-          .mwf-grid {
-            grid-template-columns:
-              repeat(2, 1fr);
-          }
-
-          .mwf-brand-column {
-            grid-column:
-              1 / -1;
-          }
-
-          .mwf-contact-column {
-            grid-column:
-              1 / -1;
-
-            grid-template-columns:
-              1fr;
-          }
-
-          .mwf-contact-list {
+          .mwf-contact-shell {
             grid-template-columns:
               1fr;
           }
 
           .mwf-bottom-inner {
-            flex-direction: column;
+            flex-direction:
+              column;
 
-            align-items: flex-start;
+            align-items:
+              flex-start;
           }
 
           .mwf-bottom-links {
@@ -1203,12 +1122,18 @@ export default function SiteFooter() {
               1fr;
           }
 
-          .mwf-brand-column {
-            grid-column: auto;
+          .mwf-brand-column,
+          .mwf-contact-column {
+            grid-column:
+              auto;
           }
 
-          .mwf-contact-column {
-            grid-column: auto;
+          .mwf-cta-buttons {
+            width: 100%;
+          }
+
+          .mwf-btn {
+            width: 100%;
           }
 
           .mwf-rd-note {
@@ -1222,18 +1147,20 @@ export default function SiteFooter() {
               20px 16px;
           }
 
-          .mwf-cta-buttons {
-            width: 100%;
-          }
-
-          .mwf-btn {
-            width: 100%;
-          }
-
           .mwf-bottom-links {
             display: grid;
-
             gap: 8px;
+          }
+
+          .mwf-social-row {
+            display: grid;
+
+            grid-template-columns:
+              repeat(2, minmax(0, 1fr));
+          }
+
+          .mwf-social {
+            width: 100%;
           }
         }
 
@@ -1256,7 +1183,7 @@ export default function SiteFooter() {
         />
 
         {/* =====================================================
-            TOP CTA
+            CTA
         ===================================================== */}
 
         <div className="mwf-cta-wrap">
@@ -1273,11 +1200,11 @@ export default function SiteFooter() {
               </h2>
 
               <p>
-                From websites and custom software
-                to new technology ideas, tell
-                Matthew Web what you&apos;re trying
-                to accomplish and we&apos;ll look at
-                the best way to build it.
+                From websites and custom software to
+                business systems, games, educational
+                technology and new technology ideas,
+                tell Matthew Web what you&apos;re
+                trying to accomplish.
               </p>
             </div>
 
@@ -1290,19 +1217,21 @@ export default function SiteFooter() {
                 <ArrowRight />
               </Link>
 
-              <Link
+              <a
                 href="https://buy.stripe.com/5kQeVf0IT9HX75w2YW8og0k"
                 className="mwf-btn mwf-btn-orange"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <Heart />
                 Support Us
-              </Link>
+              </a>
             </div>
           </div>
         </div>
 
         {/* =====================================================
-            MAIN FOOTER
+            MAIN
         ===================================================== */}
 
         <div className="mwf-main">
@@ -1326,11 +1255,11 @@ export default function SiteFooter() {
 
               <p className="mwf-brand-copy">
                 Matthew Web is a Maine-based
-                technology company building
-                practical websites and software
-                while expanding into games,
-                education and independent computer
-                hardware research.
+                technology business building
+                websites, custom software and
+                business technology while expanding
+                into games, education and independent
+                computer hardware research.
               </p>
 
               <div className="mwf-tech-row">
@@ -1349,28 +1278,28 @@ export default function SiteFooter() {
                 })}
               </div>
 
-              <div className="mwf-social-row">
-                <a
-                  href="https://www.facebook.com/profile.php?id=61585865428354"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Matthew Web on Facebook"
-                  title="Facebook"
-                  className="mwf-social"
-                >
-                  f
-                </a>
+              <div className="mwf-social-title">
+                Social &amp; Profiles
+              </div>
 
-                <a
-                  href="https://www.instagram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram"
-                  title="Instagram"
-                  className="mwf-social"
-                >
-                  ◎
-                </a>
+              <div className="mwf-social-row">
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Matthew Web ${social.label}`}
+                    title={social.label}
+                    className="mwf-social"
+                  >
+                    <span className="mwf-social-mark">
+                      {social.mark}
+                    </span>
+
+                    {social.label}
+                  </a>
+                ))}
 
                 <a
                   href={googleBusinessLink}
@@ -1380,7 +1309,11 @@ export default function SiteFooter() {
                   title="Google Business"
                   className="mwf-social"
                 >
-                  G
+                  <span className="mwf-social-mark">
+                    G
+                  </span>
+
+                  Google
                 </a>
               </div>
             </div>
@@ -1422,7 +1355,9 @@ export default function SiteFooter() {
             {/* PROJECTS */}
 
             <div className="mwf-column">
-              <h3>Projects &amp; Resources</h3>
+              <h3>
+                Projects &amp; Resources
+              </h3>
 
               <div className="mwf-links">
                 {projectLinks.map((link) => (
@@ -1435,14 +1370,40 @@ export default function SiteFooter() {
                 ))}
 
                 <Link href="/search">
-                  <Search
-                    style={{
-                      width: "13px",
-                      height: "13px",
-                    }}
-                  />
-                  Search
+                  <Search />
+                  Search Matthew Web
                 </Link>
+              </div>
+            </div>
+
+            {/* PRODUCTS / NETWORK */}
+
+            <div className="mwf-column">
+              <h3>
+                Products &amp; Network
+              </h3>
+
+              <div className="mwf-network-list">
+                {productNetworkLinks.map(
+                  (link) => (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mwf-network-card"
+                    >
+                      <span className="mwf-network-name">
+                        {link.label}
+                        <ArrowUpRight />
+                      </span>
+
+                      <span className="mwf-network-description">
+                        {link.description}
+                      </span>
+                    </a>
+                  )
+                )}
               </div>
             </div>
 
@@ -1451,78 +1412,76 @@ export default function SiteFooter() {
             <div className="mwf-column mwf-contact-column">
               <h3>Contact</h3>
 
-              <div>
-                <div className="mwf-contact-list">
-                  <div className="mwf-contact-item">
-                    <div className="mwf-contact-icon">
-                      <MapPin />
-                    </div>
-
-                    <div>
-                      <span className="mwf-contact-label">
-                        Location
-                      </span>
-
-                      <div className="mwf-contact-value">
-                        <a
-                          href={googleBusinessLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          973 River Road
-                          <br />
-                          Madison, ME 04950
-                        </a>
-                      </div>
-                    </div>
+              <div className="mwf-contact-shell">
+                <div className="mwf-contact-item">
+                  <div className="mwf-contact-icon">
+                    <MapPin />
                   </div>
 
-                  <div className="mwf-contact-item">
-                    <div className="mwf-contact-icon orange">
-                      <Phone />
-                    </div>
+                  <div>
+                    <span className="mwf-contact-label">
+                      Location
+                    </span>
 
-                    <div>
-                      <span className="mwf-contact-label">
-                        Phone
-                      </span>
-
-                      <div className="mwf-contact-value">
-                        <a href="tel:2076317793">
-                          (207) 631-7793
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mwf-contact-item">
-                    <div className="mwf-contact-icon">
-                      <Clock3 />
-                    </div>
-
-                    <div>
-                      <span className="mwf-contact-label">
-                        Business Hours
-                      </span>
-
-                      <div className="mwf-contact-value">
-                        Monday – Friday
+                    <div className="mwf-contact-value">
+                      <a
+                        href={googleBusinessLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        973 River Road
                         <br />
-                        9:00 AM – 5:00 PM
-                        <br />
-                        Weekends: Closed
-                      </div>
+                        Madison, ME 04950
+                      </a>
                     </div>
                   </div>
                 </div>
 
-                <div className="mwf-location-note">
-                  Client walk-ins are not accepted
-                  at this location. Please contact
-                  Matthew Web by phone, mail, website
-                  message, or another arranged method
-                  before visiting.
+                <div className="mwf-contact-item">
+                  <div className="mwf-contact-icon orange">
+                    <Phone />
+                  </div>
+
+                  <div>
+                    <span className="mwf-contact-label">
+                      Phone
+                    </span>
+
+                    <div className="mwf-contact-value">
+                      <a href="tel:2076317793">
+                        (207) 631-7793
+                      </a>
+                    </div>
+                  </div>
                 </div>
+
+                <div className="mwf-contact-item">
+                  <div className="mwf-contact-icon">
+                    <Clock3 />
+                  </div>
+
+                  <div>
+                    <span className="mwf-contact-label">
+                      Business Hours
+                    </span>
+
+                    <div className="mwf-contact-value">
+                      Monday – Friday
+                      <br />
+                      9:00 AM – 5:00 PM
+                      <br />
+                      Weekends: Closed
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mwf-location-note">
+                Client walk-ins are not accepted at
+                this location. Please contact Matthew
+                Web by phone, mail, website message,
+                or another arranged method before
+                visiting.
               </div>
             </div>
           </div>
@@ -1538,10 +1497,10 @@ export default function SiteFooter() {
 
             <span>
               Hardware, CPU, FPGA and advanced
-              computing content refers to Matthew
-              Web research and development unless
-              specifically identified as a product
-              or service currently available for
+              computing content refers to Matthew Web
+              research and development unless
+              specifically identified as a product or
+              service currently available for
               purchase.
             </span>
           </div>
@@ -1577,22 +1536,32 @@ export default function SiteFooter() {
                 href={googleBusinessLink}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="mwf-google-link"
               >
                 Google Business
-                <ArrowUpRight
-                  style={{
-                    width: "11px",
-                    height: "11px",
-                    marginLeft: "4px",
-                    verticalAlign: "-2px",
-                  }}
-                />
+                <ArrowUpRight />
               </a>
 
+              <a
+                href="https://github.com/matthewwweb-art"
+                target="_blank"
+                rel="noopener noreferrer"
+               className="mwf-google-link"
+              >
+               GitHub
+               <ArrowUpRight />
+             </a>
+
               <span className="mwf-built">
-                <span>WEB</span>
+                <span className="mwf-built-blue">
+                  WEB
+                </span>
+
                 • SOFTWARE • GAMES • EDUCATION •
-                <span>HARDWARE</span>
+
+                <span className="mwf-built-orange">
+                  HARDWARE
+                </span>
               </span>
             </div>
           </div>

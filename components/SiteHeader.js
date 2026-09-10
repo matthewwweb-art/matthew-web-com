@@ -73,9 +73,10 @@ export default function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdown, setDropdown] = useState("");
   const [mounted, setMounted] = useState(false);
-    useEffect(() => {
-      setMounted(true);
-    }, []);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   function closeEverything() {
     setMobileOpen(false);
@@ -130,26 +131,16 @@ export default function SiteHeader() {
           width: 100%;
           color: white;
           background: var(--mw-black);
-
-          box-shadow:
-            0 20px 48px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5);
         }
-
-        /* ===================================================
-           HERO
-        =================================================== */
 
         .mwx-hero {
           position: relative;
-
           min-height: 285px;
-
           display: flex;
           align-items: center;
           justify-content: center;
-
           padding: 28px 30px;
-
           overflow: hidden;
 
           background:
@@ -170,18 +161,14 @@ export default function SiteHeader() {
               #041018 100%
             );
 
-          border-bottom:
-            1px solid rgba(39, 204, 255, 0.38);
+          border-bottom: 1px solid rgba(39, 204, 255, 0.38);
         }
 
         .mwx-hero::before {
           content: "";
-
           position: absolute;
           inset: 0;
-
           pointer-events: none;
-
           opacity: 0.2;
 
           background-image:
@@ -210,35 +197,24 @@ export default function SiteHeader() {
             );
         }
 
-        /* ===================================================
-           PARTICLES / DOTS
-        =================================================== */
-
         .mwx-particles {
           position: absolute;
           inset: 0;
-
           pointer-events: none;
         }
 
         .mwx-particle {
           position: absolute;
-
           width: 4px;
           height: 4px;
-
           border-radius: 50%;
-
           background: var(--mw-blue);
 
           box-shadow:
             0 0 8px var(--mw-blue),
             0 0 18px rgba(8, 185, 244, 0.8);
 
-          animation:
-            mwxFloat 2.8s
-            ease-in-out
-            infinite alternate;
+          animation: mwxFloat 2.8s ease-in-out infinite alternate;
         }
 
         .mwx-particle.orange {
@@ -301,7 +277,6 @@ export default function SiteHeader() {
         @keyframes mwxFloat {
           0% {
             opacity: 0.18;
-
             transform:
               translateY(8px)
               translateX(-3px)
@@ -310,7 +285,6 @@ export default function SiteHeader() {
 
           45% {
             opacity: 1;
-
             transform:
               translateY(-4px)
               translateX(3px)
@@ -319,7 +293,6 @@ export default function SiteHeader() {
 
           100% {
             opacity: 0.5;
-
             transform:
               translateY(-17px)
               translateX(-2px)
@@ -327,36 +300,19 @@ export default function SiteHeader() {
           }
         }
 
-        /* ===================================================
-           SIDE TEXT
-        =================================================== */
-
         .mwx-side {
           position: absolute;
-
           top: 50%;
           z-index: 5;
-
           transform: translateY(-50%);
-
           color: #a9bfd2;
-
           font-size: 11px;
           font-weight: 700;
-
           letter-spacing: 0.3em;
-
           line-height: 2.4;
-
           text-transform: uppercase;
-
           opacity: 0;
-
-          animation:
-            mwxSideIn
-            0.8s ease
-            1.75s
-            forwards;
+          animation: mwxSideIn 0.8s ease 1.75s forwards;
         }
 
         .mwx-side.left {
@@ -371,9 +327,7 @@ export default function SiteHeader() {
         .mwx-side-line {
           width: 95px;
           height: 3px;
-
           margin-top: 10px;
-
           border-radius: 999px;
 
           background:
@@ -400,67 +354,38 @@ export default function SiteHeader() {
           }
         }
 
-        /* ===================================================
-           BRAND
-        =================================================== */
-
         .mwx-brand {
           position: relative;
           z-index: 10;
-
           display: flex;
           flex-direction: column;
           align-items: center;
-
           color: white;
-
           text-decoration: none;
         }
 
         .mwx-brand-main {
           display: flex;
-
           align-items: center;
           justify-content: center;
-
           gap: 38px;
         }
 
-        /* ===================================================
-           EMBLEM STAGE
-        =================================================== */
-
         .mwx-emblem-stage {
           position: relative;
-
           width: 230px;
           height: 230px;
-
           display: grid;
           place-items: center;
-
           flex: 0 0 auto;
         }
 
-        /* ===================================================
-           STRONG BLUE FOG / SMOKE
-        =================================================== */
-
         .mwx-blue-fog {
           position: absolute;
-
-          inset:
-            -70px
-            -100px
-            -70px
-            -100px;
-
+          inset: -70px -100px -70px -100px;
           z-index: 0;
-
           pointer-events: none;
-
           border-radius: 50%;
-
           opacity: 0;
 
           background:
@@ -498,25 +423,17 @@ export default function SiteHeader() {
           filter: blur(20px);
 
           animation:
-            mwxFogAppear
-            1.25s ease
-            0.28s forwards,
-            mwxFogDrift
-            4.7s ease-in-out
-            1.5s infinite alternate;
+            mwxFogAppear 1.25s ease 0.28s forwards,
+            mwxFogDrift 4.7s ease-in-out 1.5s infinite alternate;
         }
 
         .mwx-blue-fog::before {
           content: "";
-
           position: absolute;
-
           width: 185px;
           height: 100px;
-
           left: -10px;
           top: 70px;
-
           border-radius: 50%;
 
           background:
@@ -528,24 +445,16 @@ export default function SiteHeader() {
             );
 
           filter: blur(18px);
-
-          animation:
-            mwxSmokeCloudOne
-            3.8s ease-in-out
-            infinite alternate;
+          animation: mwxSmokeCloudOne 3.8s ease-in-out infinite alternate;
         }
 
         .mwx-blue-fog::after {
           content: "";
-
           position: absolute;
-
           width: 185px;
           height: 110px;
-
           right: -7px;
           bottom: 40px;
-
           border-radius: 50%;
 
           background:
@@ -557,28 +466,18 @@ export default function SiteHeader() {
             );
 
           filter: blur(20px);
-
-          animation:
-            mwxSmokeCloudTwo
-            4.2s ease-in-out
-            infinite alternate;
+          animation: mwxSmokeCloudTwo 4.2s ease-in-out infinite alternate;
         }
 
         .mwx-smoke-extra {
           position: absolute;
-
           width: 265px;
           height: 95px;
-
           z-index: 0;
-
           left: -18px;
           bottom: 18px;
-
           pointer-events: none;
-
           border-radius: 50%;
-
           opacity: 0;
 
           background:
@@ -592,12 +491,8 @@ export default function SiteHeader() {
           filter: blur(18px);
 
           animation:
-            mwxExtraSmokeIn
-            1.2s ease
-            0.7s forwards,
-            mwxExtraSmokeMove
-            5s ease-in-out
-            1.8s infinite alternate;
+            mwxExtraSmokeIn 1.2s ease 0.7s forwards,
+            mwxExtraSmokeMove 5s ease-in-out 1.8s infinite alternate;
         }
 
         @keyframes mwxFogAppear {
@@ -694,28 +589,16 @@ export default function SiteHeader() {
           }
         }
 
-        /* ===================================================
-           ENERGY SHAPES
-        =================================================== */
-
         .mwx-energy {
           position: absolute;
-
           border-radius: 50%;
-
           pointer-events: none;
         }
-
-        /* ===================================================
-           OUTER ORANGE GEAR
-        =================================================== */
 
         .mwx-energy.orange {
           width: 226px;
           height: 226px;
-
           z-index: 1;
-
           opacity: 0;
 
           background:
@@ -752,55 +635,39 @@ export default function SiteHeader() {
             );
 
           filter:
-            drop-shadow(
-              0 0 10px
-              rgba(255, 121, 0, 0.95)
-            )
-            drop-shadow(
-              0 0 28px
-              rgba(255, 121, 0, 0.5)
-            );
+            drop-shadow(0 0 10px rgba(255, 121, 0, 0.95))
+            drop-shadow(0 0 28px rgba(255, 121, 0, 0.5));
 
           animation:
             mwxGearEntrance
-            0.95s
-            cubic-bezier(0.16, 1, 0.3, 1)
-            0.02s forwards,
+              0.95s
+              cubic-bezier(0.16, 1, 0.3, 1)
+              0.02s
+              forwards,
             mwxSpinGear
-            6.4s linear
-            0.98s infinite reverse;
+              6.4s
+              linear
+              0.98s
+              infinite
+              reverse;
         }
 
         .mwx-energy.orange::before {
           content: "";
-
           position: absolute;
-
           inset: 18px;
-
           border-radius: 50%;
-
-          border:
-            2px solid
-            rgba(255, 170, 50, 0.45);
+          border: 2px solid rgba(255, 170, 50, 0.45);
 
           box-shadow:
-            inset 0 0 10px
-            rgba(255, 121, 0, 0.14),
-            0 0 10px
-            rgba(255, 121, 0, 0.3);
+            inset 0 0 10px rgba(255, 121, 0, 0.14),
+            0 0 10px rgba(255, 121, 0, 0.3);
         }
-
-        /* ===================================================
-           INNER BLUE CD
-        =================================================== */
 
         .mwx-energy.blue {
           width: 192px;
           height: 192px;
-
           z-index: 2;
-
           opacity: 0;
 
           background:
@@ -835,67 +702,48 @@ export default function SiteHeader() {
             );
 
           filter:
-            drop-shadow(
-              0 0 10px
-              rgba(8, 185, 244, 0.98)
-            )
-            drop-shadow(
-              0 0 28px
-              rgba(8, 185, 244, 0.5)
-            );
+            drop-shadow(0 0 10px rgba(8, 185, 244, 0.98))
+            drop-shadow(0 0 28px rgba(8, 185, 244, 0.5));
 
           animation:
             mwxDiscEntrance
-            0.9s
-            cubic-bezier(0.16, 1, 0.3, 1)
-            0.12s forwards,
+              0.9s
+              cubic-bezier(0.16, 1, 0.3, 1)
+              0.12s
+              forwards,
             mwxSpinDisc
-            4.6s linear
-            1.02s infinite;
+              4.6s
+              linear
+              1.02s
+              infinite;
         }
 
         .mwx-energy.blue::before {
           content: "";
-
           position: absolute;
-
           inset: 15px;
-
           border-radius: 50%;
-
-          border:
-            2px solid
-            rgba(39, 204, 255, 0.54);
+          border: 2px solid rgba(39, 204, 255, 0.54);
 
           box-shadow:
-            0 0 10px
-            rgba(39, 204, 255, 0.48),
-            inset 0 0 12px
-            rgba(39, 204, 255, 0.14);
+            0 0 10px rgba(39, 204, 255, 0.48),
+            inset 0 0 12px rgba(39, 204, 255, 0.14);
         }
 
         .mwx-energy.blue::after {
           content: "";
-
           position: absolute;
-
           inset: 30px;
-
           border-radius: 50%;
-
-          border:
-            1px solid
-            rgba(180, 243, 255, 0.34);
+          border: 1px solid rgba(180, 243, 255, 0.34);
 
           box-shadow:
-            0 0 7px
-            rgba(39, 204, 255, 0.25);
+            0 0 7px rgba(39, 204, 255, 0.25);
         }
 
         @keyframes mwxGearEntrance {
           from {
             opacity: 0;
-
             transform:
               scale(0.14)
               rotate(340deg);
@@ -903,7 +751,6 @@ export default function SiteHeader() {
 
           to {
             opacity: 1;
-
             transform:
               scale(1)
               rotate(0);
@@ -913,7 +760,6 @@ export default function SiteHeader() {
         @keyframes mwxDiscEntrance {
           from {
             opacity: 0;
-
             transform:
               scale(0.18)
               rotate(-300deg);
@@ -921,7 +767,6 @@ export default function SiteHeader() {
 
           to {
             opacity: 1;
-
             transform:
               scale(1)
               rotate(0);
@@ -930,46 +775,34 @@ export default function SiteHeader() {
 
         @keyframes mwxSpinGear {
           from {
-            transform:
-              rotate(0deg);
+            transform: rotate(0deg);
           }
 
           to {
-            transform:
-              rotate(360deg);
+            transform: rotate(360deg);
           }
         }
 
         @keyframes mwxSpinDisc {
           from {
-            transform:
-              rotate(0deg);
+            transform: rotate(0deg);
           }
 
           to {
-            transform:
-              rotate(360deg);
+            transform: rotate(360deg);
           }
         }
 
-        /* ===================================================
-           COLOR SWIRLS INTO LOGO
-        =================================================== */
-
         .mwx-color-stream {
           position: absolute;
-
           border-radius: 50%;
-
           pointer-events: none;
-
           opacity: 0;
         }
 
         .mwx-color-stream.blue {
           width: 198px;
           height: 198px;
-
           z-index: 3;
 
           background:
@@ -1003,22 +836,19 @@ export default function SiteHeader() {
 
           filter:
             blur(3px)
-            drop-shadow(
-              0 0 14px
-              rgba(39, 204, 255, 0.8)
-            );
+            drop-shadow(0 0 14px rgba(39, 204, 255, 0.8));
 
           animation:
             mwxBlueStreamIn
-            0.9s
-            cubic-bezier(0.16, 1, 0.3, 1)
-            0.42s forwards;
+              0.9s
+              cubic-bezier(0.16, 1, 0.3, 1)
+              0.42s
+              forwards;
         }
 
         .mwx-color-stream.orange {
           width: 230px;
           height: 230px;
-
           z-index: 2;
 
           background:
@@ -1052,46 +882,38 @@ export default function SiteHeader() {
 
           filter:
             blur(4px)
-            drop-shadow(
-              0 0 14px
-              rgba(255, 121, 0, 0.8)
-            );
+            drop-shadow(0 0 14px rgba(255, 121, 0, 0.8));
 
           animation:
             mwxOrangeStreamIn
-            1s
-            cubic-bezier(0.16, 1, 0.3, 1)
-            0.48s forwards;
+              1s
+              cubic-bezier(0.16, 1, 0.3, 1)
+              0.48s
+              forwards;
         }
 
         @keyframes mwxBlueStreamIn {
           0% {
             opacity: 0;
-
             transform:
               rotate(-190deg)
               scale(1.3);
-
             filter: blur(11px);
           }
 
           45% {
             opacity: 1;
-
             transform:
               rotate(-28deg)
               scale(1.03);
-
             filter: blur(3px);
           }
 
           100% {
             opacity: 0;
-
             transform:
               rotate(48deg)
               scale(0.48);
-
             filter: blur(1px);
           }
         }
@@ -1099,47 +921,35 @@ export default function SiteHeader() {
         @keyframes mwxOrangeStreamIn {
           0% {
             opacity: 0;
-
             transform:
               rotate(200deg)
               scale(1.32);
-
             filter: blur(11px);
           }
 
           45% {
             opacity: 1;
-
             transform:
               rotate(32deg)
               scale(1.04);
-
             filter: blur(3px);
           }
 
           100% {
             opacity: 0;
-
             transform:
               rotate(-32deg)
               scale(0.5);
-
             filter: blur(1px);
           }
         }
-
-        /* ===================================================
-           EMBLEM
-        =================================================== */
 
         .mwx-emblem-window {
           position: relative;
           left: -2px;
           z-index: 4;
-
           width: 152px;
           height: 154px;
-
           transform: translateY(-4px);
 
           filter:
@@ -1152,113 +962,77 @@ export default function SiteHeader() {
         .mwx-emblem-piece,
         .mwx-emblem-final {
           position: absolute;
-
           inset: 0;
-
           width: 100%;
           height: 100%;
-
           object-fit: contain;
-
           user-select: none;
-
           -webkit-user-drag: none;
         }
 
         .mwx-emblem-piece.top {
-          clip-path:
-            inset(
-              0
-              0
-              58%
-              0
-            );
-
+          clip-path: inset(0 0 58% 0);
           opacity: 0;
-
-          transform-origin:
-            50% 60%;
+          transform-origin: 50% 60%;
 
           animation:
             mwxPieceTop
-            0.95s
-            cubic-bezier(0.16, 1, 0.3, 1)
-            0.84s
-            forwards;
+              0.95s
+              cubic-bezier(0.16, 1, 0.3, 1)
+              0.84s
+              forwards;
         }
 
         .mwx-emblem-piece.mid {
-          clip-path:
-            inset(
-              27%
-              0
-              24%
-              0
-            );
-
+          clip-path: inset(27% 0 24% 0);
           opacity: 0;
-
-          transform-origin:
-            center;
+          transform-origin: center;
 
           animation:
             mwxPieceMid
-            1.05s
-            cubic-bezier(0.16, 1, 0.3, 1)
-            0.96s
-            forwards;
+              1.05s
+              cubic-bezier(0.16, 1, 0.3, 1)
+              0.96s
+              forwards;
         }
 
         .mwx-emblem-piece.bottom {
-          clip-path:
-            inset(
-              70%
-              0
-              0
-              0
-            );
-
+          clip-path: inset(70% 0 0 0);
           opacity: 0;
-
-          transform-origin:
-            50% 30%;
+          transform-origin: 50% 30%;
 
           animation:
             mwxPieceBottom
-            0.9s
-            cubic-bezier(0.16, 1, 0.3, 1)
-            1.05s
-            forwards;
+              0.9s
+              cubic-bezier(0.16, 1, 0.3, 1)
+              1.05s
+              forwards;
         }
 
         .mwx-emblem-final {
           opacity: 0;
-
           animation:
             mwxFinalIcon
-            0.3s ease
-            1.36s
-            forwards;
+              0.3s
+              ease
+              1.36s
+              forwards;
         }
 
         @keyframes mwxPieceTop {
           0% {
             opacity: 0;
-
             transform:
               scale(0.08)
               rotate(-340deg);
-
             filter: blur(11px);
           }
 
           65% {
             opacity: 1;
-
             transform:
               scale(1.09)
               rotate(8deg);
-
             filter: blur(0);
           }
 
@@ -1270,11 +1044,9 @@ export default function SiteHeader() {
 
           100% {
             opacity: 1;
-
             transform:
               scale(1)
               rotate(0);
-
             filter: blur(0);
           }
         }
@@ -1282,21 +1054,17 @@ export default function SiteHeader() {
         @keyframes mwxPieceMid {
           0% {
             opacity: 0;
-
             transform:
               scale(0.1)
               rotate(360deg);
-
             filter: blur(11px);
           }
 
           65% {
             opacity: 1;
-
             transform:
               scale(1.08)
               rotate(-7deg);
-
             filter: blur(0);
           }
 
@@ -1308,11 +1076,9 @@ export default function SiteHeader() {
 
           100% {
             opacity: 1;
-
             transform:
               scale(1)
               rotate(0);
-
             filter: blur(0);
           }
         }
@@ -1320,34 +1086,28 @@ export default function SiteHeader() {
         @keyframes mwxPieceBottom {
           0% {
             opacity: 0;
-
             transform:
               translateY(28px)
               scale(0.2)
               rotate(-160deg);
-
             filter: blur(8px);
           }
 
           68% {
             opacity: 1;
-
             transform:
               translateY(-2px)
               scale(1.05)
               rotate(4deg);
-
             filter: blur(0);
           }
 
           100% {
             opacity: 1;
-
             transform:
               translateY(0)
               scale(1)
               rotate(0);
-
             filter: blur(0);
           }
         }
@@ -1358,23 +1118,12 @@ export default function SiteHeader() {
           }
         }
 
-        /* ===================================================
-           WORDMARK
-        =================================================== */
-
         .mwx-wordmark {
           display: flex;
-
           align-items: baseline;
-
           white-space: nowrap;
-
           line-height: 0.92;
-
-          font-family:
-            Arial,
-            Helvetica,
-            sans-serif;
+          font-family: Arial, Helvetica, sans-serif;
 
           font-size:
             clamp(
@@ -1384,29 +1133,20 @@ export default function SiteHeader() {
             );
 
           font-weight: 900;
-
-          letter-spacing:
-            -0.058em;
+          letter-spacing: -0.058em;
         }
 
         .mwx-word-blue,
         .mwx-word-orange {
           display: inline-flex;
-
           align-items: baseline;
         }
 
         .mwx-word-letter {
           display: inline-block;
-
           opacity: 0;
-
-          transform-origin:
-            center center;
-
-          backface-visibility:
-            hidden;
-
+          transform-origin: center center;
+          backface-visibility: hidden;
           will-change:
             transform,
             opacity,
@@ -1424,11 +1164,8 @@ export default function SiteHeader() {
               #0085bd 100%
             );
 
-          -webkit-background-clip:
-            text;
-
-          background-clip:
-            text;
+          -webkit-background-clip: text;
+          background-clip: text;
 
           filter:
             drop-shadow(
@@ -1438,9 +1175,9 @@ export default function SiteHeader() {
 
           animation:
             mwxBlueLetterIn
-            0.82s
-            cubic-bezier(0.16, 1, 0.3, 1)
-            forwards;
+              0.82s
+              cubic-bezier(0.16, 1, 0.3, 1)
+              forwards;
         }
 
         .mwx-word-letter-orange {
@@ -1454,11 +1191,8 @@ export default function SiteHeader() {
               #e45b00 100%
             );
 
-          -webkit-background-clip:
-            text;
-
-          background-clip:
-            text;
+          -webkit-background-clip: text;
+          background-clip: text;
 
           filter:
             drop-shadow(
@@ -1468,9 +1202,9 @@ export default function SiteHeader() {
 
           animation:
             mwxOrangeLetterIn
-            0.88s
-            cubic-bezier(0.16, 1, 0.3, 1)
-            forwards;
+              0.88s
+              cubic-bezier(0.16, 1, 0.3, 1)
+              forwards;
         }
 
         @keyframes mwxBlueLetterIn {
@@ -1589,15 +1323,9 @@ export default function SiteHeader() {
           }
         }
 
-        /* ===================================================
-           TAGLINE
-        =================================================== */
-
         .mwx-tagline {
           margin-top: 15px;
-
           margin-left: 250px;
-
           color: #d8e3eb;
 
           font-size:
@@ -1608,59 +1336,34 @@ export default function SiteHeader() {
             );
 
           font-weight: 700;
-
-          letter-spacing:
-            0.3em;
-
+          letter-spacing: 0.3em;
           text-transform: uppercase;
-
           white-space: nowrap;
-
           opacity: 0;
-
-          animation:
-            mwxTagIn
-            0.7s ease
-            2.1s
-            forwards;
+          animation: mwxTagIn 0.7s ease 2.1s forwards;
         }
 
         @keyframes mwxTagIn {
           from {
             opacity: 0;
-
-            transform:
-              translateY(10px);
-
+            transform: translateY(10px);
             filter: blur(5px);
           }
 
           to {
             opacity: 1;
-
             transform: none;
-
             filter: none;
           }
         }
-
-        /* ===================================================
-           MOBILE TOP BAR
-        =================================================== */
 
         .mwx-mobile-bar {
           display: none;
         }
 
-        /* ===================================================
-           NAVIGATION
-        =================================================== */
-
         .mwx-nav-shell {
           position: relative;
-
           z-index: 100;
-
           width: 100%;
 
           background:
@@ -1679,59 +1382,40 @@ export default function SiteHeader() {
             rgba(0, 0, 0, 0.4);
 
           opacity: 0;
-
-          animation:
-            mwxNavIn
-            0.65s ease
-            2.35s
-            forwards;
+          animation: mwxNavIn 0.65s ease 2.35s forwards;
         }
 
         @keyframes mwxNavIn {
           from {
             opacity: 0;
-
-            transform:
-              translateY(-10px);
+            transform: translateY(-10px);
           }
 
           to {
             opacity: 1;
-
             transform: none;
           }
         }
 
         .mwx-nav {
           display: flex;
-
           align-items: stretch;
           justify-content: center;
-
           flex-wrap: nowrap;
-
           width: 100%;
-
           max-width: 1700px;
-
           margin: 0 auto;
-
           padding: 0 10px;
-
           min-height: 72px;
         }
 
         .mwx-nav-link,
         .mwx-drop-button {
           position: relative;
-
           display: inline-flex;
-
           align-items: center;
           justify-content: center;
-
           gap: 7px;
-
           min-height: 72px;
 
           padding:
@@ -1743,13 +1427,9 @@ export default function SiteHeader() {
             );
 
           border: 0;
-
           background: transparent;
-
           color: white;
-
           text-decoration: none;
-
           font: inherit;
 
           font-size:
@@ -1760,9 +1440,7 @@ export default function SiteHeader() {
             );
 
           font-weight: 760;
-
           white-space: nowrap;
-
           cursor: pointer;
 
           transition:
@@ -1787,11 +1465,8 @@ export default function SiteHeader() {
               22px
             );
 
-          color:
-            var(--mw-blue-light);
-
+          color: var(--mw-blue-light);
           stroke-width: 2.5;
-
           flex: 0 0 auto;
 
           filter:
@@ -1804,17 +1479,12 @@ export default function SiteHeader() {
         .mwx-nav-link::after,
         .mwx-drop-button::after {
           content: "";
-
           position: absolute;
-
           left: 18px;
           right: 18px;
           bottom: 0;
-
           height: 4px;
-
-          border-radius:
-            10px 10px 0 0;
+          border-radius: 10px 10px 0 0;
 
           background:
             linear-gradient(
@@ -1827,11 +1497,8 @@ export default function SiteHeader() {
             0 0 12px
             rgba(255, 121, 0, 0.7);
 
-          transform:
-            scaleX(0);
-
-          transition:
-            transform 0.2s ease;
+          transform: scaleX(0);
+          transition: transform 0.2s ease;
         }
 
         .mwx-nav-link:hover,
@@ -1843,8 +1510,7 @@ export default function SiteHeader() {
               rgba(8, 185, 244, 0.025)
             );
 
-          transform:
-            translateY(-1px);
+          transform: translateY(-1px);
         }
 
         .mwx-nav-link:hover::after,
@@ -1867,26 +1533,17 @@ export default function SiteHeader() {
           transform: scaleX(1);
         }
 
-        /* ===================================================
-           DROPDOWNS
-        =================================================== */
-
         .mwx-dropdown {
           position: relative;
-
           display: flex;
         }
 
         .mwx-dropdown-menu {
           position: absolute;
-
           top: calc(100% - 2px);
           left: 50%;
-
           z-index: 9999;
-
           min-width: 285px;
-
           padding: 9px;
 
           border:
@@ -1904,22 +1561,19 @@ export default function SiteHeader() {
 
           box-shadow:
             0 22px 50px
-            rgba(0, 0, 0, 0.7),
+              rgba(0, 0, 0, 0.7),
             0 0 17px
-            rgba(8, 185, 244, 0.12);
+              rgba(8, 185, 244, 0.12);
 
           opacity: 0;
-
           visibility: hidden;
-
           pointer-events: none;
 
           transform:
             translate(-50%, -8px)
             scale(0.97);
 
-          transform-origin:
-            top center;
+          transform-origin: top center;
 
           transition:
             opacity 0.18s ease,
@@ -1929,17 +1583,12 @@ export default function SiteHeader() {
 
         .mwx-dropdown-menu::before {
           content: "";
-
           position: absolute;
-
           left: 0;
           right: 0;
           top: 0;
-
           height: 2px;
-
-          border-radius:
-            10px 10px 0 0;
+          border-radius: 10px 10px 0 0;
 
           background:
             linear-gradient(
@@ -1952,9 +1601,7 @@ export default function SiteHeader() {
         .mwx-dropdown.open
           .mwx-dropdown-menu {
           opacity: 1;
-
           visibility: visible;
-
           pointer-events: auto;
 
           transform:
@@ -1964,20 +1611,12 @@ export default function SiteHeader() {
 
         .mwx-dropdown-item {
           display: flex;
-
           align-items: center;
-
           gap: 12px;
-
-          padding:
-            13px 14px;
-
+          padding: 13px 14px;
           border-radius: 8px;
-
           color: #edf8fd;
-
           text-decoration: none;
-
           font-size: 14px;
           font-weight: 650;
 
@@ -1989,10 +1628,7 @@ export default function SiteHeader() {
         .mwx-dropdown-item svg {
           width: 20px;
           height: 20px;
-
-          color:
-            var(--mw-blue-light);
-
+          color: var(--mw-blue-light);
           stroke-width: 2.5;
         }
 
@@ -2027,9 +1663,7 @@ export default function SiteHeader() {
         .mwx-chevron {
           width: 15px !important;
           height: 15px !important;
-
-          transition:
-            transform 0.2s ease;
+          transition: transform 0.2s ease;
         }
 
         .mwx-dropdown.open
@@ -2037,15 +1671,9 @@ export default function SiteHeader() {
           transform: rotate(180deg);
         }
 
-        /* ===================================================
-           SUPPORT BUTTON
-        =================================================== */
-
         .mwx-divider {
           width: 1px;
-
-          margin:
-            17px 5px;
+          margin: 17px 5px;
 
           background:
             rgba(
@@ -2058,22 +1686,15 @@ export default function SiteHeader() {
 
         .mwx-support-wrap {
           display: flex;
-
           align-items: center;
-
-          padding:
-            9px 2px
-            9px 7px;
+          padding: 9px 2px 9px 7px;
         }
 
         .mwx-support {
           display: inline-flex;
-
           align-items: center;
           justify-content: center;
-
           gap: 8px;
-
           min-height: 50px;
 
           padding:
@@ -2084,9 +1705,7 @@ export default function SiteHeader() {
               20px
             );
 
-          border:
-            1px solid #ffad30;
-
+          border: 1px solid #ffad30;
           border-radius: 10px;
 
           background:
@@ -2106,18 +1725,13 @@ export default function SiteHeader() {
             );
 
           font-weight: 850;
-
           white-space: nowrap;
-
           text-decoration: none;
 
           box-shadow:
-            0 0 12px
-            rgba(255, 121, 0, 0.65),
-            0 0 28px
-            rgba(255, 121, 0, 0.32),
-            inset 0 1px 0
-            rgba(255, 255, 255, 0.32);
+            0 0 12px rgba(255, 121, 0, 0.65),
+            0 0 28px rgba(255, 121, 0, 0.32),
+            inset 0 1px 0 rgba(255, 255, 255, 0.32);
 
           transition:
             transform 0.2s ease,
@@ -2127,9 +1741,7 @@ export default function SiteHeader() {
         .mwx-support svg {
           width: 20px;
           height: 20px;
-
           color: white;
-
           fill: white;
         }
 
@@ -2139,27 +1751,17 @@ export default function SiteHeader() {
             scale(1.025);
 
           box-shadow:
-            0 0 18px
-            rgba(255, 121, 0, 0.8),
-            0 0 38px
-            rgba(255, 121, 0, 0.42);
+            0 0 18px rgba(255, 121, 0, 0.8),
+            0 0 38px rgba(255, 121, 0, 0.42);
         }
-
-        /* ===================================================
-           MOBILE BUTTON
-        =================================================== */
 
         .mwx-menu-button {
           width: 48px;
           height: 44px;
-
           display: flex;
-
           flex-direction: column;
-
           align-items: center;
           justify-content: center;
-
           gap: 6px;
 
           border:
@@ -2167,18 +1769,14 @@ export default function SiteHeader() {
             rgba(255, 255, 255, 0.14);
 
           border-radius: 10px;
-
           background: #0b1015;
-
           cursor: pointer;
         }
 
         .mwx-menu-button span {
           width: 23px;
           height: 2px;
-
           border-radius: 20px;
-
           background: white;
 
           transition:
@@ -2212,16 +1810,10 @@ export default function SiteHeader() {
             var(--mw-orange);
         }
 
-        /* ===================================================
-           DESKTOP FIT
-        =================================================== */
-
         @media (max-width: 1400px) {
           .mwx-side {
             font-size: 9px;
-
-            letter-spacing:
-              0.22em;
+            letter-spacing: 0.22em;
           }
 
           .mwx-side-line {
@@ -2231,9 +1823,7 @@ export default function SiteHeader() {
           .mwx-nav-link,
           .mwx-drop-button {
             padding: 0 8px;
-
             font-size: 12px;
-
             gap: 5px;
           }
 
@@ -2245,7 +1835,6 @@ export default function SiteHeader() {
 
           .mwx-support {
             padding: 0 13px;
-
             font-size: 13px;
           }
         }
@@ -2304,28 +1893,17 @@ export default function SiteHeader() {
 
           .mwx-tagline {
             margin-left: 190px;
-
-            letter-spacing:
-              0.19em;
+            letter-spacing: 0.19em;
           }
         }
-
-        /* ===================================================
-           MOBILE
-        =================================================== */
 
         @media (max-width: 980px) {
           .mwx-mobile-bar {
             display: flex;
-
             align-items: center;
-            justify-content:
-              space-between;
-
+            justify-content: space-between;
             min-height: 64px;
-
-            padding:
-              10px 16px;
+            padding: 10px 16px;
 
             background:
               linear-gradient(
@@ -2346,29 +1924,22 @@ export default function SiteHeader() {
 
           .mwx-mobile-label {
             font-size: 15px;
-
             font-weight: 900;
-
-            letter-spacing:
-              0.07em;
+            letter-spacing: 0.07em;
           }
 
           .mwx-mobile-label span {
-            color:
-              var(--mw-orange);
+            color: var(--mw-orange);
           }
 
           .mwx-nav-shell {
             display: none;
-
             opacity: 1;
-
             animation: none;
           }
 
           .mwx-nav-shell.mobile-open {
             display: block;
-
             animation:
               mwxMobileNav
               0.24s ease
@@ -2378,98 +1949,68 @@ export default function SiteHeader() {
           @keyframes mwxMobileNav {
             from {
               opacity: 0;
-
-              transform:
-                translateY(-8px);
+              transform: translateY(-8px);
             }
 
             to {
               opacity: 1;
-
               transform: none;
             }
           }
 
           .mwx-nav {
             display: grid;
-
-            grid-template-columns:
-              1fr;
-
+            grid-template-columns: 1fr;
             min-height: 0;
-
-            padding:
-              10px 14px
-              18px;
+            padding: 10px 14px 18px;
           }
 
           .mwx-nav-link,
           .mwx-drop-button {
             width: 100%;
-
             min-height: 52px;
-
-            justify-content:
-              flex-start;
-
+            justify-content: flex-start;
             padding: 0 18px;
-
             font-size: 15px;
-
             border-radius: 8px;
           }
 
           .mwx-dropdown {
             display: block;
-
             width: 100%;
           }
 
           .mwx-dropdown-menu {
             position: static;
-
             display: none;
-
             width: 100%;
-
             min-width: 0;
-
-            margin:
-              4px 0
-              7px;
-
+            margin: 4px 0 7px;
             opacity: 1;
-
             visibility: visible;
-
             pointer-events: auto;
-
             transform: none;
           }
 
           .mwx-dropdown.open
             .mwx-dropdown-menu {
             display: block;
-
             transform: none;
           }
 
           .mwx-divider {
             width: 100%;
             height: 1px;
-
             margin: 8px 0;
           }
 
           .mwx-support-wrap {
             width: 100%;
-
             padding: 8px 0 0;
           }
 
           .mwx-support {
             width: 100%;
-
             min-height: 54px;
           }
         }
@@ -2477,9 +2018,7 @@ export default function SiteHeader() {
         @media (max-width: 720px) {
           .mwx-hero {
             min-height: 185px;
-
-            padding:
-              18px 10px;
+            padding: 18px 10px;
           }
 
           .mwx-brand-main {
@@ -2523,7 +2062,6 @@ export default function SiteHeader() {
           .mwx-smoke-extra {
             width: 135px;
             height: 55px;
-
             left: -14px;
           }
 
@@ -2539,11 +2077,8 @@ export default function SiteHeader() {
           .mwx-tagline {
             margin-left: 118px;
             margin-top: 10px;
-
             font-size: 7px;
-
-            letter-spacing:
-              0.12em;
+            letter-spacing: 0.12em;
           }
         }
 
@@ -2560,6 +2095,12 @@ export default function SiteHeader() {
           .mwx-emblem-window {
             width: 58px;
             height: 59px;
+
+            /* PHONE ONLY:
+               moves MW emblem down and right
+               without changing laptop or tablet */
+            left: 3px;
+            transform: translateY(1px);
           }
 
           .mwx-energy.orange {
@@ -2593,17 +2134,10 @@ export default function SiteHeader() {
 
           .mwx-tagline {
             margin-left: 96px;
-
             font-size: 5.8px;
-
-            letter-spacing:
-              0.07em;
+            letter-spacing: 0.07em;
           }
         }
-
-        /* ===================================================
-           REDUCED MOTION
-        =================================================== */
 
         @media (
           prefers-reduced-motion:
@@ -2643,8 +2177,6 @@ export default function SiteHeader() {
           transition: "opacity 0.12s ease",
         }}
       >
-        {/* HERO */}
-
         <section className="mwx-hero">
           <div
             className="mwx-particles"
@@ -2660,8 +2192,6 @@ export default function SiteHeader() {
             <span className="mwx-particle orange mwx-p8" />
           </div>
 
-          {/* LEFT TEXT */}
-
           <div className="mwx-side left">
             <div>Ideas</div>
             <div>Technology</div>
@@ -2671,8 +2201,6 @@ export default function SiteHeader() {
             <div className="mwx-side-line" />
           </div>
 
-          {/* CENTER BRAND */}
-
           <Link
             href="/"
             className="mwx-brand"
@@ -2680,19 +2208,14 @@ export default function SiteHeader() {
             aria-label="Matthew Web home"
           >
             <div className="mwx-brand-main">
-              {/* EMBLEM */}
-
               <div className="mwx-emblem-stage">
                 <div className="mwx-blue-fog" />
-
                 <div className="mwx-smoke-extra" />
 
                 <span className="mwx-energy orange" />
-
                 <span className="mwx-energy blue" />
 
                 <span className="mwx-color-stream orange" />
-
                 <span className="mwx-color-stream blue" />
 
                 <div className="mwx-emblem-window">
@@ -2725,8 +2248,6 @@ export default function SiteHeader() {
                   />
                 </div>
               </div>
-
-              {/* LETTER BY LETTER WORDMARK */}
 
               <div
                 className="mwx-wordmark"
@@ -2777,8 +2298,6 @@ export default function SiteHeader() {
             </div>
           </Link>
 
-          {/* RIGHT TEXT */}
-
           <div className="mwx-side right">
             <div>Building</div>
             <div>A Brighter</div>
@@ -2787,8 +2306,6 @@ export default function SiteHeader() {
             <div className="mwx-side-line" />
           </div>
         </section>
-
-        {/* MOBILE BAR */}
 
         <div className="mwx-mobile-bar">
           <div className="mwx-mobile-label">
@@ -2816,8 +2333,6 @@ export default function SiteHeader() {
             <span />
           </button>
         </div>
-
-        {/* NAV */}
 
         <div
           className={
@@ -2856,8 +2371,6 @@ export default function SiteHeader() {
               About Us
             </Link>
 
-            {/* SERVICES */}
-
             <div
               className={
                 dropdown === "services"
@@ -2883,9 +2396,7 @@ export default function SiteHeader() {
                 }
               >
                 <Settings />
-
                 Services
-
                 <ChevronDown className="mwx-chevron" />
               </button>
 
@@ -2916,8 +2427,6 @@ export default function SiteHeader() {
               </div>
             </div>
 
-            {/* PROJECTS */}
-
             <div
               className={
                 dropdown === "projects"
@@ -2943,9 +2452,7 @@ export default function SiteHeader() {
                 }
               >
                 <Gamepad2 />
-
                 Projects
-
                 <ChevronDown className="mwx-chevron" />
               </button>
 
@@ -2976,8 +2483,6 @@ export default function SiteHeader() {
               </div>
             </div>
 
-            {/* NORMAL LINKS */}
-
             {standardLinks.map(
               (link) => {
                 const Icon =
@@ -3004,8 +2509,6 @@ export default function SiteHeader() {
 
             <div className="mwx-divider" />
 
-            {/* SEARCH */}
-
             <Link
               href="/search"
               onClick={closeEverything}
@@ -3018,8 +2521,6 @@ export default function SiteHeader() {
               <Search />
               Search
             </Link>
-
-            {/* SUPPORT */}
 
             <div className="mwx-support-wrap">
               <Link
