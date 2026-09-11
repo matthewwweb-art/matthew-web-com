@@ -1,6 +1,13 @@
+import "server-only";
+
 import { lookup } from "node:dns/promises";
 import net from "node:net";
+
 import { requireAdminApi } from "@/lib/requireAdminApi";
+import {
+  rateLimitRequest,
+  getRateLimitHeaders,
+} from "@/lib/rateLimit";
 
 /* ============================================================
    MATTHEW WEB — WEBSITE AUDIT API
@@ -13,6 +20,9 @@ import { requireAdminApi } from "@/lib/requireAdminApi";
    - Rejects private/internal IP addresses
    - Re-checks redirect destinations
    - Does not expose Supabase service credentials
+   - Rate limited by authenticated admin identity
+   - Burst limit: 10 audits / 15 minutes
+   - Daily limit: 50 audits / 24 hours
 
    Current CRM-compatible fields:
    - has_website
@@ -38,6 +48,12 @@ export const dynamic = "force-dynamic";
 const MAX_REDIRECTS = 5;
 const FETCH_TIMEOUT_MS = 12000;
 const MAX_HTML_LENGTH = 2_000_000;
+
+const AUDIT_BURST_LIMIT = 10;
+const AUDIT_BURST_WINDOW_SECONDS = 15 * 60;
+
+const AUDIT_DAILY_LIMIT = 50;
+const AUDIT_DAILY_WINDOW_SECONDS = 24 * 60 * 60;
 
 /* ============================================================
    BASIC HELPERS
@@ -68,29 +84,44 @@ function decodeBasicHtml(value) {
 function stripHtml(html) {
   return normalizeText(
     String(html || "")
-      .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
-      .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
-      .replace(/<noscript\b[^>]*>[\s\S]*?<\/noscript>/gi, " ")
+      .replace(
+        /<script\b[^>]*>[\s\S]*?<\/script>/gi,
+        " "
+      )
+      .replace(
+        /<style\b[^>]*>[\s\S]*?<\/style>/gi,
+        " "
+      )
+      .replace(
+        /<noscript\b[^>]*>[\s\S]*?<\/noscript>/gi,
+        " "
+      )
       .replace(/<[^>]+>/g, " ")
   );
 }
 
 function countMatches(text, regex) {
-  return (String(text || "").match(regex) || []).length;
+  return (
+    String(text || "").match(regex) || []
+  ).length;
 }
 
 function includesAny(text, terms) {
-  const lower = String(text || "").toLowerCase();
+  const lower =
+    String(text || "").toLowerCase();
 
   return terms.some((term) =>
-    lower.includes(term.toLowerCase())
+    lower.includes(
+      term.toLowerCase()
+    )
   );
 }
 
 function extractTitle(html) {
-  const match = String(html || "").match(
-    /<title[^>]*>([\s\S]*?)<\/title>/i
-  );
+  const match =
+    String(html || "").match(
+      /<title[^>]*>([\s\S]*?)<\/title>/i
+    );
 
   return match
     ? decodeBasicHtml(match[1])
@@ -98,19 +129,24 @@ function extractTitle(html) {
 }
 
 function extractMetaDescription(html) {
-  const source = String(html || "");
+  const source =
+    String(html || "");
 
-  const matchA = source.match(
-    /<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["'][^>]*>/i
-  );
+  const matchA =
+    source.match(
+      /<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["'][^>]*>/i
+    );
 
   if (matchA) {
-    return decodeBasicHtml(matchA[1]);
+    return decodeBasicHtml(
+      matchA[1]
+    );
   }
 
-  const matchB = source.match(
-    /<meta[^>]+content=["']([^"']*)["'][^>]+name=["']description["'][^>]*>/i
-  );
+  const matchB =
+    source.match(
+      /<meta[^>]+content=["']([^"']*)["'][^>]+name=["']description["'][^>]*>/i
+    );
 
   return matchB
     ? decodeBasicHtml(matchB[1])
@@ -152,7 +188,9 @@ function hasFaviconMarkup(html) {
 
 function hasSchemaMarkup(html) {
   return (
-    /application\/ld\+json/i.test(html) ||
+    /application\/ld\+json/i.test(
+      html
+    ) ||
     /itemscope/i.test(html)
   );
 }
@@ -162,9 +200,13 @@ function hasSchemaMarkup(html) {
 ============================================================ */
 
 function isPrivateIPv4(ip) {
-  const parts = ip
-    .split(".")
-    .map((part) => Number(part));
+  const parts =
+    ip
+      .split(".")
+      .map(
+        (part) =>
+          Number(part)
+      );
 
   if (
     parts.length !== 4 ||
@@ -264,7 +306,8 @@ function isPrivateIPv4(ip) {
 
 function isPrivateIPv6(ip) {
   const normalized =
-    String(ip || "").toLowerCase();
+    String(ip || "")
+      .toLowerCase();
 
   if (
     normalized === "::1" ||
@@ -274,17 +317,29 @@ function isPrivateIPv6(ip) {
   }
 
   if (
-    normalized.startsWith("fc") ||
-    normalized.startsWith("fd")
+    normalized.startsWith(
+      "fc"
+    ) ||
+    normalized.startsWith(
+      "fd"
+    )
   ) {
     return true;
   }
 
   if (
-    normalized.startsWith("fe8") ||
-    normalized.startsWith("fe9") ||
-    normalized.startsWith("fea") ||
-    normalized.startsWith("feb")
+    normalized.startsWith(
+      "fe8"
+    ) ||
+    normalized.startsWith(
+      "fe9"
+    ) ||
+    normalized.startsWith(
+      "fea"
+    ) ||
+    normalized.startsWith(
+      "feb"
+    )
   ) {
     return true;
   }
@@ -295,7 +350,9 @@ function isPrivateIPv6(ip) {
     );
 
   if (mapped) {
-    return isPrivateIPv4(mapped[1]);
+    return isPrivateIPv4(
+      mapped[1]
+    );
   }
 
   return false;
@@ -316,7 +373,9 @@ function isPrivateIp(ip) {
   return true;
 }
 
-async function validatePublicUrl(rawUrl) {
+async function validatePublicUrl(
+  rawUrl
+) {
   if (
     !rawUrl ||
     typeof rawUrl !== "string"
@@ -336,7 +395,9 @@ async function validatePublicUrl(rawUrl) {
   }
 
   if (
-    !/^https?:\/\//i.test(value)
+    !/^https?:\/\//i.test(
+      value
+    )
   ) {
     value =
       `https://${value}`;
@@ -374,18 +435,29 @@ async function validatePublicUrl(rawUrl) {
     url.hostname.toLowerCase();
 
   if (
-    hostname === "localhost" ||
-    hostname.endsWith(".localhost") ||
-    hostname.endsWith(".local") ||
-    hostname.endsWith(".internal")
+    hostname ===
+      "localhost" ||
+    hostname.endsWith(
+      ".localhost"
+    ) ||
+    hostname.endsWith(
+      ".local"
+    ) ||
+    hostname.endsWith(
+      ".internal"
+    )
   ) {
     throw new Error(
       "Private or local network websites cannot be audited."
     );
   }
 
-  if (net.isIP(hostname)) {
-    if (isPrivateIp(hostname)) {
+  if (
+    net.isIP(hostname)
+  ) {
+    if (
+      isPrivateIp(hostname)
+    ) {
       throw new Error(
         "Private or local network websites cannot be audited."
       );
@@ -397,13 +469,14 @@ async function validatePublicUrl(rawUrl) {
   let addresses;
 
   try {
-    addresses = await lookup(
-      hostname,
-      {
-        all: true,
-        verbatim: true,
-      }
-    );
+    addresses =
+      await lookup(
+        hostname,
+        {
+          all: true,
+          verbatim: true,
+        }
+      );
   } catch {
     throw new Error(
       "The website hostname could not be resolved."
@@ -419,10 +492,14 @@ async function validatePublicUrl(rawUrl) {
     );
   }
 
-  for (const entry of addresses) {
+  for (
+    const entry of addresses
+  ) {
     if (
       !entry?.address ||
-      isPrivateIp(entry.address)
+      isPrivateIp(
+        entry.address
+      )
     ) {
       throw new Error(
         "Private or local network websites cannot be audited."
@@ -437,9 +514,13 @@ async function validatePublicUrl(rawUrl) {
    SAFE WEBSITE FETCH
 ============================================================ */
 
-async function fetchWebsite(startUrl) {
+async function fetchWebsite(
+  startUrl
+) {
   let currentUrl =
-    await validatePublicUrl(startUrl);
+    await validatePublicUrl(
+      startUrl
+    );
 
   let redirects = 0;
 
@@ -456,7 +537,8 @@ async function fetchWebsite(startUrl) {
 
     const timeout =
       setTimeout(
-        () => controller.abort(),
+        () =>
+          controller.abort(),
         FETCH_TIMEOUT_MS
       );
 
@@ -466,33 +548,39 @@ async function fetchWebsite(startUrl) {
     let response;
 
     try {
-      response = await fetch(
-        currentUrl.toString(),
-        {
-          method: "GET",
+      response =
+        await fetch(
+          currentUrl.toString(),
+          {
+            method: "GET",
 
-          redirect: "manual",
+            redirect:
+              "manual",
 
-          signal:
-            controller.signal,
+            signal:
+              controller.signal,
 
-          headers: {
-            "User-Agent":
-              "Matthew-Web-Website-Audit/1.0",
+            headers: {
+              "User-Agent":
+                "Matthew-Web-Website-Audit/1.0",
 
-            Accept:
-              "text/html,application/xhtml+xml;q=0.9,*/*;q=0.5",
-          },
+              Accept:
+                "text/html,application/xhtml+xml;q=0.9,*/*;q=0.5",
+            },
 
-          cache: "no-store",
-        }
-      );
+            cache:
+              "no-store",
+          }
+        );
     } finally {
-      clearTimeout(timeout);
+      clearTimeout(
+        timeout
+      );
     }
 
     const elapsedMs =
-      Date.now() - startedAt;
+      Date.now() -
+      startedAt;
 
     if (
       response.status >= 300 &&
@@ -512,7 +600,8 @@ async function fetchWebsite(startUrl) {
       redirects += 1;
 
       if (
-        redirects > MAX_REDIRECTS
+        redirects >
+        MAX_REDIRECTS
       ) {
         throw new Error(
           "Website redirected too many times."
@@ -543,10 +632,14 @@ async function fetchWebsite(startUrl) {
       contentType &&
       !contentType
         .toLowerCase()
-        .includes("text/html") &&
+        .includes(
+          "text/html"
+        ) &&
       !contentType
         .toLowerCase()
-        .includes("application/xhtml+xml")
+        .includes(
+          "application/xhtml+xml"
+        )
     ) {
       throw new Error(
         "The supplied URL did not return an HTML webpage."
@@ -569,12 +662,17 @@ async function fetchWebsite(startUrl) {
 
     return {
       html,
+
       finalUrl:
         currentUrl.toString(),
+
       status:
         response.status,
+
       elapsedMs,
+
       contentType,
+
       redirects,
     };
   }
@@ -605,7 +703,9 @@ function analyzeHtml(
     extractTitle(html);
 
   const metaDescription =
-    extractMetaDescription(html);
+    extractMetaDescription(
+      html
+    );
 
   const h1Count =
     extractH1Count(html);
@@ -830,12 +930,15 @@ function analyzeHtml(
     title.length > 0;
 
   const hasMetaDescription =
-    metaDescription.length > 0;
+    metaDescription.length >
+    0;
 
   const hasHttps =
     finalUrl
       .toLowerCase()
-      .startsWith("https://");
+      .startsWith(
+        "https://"
+      );
 
   const mobileIssue =
     !hasViewport;
@@ -870,6 +973,7 @@ function analyzeHtml(
 
   return {
     title,
+
     title_length:
       title.length,
 
@@ -960,20 +1064,28 @@ function analyzeHtml(
    SCORING
 ============================================================ */
 
-function scoreAudit(signals) {
+function scoreAudit(
+  signals
+) {
   let seo = 0;
 
-  if (signals.has_https) {
+  if (
+    signals.has_https
+  ) {
     seo += 15;
   }
 
-  if (signals.has_meta_title) {
+  if (
+    signals.has_meta_title
+  ) {
     seo += 20;
   }
 
   if (
-    signals.title_length >= 20 &&
-    signals.title_length <= 65
+    signals.title_length >=
+      20 &&
+    signals.title_length <=
+      65
   ) {
     seo += 10;
   }
@@ -985,26 +1097,37 @@ function scoreAudit(signals) {
   }
 
   if (
-    signals.meta_description_length >= 70 &&
-    signals.meta_description_length <= 170
+    signals
+      .meta_description_length >=
+      70 &&
+    signals
+      .meta_description_length <=
+      170
   ) {
     seo += 10;
   }
 
-  if (signals.has_h1) {
-    seo += 10;
-  }
-
-  if (signals.h1_count === 1) {
-    seo += 5;
-  }
-
-  if (signals.has_schema) {
+  if (
+    signals.has_h1
+  ) {
     seo += 10;
   }
 
   if (
-    signals.has_local_keywords
+    signals.h1_count === 1
+  ) {
+    seo += 5;
+  }
+
+  if (
+    signals.has_schema
+  ) {
+    seo += 10;
+  }
+
+  if (
+    signals
+      .has_local_keywords
   ) {
     seo += 5;
   }
@@ -1012,22 +1135,28 @@ function scoreAudit(signals) {
   let conversion = 0;
 
   if (
-    signals.has_contact_form
+    signals
+      .has_contact_form
   ) {
     conversion += 25;
   }
 
-  if (signals.has_booking) {
-    conversion += 15;
-  }
-
   if (
-    signals.has_phone_number
+    signals.has_booking
   ) {
     conversion += 15;
   }
 
-  if (signals.has_email) {
+  if (
+    signals
+      .has_phone_number
+  ) {
+    conversion += 15;
+  }
+
+  if (
+    signals.has_email
+  ) {
     conversion += 10;
   }
 
@@ -1038,45 +1167,56 @@ function scoreAudit(signals) {
   }
 
   if (
-    signals.has_service_words
+    signals
+      .has_service_words
   ) {
     conversion += 15;
   }
 
   let trust = 0;
 
-  if (signals.has_https) {
-    trust += 20;
-  }
-
-  if (signals.has_reviews) {
-    trust += 20;
-  }
-
   if (
-    signals.has_privacy_policy
+    signals.has_https
   ) {
     trust += 20;
   }
 
   if (
-    signals.has_location_signal
+    signals.has_reviews
+  ) {
+    trust += 20;
+  }
+
+  if (
+    signals
+      .has_privacy_policy
+  ) {
+    trust += 20;
+  }
+
+  if (
+    signals
+      .has_location_signal
   ) {
     trust += 15;
   }
 
   if (
-    signals.has_phone_number
+    signals
+      .has_phone_number
   ) {
     trust += 10;
   }
 
-  if (signals.has_email) {
+  if (
+    signals.has_email
+  ) {
     trust += 5;
   }
 
   if (
-    signals.has_social_links
+    signals
+      .has_social_links
   ) {
     trust += 10;
   }
@@ -1129,7 +1269,8 @@ function scoreAudit(signals) {
   }
 
   if (
-    signals.outdated_design
+    signals
+      .outdated_design
   ) {
     technical -= 10;
   }
@@ -1144,7 +1285,8 @@ function scoreAudit(signals) {
         conversionScore +
         trustScore +
         technicalScore
-      ) / 4
+      ) /
+        4
     );
 
   return {
@@ -1169,31 +1311,39 @@ function scoreAudit(signals) {
    ISSUE GENERATION
 ============================================================ */
 
-function buildIssues(signals) {
+function buildIssues(
+  signals
+) {
   const issues = [];
 
-  if (!signals.has_https) {
+  if (
+    !signals.has_https
+  ) {
     issues.push(
       "Website is not using HTTPS."
     );
   }
 
   if (
-    !signals.has_contact_form
+    !signals
+      .has_contact_form
   ) {
     issues.push(
       "No clear contact or lead form was detected."
     );
   }
 
-  if (!signals.has_booking) {
+  if (
+    !signals.has_booking
+  ) {
     issues.push(
       "No booking or scheduling option was detected."
     );
   }
 
   if (
-    !signals.has_phone_number
+    !signals
+      .has_phone_number
   ) {
     issues.push(
       "No clear phone number was detected."
@@ -1201,19 +1351,22 @@ function buildIssues(signals) {
   }
 
   if (
-    !signals.has_meta_title
+    !signals
+      .has_meta_title
   ) {
     issues.push(
       "No page title was detected."
     );
   } else if (
-    signals.title_length < 20
+    signals.title_length <
+    20
   ) {
     issues.push(
       "The page title may be too short to clearly describe the page."
     );
   } else if (
-    signals.title_length > 65
+    signals.title_length >
+    65
   ) {
     issues.push(
       "The page title may be longer than ideal for search-result display."
@@ -1221,26 +1374,33 @@ function buildIssues(signals) {
   }
 
   if (
-    !signals.has_meta_description
+    !signals
+      .has_meta_description
   ) {
     issues.push(
       "No meta description was detected."
     );
   }
 
-  if (!signals.has_favicon) {
+  if (
+    !signals.has_favicon
+  ) {
     issues.push(
       "No favicon markup was detected."
     );
   }
 
-  if (!signals.has_h1) {
+  if (
+    !signals.has_h1
+  ) {
     issues.push(
       "No H1 heading was detected."
     );
   }
 
-  if (signals.h1_count > 1) {
+  if (
+    signals.h1_count > 1
+  ) {
     issues.push(
       `Multiple H1 headings were detected (${signals.h1_count}).`
     );
@@ -1254,14 +1414,17 @@ function buildIssues(signals) {
     );
   }
 
-  if (!signals.has_reviews) {
+  if (
+    !signals.has_reviews
+  ) {
     issues.push(
       "No testimonial or customer-review section was detected."
     );
   }
 
   if (
-    !signals.has_privacy_policy
+    !signals
+      .has_privacy_policy
   ) {
     issues.push(
       "No clear privacy-policy link was detected."
@@ -1269,21 +1432,25 @@ function buildIssues(signals) {
   }
 
   if (
-    !signals.has_location_signal
+    !signals
+      .has_location_signal
   ) {
     issues.push(
       "No clear location or service-area signal was detected."
     );
   }
 
-  if (!signals.has_schema) {
+  if (
+    !signals.has_schema
+  ) {
     issues.push(
       "No structured-data/schema markup was detected."
     );
   }
 
   if (
-    !signals.has_social_links
+    !signals
+      .has_social_links
   ) {
     issues.push(
       "No social-profile links were detected."
@@ -1291,7 +1458,8 @@ function buildIssues(signals) {
   }
 
   if (
-    !signals.has_service_words
+    !signals
+      .has_service_words
   ) {
     issues.push(
       "The page may not clearly explain its services or customer offer."
@@ -1315,7 +1483,8 @@ function buildIssues(signals) {
   }
 
   if (
-    signals.outdated_design
+    signals
+      .outdated_design
   ) {
     issues.push(
       "Legacy HTML elements were detected that may indicate an older technical foundation."
@@ -1341,7 +1510,8 @@ function buildSalesGuidance(
   const opportunities = [];
 
   if (
-    !signals.has_contact_form ||
+    !signals
+      .has_contact_form ||
     !signals.has_clear_cta
   ) {
     opportunities.push(
@@ -1358,8 +1528,10 @@ function buildSalesGuidance(
   }
 
   if (
-    !signals.has_meta_title ||
-    !signals.has_meta_description ||
+    !signals
+      .has_meta_title ||
+    !signals
+      .has_meta_description ||
     !signals.has_schema
   ) {
     opportunities.push(
@@ -1377,8 +1549,10 @@ function buildSalesGuidance(
 
   if (
     !signals.has_reviews ||
-    !signals.has_privacy_policy ||
-    !signals.has_location_signal
+    !signals
+      .has_privacy_policy ||
+    !signals
+      .has_location_signal
   ) {
     opportunities.push(
       "strengthening trust and business information"
@@ -1394,13 +1568,16 @@ function buildSalesGuidance(
   }
 
   const topOpportunities =
-    opportunities
-      .slice(0, 3);
+    opportunities.slice(
+      0,
+      3
+    );
 
   let salesAngle;
 
   if (
-    topOpportunities.length === 0
+    topOpportunities.length ===
+    0
   ) {
     salesAngle =
       "The website already shows several useful fundamentals. Any outreach should focus on specific improvements that can be verified rather than assuming the site needs a complete rebuild.";
@@ -1414,12 +1591,14 @@ function buildSalesGuidance(
   let recommendedOffer;
 
   if (
-    scores.website_score < 45
+    scores.website_score <
+    45
   ) {
     recommendedOffer =
       "Consider discussing a broader website rebuild or modernization after confirming the business's actual goals and needs.";
   } else if (
-    scores.website_score < 70
+    scores.website_score <
+    70
   ) {
     recommendedOffer =
       "Consider a focused website improvement package covering the verified technical, conversion, and search issues found in the audit.";
@@ -1431,7 +1610,8 @@ function buildSalesGuidance(
   let suggestedPackage;
 
   if (
-    scores.website_score < 45
+    scores.website_score <
+    45
   ) {
     suggestedPackage =
       "Website redesign / rebuild discussion";
@@ -1498,10 +1678,111 @@ function buildSummary(
 }
 
 /* ============================================================
+   RATE LIMIT
+============================================================ */
+
+async function checkAuditRateLimit(
+  request,
+  adminIdentifier
+) {
+  const burst =
+    await rateLimitRequest(
+      request,
+      {
+        namespace:
+          "website-audit-burst",
+
+        limit:
+          AUDIT_BURST_LIMIT,
+
+        windowSeconds:
+          AUDIT_BURST_WINDOW_SECONDS,
+
+        identifier:
+          adminIdentifier,
+      }
+    );
+
+  if (!burst.allowed) {
+    return {
+      ok: false,
+
+      response:
+        Response.json(
+          {
+            ok: false,
+
+            error:
+              "Website audit limit reached. Please wait a few minutes before running another audit.",
+          },
+          {
+            status: 429,
+
+            headers:
+              getRateLimitHeaders(
+                burst
+              ),
+          }
+        ),
+    };
+  }
+
+  const daily =
+    await rateLimitRequest(
+      request,
+      {
+        namespace:
+          "website-audit-daily",
+
+        limit:
+          AUDIT_DAILY_LIMIT,
+
+        windowSeconds:
+          AUDIT_DAILY_WINDOW_SECONDS,
+
+        identifier:
+          adminIdentifier,
+      }
+    );
+
+  if (!daily.allowed) {
+    return {
+      ok: false,
+
+      response:
+        Response.json(
+          {
+            ok: false,
+
+            error:
+              "Daily website audit limit reached. Please try again after the limit resets.",
+          },
+          {
+            status: 429,
+
+            headers:
+              getRateLimitHeaders(
+                daily
+              ),
+          }
+        ),
+    };
+  }
+
+  return {
+    ok: true,
+    burst,
+    daily,
+  };
+}
+
+/* ============================================================
    POST
 ============================================================ */
 
-export async function POST(request) {
+export async function POST(
+  request
+) {
   try {
     /* ========================================================
        1. ADMIN AUTHORIZATION
@@ -1516,18 +1797,73 @@ export async function POST(request) {
       return Response.json(
         {
           ok: false,
+
           error:
             adminAuth.error,
         },
         {
           status:
             adminAuth.status,
+
+          headers: {
+            "Cache-Control":
+              "no-store",
+          },
         }
       );
     }
 
     /* ========================================================
-       2. REQUEST BODY
+       2. ADMIN IDENTITY
+    ======================================================== */
+
+    const adminIdentifier =
+      adminAuth.user?.id ||
+      adminAuth.user?.email ||
+      adminAuth.admin?.email;
+
+    if (!adminIdentifier) {
+      console.error(
+        "Authorized admin audit request did not contain a usable identity."
+      );
+
+      return Response.json(
+        {
+          ok: false,
+
+          error:
+            "Admin identity could not be verified.",
+        },
+        {
+          status: 403,
+
+          headers: {
+            "Cache-Control":
+              "no-store",
+          },
+        }
+      );
+    }
+
+    /* ========================================================
+       3. RATE LIMIT
+
+       This runs after admin authorization and before any DNS
+       lookup or website fetch.
+    ======================================================== */
+
+    const rateCheck =
+      await checkAuditRateLimit(
+        request,
+        adminIdentifier
+      );
+
+    if (!rateCheck.ok) {
+      return rateCheck.response;
+    }
+
+    /* ========================================================
+       4. REQUEST BODY
     ======================================================== */
 
     let body;
@@ -1539,6 +1875,7 @@ export async function POST(request) {
       return Response.json(
         {
           ok: false,
+
           error:
             "Invalid request body.",
         },
@@ -1559,6 +1896,7 @@ export async function POST(request) {
       return Response.json(
         {
           ok: false,
+
           error:
             "website_url is required.",
         },
@@ -1569,7 +1907,7 @@ export async function POST(request) {
     }
 
     /* ========================================================
-       3. VALIDATE TARGET
+       5. VALIDATE TARGET
     ======================================================== */
 
     let normalizedUrl;
@@ -1583,6 +1921,7 @@ export async function POST(request) {
       return Response.json(
         {
           ok: false,
+
           error:
             error?.message ||
             "Invalid website URL.",
@@ -1594,7 +1933,7 @@ export async function POST(request) {
     }
 
     /* ========================================================
-       4. FETCH WEBSITE
+       6. FETCH WEBSITE
     ======================================================== */
 
     let fetched;
@@ -1608,6 +1947,7 @@ export async function POST(request) {
       return Response.json(
         {
           ok: false,
+
           error:
             error?.name ===
             "AbortError"
@@ -1622,7 +1962,7 @@ export async function POST(request) {
     }
 
     /* ========================================================
-       5. ANALYZE WEBSITE
+       7. ANALYZE WEBSITE
     ======================================================== */
 
     const signals =
@@ -1633,10 +1973,14 @@ export async function POST(request) {
       );
 
     const scores =
-      scoreAudit(signals);
+      scoreAudit(
+        signals
+      );
 
     const issues =
-      buildIssues(signals);
+      buildIssues(
+        signals
+      );
 
     const sales =
       buildSalesGuidance(
@@ -1653,13 +1997,14 @@ export async function POST(request) {
       );
 
     /* ========================================================
-       6. BUILD CRM-COMPATIBLE AUDIT OBJECT
+       8. BUILD CRM-COMPATIBLE AUDIT OBJECT
     ======================================================== */
 
     const audit = {
       /* Existing database-compatible fields */
 
-      has_website: true,
+      has_website:
+        true,
 
       has_https:
         signals.has_https,
@@ -1804,10 +2149,20 @@ export async function POST(request) {
         fetched.elapsedMs,
     };
 
-    return Response.json({
-      ok: true,
-      audit,
-    });
+    return Response.json(
+      {
+        ok: true,
+        audit,
+      },
+      {
+        status: 200,
+
+        headers: {
+          "Cache-Control":
+            "no-store",
+        },
+      }
+    );
   } catch (error) {
     console.error(
       "Lead Finder website audit error:",
@@ -1817,6 +2172,7 @@ export async function POST(request) {
     return Response.json(
       {
         ok: false,
+
         error:
           "Website audit failed.",
       },

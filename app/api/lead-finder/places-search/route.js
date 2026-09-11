@@ -1,5 +1,13 @@
+import "server-only";
+
 import { NextResponse } from "next/server";
+
 import { requireAdminApi } from "@/lib/requireAdminApi";
+
+import {
+  rateLimitRequest,
+  getRateLimitHeaders,
+} from "@/lib/rateLimit";
 
 /* ============================================================
    MATTHEW WEB — GOOGLE PLACES LEAD SEARCH API
@@ -10,6 +18,9 @@ import { requireAdminApi } from "@/lib/requireAdminApi";
    - Requires valid Supabase authentication
    - Requires user to exist in public.admin_users
    - Google API key stays server-side
+   - Rate limited by authenticated admin identity
+   - Burst limit: 20 searches / 15 minutes
+   - Daily limit: 100 searches / 24 hours
 
    Returns CRM-compatible fields:
    - place_id
@@ -38,6 +49,44 @@ const GOOGLE_PLACES_URL =
 const MAX_QUERY_LENGTH = 200;
 
 /* ============================================================
+   GOOGLE PLACES RATE LIMITS
+============================================================ */
+
+const PLACES_BURST_LIMIT = 20;
+
+const PLACES_BURST_WINDOW_SECONDS =
+  15 * 60;
+
+const PLACES_DAILY_LIMIT = 100;
+
+const PLACES_DAILY_WINDOW_SECONDS =
+  24 * 60 * 60;
+
+/* ============================================================
+   RESPONSE HELPERS
+============================================================ */
+
+function jsonError(
+  message,
+  status,
+  headers = {}
+) {
+  return NextResponse.json(
+    {
+      ok: false,
+      error: message,
+    },
+    {
+      status,
+      headers: {
+        "Cache-Control": "no-store",
+        ...headers,
+      },
+    }
+  );
+}
+
+/* ============================================================
    BASIC HELPERS
 ============================================================ */
 
@@ -52,7 +101,9 @@ function clampScore(value) {
     0,
     Math.min(
       100,
-      Math.round(Number(value) || 0)
+      Math.round(
+        Number(value) || 0
+      )
     )
   );
 }
@@ -65,15 +116,22 @@ function findAddressComponent(
   addressComponents,
   type
 ) {
-  if (!Array.isArray(addressComponents)) {
+  if (
+    !Array.isArray(
+      addressComponents
+    )
+  ) {
     return "";
   }
 
   const component =
-    addressComponents.find((item) =>
-      Array.isArray(item?.types)
-        ? item.types.includes(type)
-        : false
+    addressComponents.find(
+      (item) =>
+        Array.isArray(
+          item?.types
+        )
+          ? item.types.includes(type)
+          : false
     );
 
   return (
@@ -83,7 +141,9 @@ function findAddressComponent(
   );
 }
 
-function getCity(addressComponents) {
+function getCity(
+  addressComponents
+) {
   return (
     findAddressComponent(
       addressComponents,
@@ -105,18 +165,27 @@ function getCity(addressComponents) {
   );
 }
 
-function getState(addressComponents) {
-  if (!Array.isArray(addressComponents)) {
+function getState(
+  addressComponents
+) {
+  if (
+    !Array.isArray(
+      addressComponents
+    )
+  ) {
     return "";
   }
 
   const component =
-    addressComponents.find((item) =>
-      Array.isArray(item?.types)
-        ? item.types.includes(
-            "administrative_area_level_1"
-          )
-        : false
+    addressComponents.find(
+      (item) =>
+        Array.isArray(
+          item?.types
+        )
+          ? item.types.includes(
+              "administrative_area_level_1"
+            )
+          : false
     );
 
   return (
@@ -133,7 +202,9 @@ function getState(addressComponents) {
 function formatCategory(place) {
   const displayCategory =
     cleanText(
-      place?.primaryTypeDisplayName?.text
+      place
+        ?.primaryTypeDisplayName
+        ?.text
     );
 
   if (displayCategory) {
@@ -141,7 +212,9 @@ function formatCategory(place) {
   }
 
   const primaryType =
-    cleanText(place?.primaryType);
+    cleanText(
+      place?.primaryType
+    );
 
   if (!primaryType) {
     return "Business";
@@ -149,22 +222,25 @@ function formatCategory(place) {
 
   return primaryType
     .replace(/_/g, " ")
-    .replace(/\b\w/g, (letter) =>
-      letter.toUpperCase()
+    .replace(
+      /\b\w/g,
+      (letter) =>
+        letter.toUpperCase()
     );
 }
 
 /* ============================================================
    LEAD SCORING
 
-   This is an internal prioritization score.
+   Internal prioritization only.
 
-   It does NOT claim how much money the business is losing,
-   how likely it is to purchase, or how successful outreach
-   will be.
+   This does NOT claim:
+   - how much money the business is losing
+   - how likely it is to purchase
+   - how successful outreach will be
 
-   Higher scores generally mean the business appears to have
-   a clearer website-service opportunity and usable contact
+   Higher scores mean the Google listing appears to present a
+   clearer website-service opportunity and/or usable contact
    information.
 ============================================================ */
 
@@ -172,22 +248,31 @@ function calculateLeadScore(place) {
   let score = 20;
 
   const website =
-    cleanText(place?.websiteUri);
+    cleanText(
+      place?.websiteUri
+    );
 
   const phone =
     cleanText(
-      place?.nationalPhoneNumber
+      place
+        ?.nationalPhoneNumber
     );
 
   const maps =
-    cleanText(place?.googleMapsUri);
+    cleanText(
+      place?.googleMapsUri
+    );
 
   const rating =
-    Number(place?.rating || 0);
+    Number(
+      place?.rating || 0
+    );
 
   const reviews =
     Number(
-      place?.userRatingCount || 0
+      place
+        ?.userRatingCount ||
+        0
     );
 
   /* ==========================================================
@@ -216,8 +301,9 @@ function calculateLeadScore(place) {
      ACTIVE BUSINESS SIGNALS
 
      Ratings/reviews do not prove buying intent.
-     They only provide a small signal that the listing
-     appears to have customer activity.
+
+     They only provide a small signal that the listing appears
+     to have customer activity.
   ========================================================== */
 
   if (reviews > 0) {
@@ -243,13 +329,18 @@ function calculateLeadScore(place) {
    PROBLEM SUMMARY
 ============================================================ */
 
-function buildProblemSummary(place) {
+function buildProblemSummary(
+  place
+) {
   const website =
-    cleanText(place?.websiteUri);
+    cleanText(
+      place?.websiteUri
+    );
 
   const phone =
     cleanText(
-      place?.nationalPhoneNumber
+      place
+        ?.nationalPhoneNumber
     );
 
   const issues = [];
@@ -282,7 +373,9 @@ function buildProblemSummary(place) {
 
 function buildOfferIdea(place) {
   const website =
-    cleanText(place?.websiteUri);
+    cleanText(
+      place?.websiteUri
+    );
 
   if (!website) {
     return (
@@ -305,17 +398,22 @@ function buildOfferIdea(place) {
 function normalizePlace(place) {
   const businessName =
     cleanText(
-      place?.displayName?.text
-    ) || "Unknown Business";
+      place
+        ?.displayName
+        ?.text
+    ) ||
+    "Unknown Business";
 
   const address =
     cleanText(
-      place?.formattedAddress
+      place
+        ?.formattedAddress
     );
 
   const phone =
     cleanText(
-      place?.nationalPhoneNumber
+      place
+        ?.nationalPhoneNumber
     );
 
   const websiteUrl =
@@ -339,19 +437,23 @@ function normalizePlace(place) {
     );
 
   const rating =
-    typeof place?.rating === "number"
+    typeof place?.rating ===
+    "number"
       ? place.rating
       : null;
 
   const reviewCount =
-    typeof place?.userRatingCount ===
+    typeof place
+      ?.userRatingCount ===
     "number"
       ? place.userRatingCount
       : null;
 
   return {
     place_id:
-      cleanText(place?.id),
+      cleanText(
+        place?.id
+      ),
 
     business_name:
       businessName,
@@ -386,13 +488,112 @@ function normalizePlace(place) {
       reviewCount,
 
     problem_summary:
-      buildProblemSummary(place),
+      buildProblemSummary(
+        place
+      ),
 
     offer_idea:
-      buildOfferIdea(place),
+      buildOfferIdea(
+        place
+      ),
 
     lead_score:
-      calculateLeadScore(place),
+      calculateLeadScore(
+        place
+      ),
+  };
+}
+
+/* ============================================================
+   ADMIN RATE LIMIT
+============================================================ */
+
+async function checkPlacesRateLimit(
+  request,
+  adminIdentifier
+) {
+  /* --------------------------------------------------------
+     SHORT / BURST LIMIT
+
+     20 searches every 15 minutes.
+  --------------------------------------------------------- */
+
+  const burst =
+    await rateLimitRequest(
+      request,
+      {
+        namespace:
+          "google-places-burst",
+
+        limit:
+          PLACES_BURST_LIMIT,
+
+        windowSeconds:
+          PLACES_BURST_WINDOW_SECONDS,
+
+        identifier:
+          adminIdentifier,
+      }
+    );
+
+  if (!burst.allowed) {
+    return {
+      ok: false,
+
+      response:
+        jsonError(
+          "Google Places search limit reached. Please wait a few minutes before searching again.",
+          429,
+          getRateLimitHeaders(
+            burst
+          )
+        ),
+    };
+  }
+
+  /* --------------------------------------------------------
+     DAILY COST LIMIT
+
+     100 searches every 24 hours.
+  --------------------------------------------------------- */
+
+  const daily =
+    await rateLimitRequest(
+      request,
+      {
+        namespace:
+          "google-places-daily",
+
+        limit:
+          PLACES_DAILY_LIMIT,
+
+        windowSeconds:
+          PLACES_DAILY_WINDOW_SECONDS,
+
+        identifier:
+          adminIdentifier,
+      }
+    );
+
+  if (!daily.allowed) {
+    return {
+      ok: false,
+
+      response:
+        jsonError(
+          "Daily Google Places search limit reached. Please try again after the limit resets.",
+          429,
+          getRateLimitHeaders(
+            daily
+          )
+        ),
+    };
+  }
+
+  return {
+    ok: true,
+    burst,
+    daily,
   };
 }
 
@@ -400,82 +601,132 @@ function normalizePlace(place) {
    POST
 ============================================================ */
 
-export async function POST(request) {
+export async function POST(
+  request
+) {
   try {
     /* ========================================================
        1. MATTHEW WEB ADMIN AUTHORIZATION
     ======================================================== */
 
     const adminAuth =
-      await requireAdminApi(request);
+      await requireAdminApi(
+        request
+      );
 
     if (!adminAuth.ok) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: adminAuth.error,
-        },
-        {
-          status: adminAuth.status,
-        }
+      return jsonError(
+        adminAuth.error,
+        adminAuth.status
       );
     }
 
     /* ========================================================
-       2. GOOGLE PLACES API KEY
+       2. ADMIN IDENTIFIER
+    ======================================================== */
+
+    const adminIdentifier =
+      adminAuth.user?.id ||
+      adminAuth.user?.email ||
+      adminAuth.admin?.email;
+
+    if (!adminIdentifier) {
+      console.error(
+        "Authorized admin request did not contain a usable identity."
+      );
+
+      return jsonError(
+        "Admin identity could not be verified.",
+        403
+      );
+    }
+
+    /* ========================================================
+       3. RATE LIMIT
+
+       This runs AFTER authorization.
+
+       Anonymous attackers therefore cannot consume an admin's
+       Google Places allowance simply by hitting the endpoint.
+    ======================================================== */
+
+    const rateCheck =
+      await checkPlacesRateLimit(
+        request,
+        adminIdentifier
+      );
+
+    if (!rateCheck.ok) {
+      return rateCheck.response;
+    }
+
+    /* ========================================================
+       4. GOOGLE PLACES API KEY
     ======================================================== */
 
     const googleApiKey =
-      process.env.GOOGLE_PLACES_API_KEY ||
-      process.env.GOOGLE_MAPS_API_KEY;
+      process.env
+        .GOOGLE_PLACES_API_KEY ||
+      process.env
+        .GOOGLE_MAPS_API_KEY;
 
     if (!googleApiKey) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error:
-            "Google Places API key is not configured on the server.",
-        },
-        {
-          status: 500,
-        }
+      console.error(
+        "Google Places API key is not configured."
+      );
+
+      return jsonError(
+        "Google Places search is temporarily unavailable.",
+        500
       );
     }
 
     /* ========================================================
-       3. REQUEST BODY
+       5. REQUEST BODY
     ======================================================== */
 
     let body;
 
     try {
-      body = await request.json();
+      body =
+        await request.json();
     } catch {
-      return NextResponse.json(
-        {
-          ok: false,
-          error:
-            "Invalid request body.",
-        },
-        {
-          status: 400,
-        }
+      return jsonError(
+        "Invalid request body.",
+        400
+      );
+    }
+
+    if (
+      !body ||
+      typeof body !== "object" ||
+      Array.isArray(body)
+    ) {
+      return jsonError(
+        "Request body must be a JSON object.",
+        400
+      );
+    }
+
+    if (
+      typeof body.query !==
+      "string"
+    ) {
+      return jsonError(
+        "Search query must be text.",
+        400
       );
     }
 
     const query =
-      cleanText(body?.query);
+      cleanText(
+        body.query
+      );
 
     if (!query) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error:
-            "Search query is required.",
-        },
-        {
-          status: 400,
-        }
+      return jsonError(
+        "Search query is required.",
+        400
       );
     }
 
@@ -483,20 +734,14 @@ export async function POST(request) {
       query.length >
       MAX_QUERY_LENGTH
     ) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error:
-            `Search query must be ${MAX_QUERY_LENGTH} characters or fewer.`,
-        },
-        {
-          status: 400,
-        }
+      return jsonError(
+        `Search query must be ${MAX_QUERY_LENGTH} characters or fewer.`,
+        400
       );
     }
 
     /* ========================================================
-       4. GOOGLE PLACES TEXT SEARCH
+       6. GOOGLE PLACES TEXT SEARCH
 
        Request only the fields actually used by Lead Finder.
 
@@ -538,16 +783,20 @@ export async function POST(request) {
                 fieldMask,
             },
 
-            body: JSON.stringify({
-              textQuery: query,
+            body:
+              JSON.stringify({
+                textQuery:
+                  query,
 
-              pageSize: 20,
+                pageSize:
+                  20,
 
-              includePureServiceAreaBusinesses:
-                true,
-            }),
+                includePureServiceAreaBusinesses:
+                  true,
+              }),
 
-            cache: "no-store",
+            cache:
+              "no-store",
           }
         );
     } catch (error) {
@@ -556,20 +805,14 @@ export async function POST(request) {
         error
       );
 
-      return NextResponse.json(
-        {
-          ok: false,
-          error:
-            "Could not connect to Google Places.",
-        },
-        {
-          status: 502,
-        }
+      return jsonError(
+        "Could not connect to Google Places.",
+        502
       );
     }
 
     /* ========================================================
-       5. READ GOOGLE RESPONSE
+       7. READ GOOGLE RESPONSE
     ======================================================== */
 
     let googleData;
@@ -578,20 +821,14 @@ export async function POST(request) {
       googleData =
         await googleResponse.json();
     } catch {
-      return NextResponse.json(
-        {
-          ok: false,
-          error:
-            "Google Places returned an unreadable response.",
-        },
-        {
-          status: 502,
-        }
+      return jsonError(
+        "Google Places returned an unreadable response.",
+        502
       );
     }
 
     /* ========================================================
-       6. GOOGLE ERROR
+       8. GOOGLE ERROR
     ======================================================== */
 
     if (!googleResponse.ok) {
@@ -600,27 +837,22 @@ export async function POST(request) {
         googleData
       );
 
-      const googleMessage =
-        googleData?.error?.message;
+      /*
+        Keep detailed Google error information in server logs.
 
-      return NextResponse.json(
-        {
-          ok: false,
+        Do not forward Google configuration/project details
+        directly to the browser.
+      */
 
-          error:
-            googleMessage ||
-            "Google Places search failed.",
-        },
-        {
-          status:
-            googleResponse.status ||
-            500,
-        }
+      return jsonError(
+        "Google Places search failed.",
+        googleResponse.status ||
+          502
       );
     }
 
     /* ========================================================
-       7. NORMALIZE RESULTS
+       9. NORMALIZE RESULTS
     ======================================================== */
 
     const rawPlaces =
@@ -632,7 +864,9 @@ export async function POST(request) {
 
     const places =
       rawPlaces
-        .map(normalizePlace)
+        .map(
+          normalizePlace
+        )
         .filter(
           (place) =>
             place.place_id &&
@@ -640,34 +874,38 @@ export async function POST(request) {
         );
 
     /* ========================================================
-       8. SUCCESS
+       10. SUCCESS
     ======================================================== */
 
-    return NextResponse.json({
-      ok: true,
+    return NextResponse.json(
+      {
+        ok: true,
 
-      query,
+        query,
 
-      count:
-        places.length,
+        count:
+          places.length,
 
-      places,
-    });
+        places,
+      },
+      {
+        status: 200,
+
+        headers: {
+          "Cache-Control":
+            "no-store",
+        },
+      }
+    );
   } catch (error) {
     console.error(
       "Google Places Lead Search error:",
       error
     );
 
-    return NextResponse.json(
-      {
-        ok: false,
-        error:
-          "Google Places lead search failed.",
-      },
-      {
-        status: 500,
-      }
+    return jsonError(
+      "Google Places lead search failed.",
+      500
     );
   }
 }
