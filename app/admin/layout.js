@@ -1,12 +1,18 @@
+import AdminAccessGate from "../../components/AdminAccessGate";
+
 export const metadata = {
   title: {
     absolute: "Mission Control | Matthew Web",
   },
-  description: "Private Matthew Web administration system.",
+
+  description:
+    "Private Matthew Web administration system.",
+
   robots: {
     index: false,
     follow: false,
     nocache: true,
+
     googleBot: {
       index: false,
       follow: false,
@@ -15,6 +21,12 @@ export const metadata = {
   },
 };
 
-export default function AdminLayout({ children }) {
-  return children;
+export default function AdminLayout({
+  children,
+}) {
+  return (
+    <AdminAccessGate>
+      {children}
+    </AdminAccessGate>
+  );
 }
