@@ -1,5 +1,6 @@
 "use client";
 
+import SafeExternalLink from "@/components/SafeExternalLink";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -603,14 +604,10 @@ export default function LeadFinderBoardPage() {
                               ) : null}
 
                               {lead.website_url ? (
-                                <a
-                                  href={lead.website_url}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                >
+                                <SafeExternalLink href={lead.website_url}>
                                   <Globe2 size={13} />
                                   Site
-                                </a>
+                                </SafeExternalLink>
                               ) : null}
                             </div>
 

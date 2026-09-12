@@ -1,5 +1,6 @@
 "use client";
 
+import SafeExternalLink from "@/components/SafeExternalLink";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -1385,29 +1386,17 @@ export default function LeadFinderSearchPage() {
                   ) : null}
 
                   {place.website_url ? (
-                    <a
-                      href={
-                        place.website_url
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                    >
+                    <SafeExternalLink href={place.website_url}>
                       <Globe2 size={14} />
                       Website
-                    </a>
+                    </SafeExternalLink>
                   ) : null}
 
                   {place.google_maps_url ? (
-                    <a
-                      href={
-                        place.google_maps_url
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                    >
+                    <SafeExternalLink href={place.google_maps_url}>
                       <MapPin size={14} />
                       Google Maps
-                    </a>
+                    </SafeExternalLink>
                   ) : null}
                 </div>
 

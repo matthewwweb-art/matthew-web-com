@@ -1,5 +1,6 @@
 "use client";
 
+import SafeExternalLink from "@/components/SafeExternalLink";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -1795,57 +1796,33 @@ Recommended offer: ${
 
               <div className="link-row">
                 {lead.website_url ? (
-                  <a
-                    href={
-                      lead.website_url
-                    }
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <SafeExternalLink href={lead.website_url}>
                     <Globe2
                       size={14}
                     />
                     Website
-                  </a>
+                  </SafeExternalLink>
                 ) : null}
 
                 {lead.google_maps_url ? (
-                  <a
-                    href={
-                      lead.google_maps_url
-                    }
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <SafeExternalLink href={lead.google_maps_url}>
                     <MapPin
                       size={14}
                     />
                     Google Maps
-                  </a>
+                  </SafeExternalLink>
                 ) : null}
 
                 {lead.facebook_url ? (
-                  <a
-                    href={
-                      lead.facebook_url
-                    }
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <SafeExternalLink href={lead.facebook_url}>
                     Facebook
-                  </a>
+                  </SafeExternalLink>
                 ) : null}
 
                 {lead.yelp_url ? (
-                  <a
-                    href={
-                      lead.yelp_url
-                    }
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <SafeExternalLink href={lead.yelp_url}>
                     Yelp
-                  </a>
+                  </SafeExternalLink>
                 ) : null}
               </div>
             </section>

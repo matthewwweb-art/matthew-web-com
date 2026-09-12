@@ -1,5 +1,6 @@
 "use client";
 
+import SafeExternalLink from "@/components/SafeExternalLink";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
@@ -3073,51 +3074,43 @@ export default function LeadFinderPage() {
 
                   <div className="link-row">
                     {lead.website_url ? (
-                      <a
+                      <SafeExternalLink
                         href={
                           lead.website_url
                         }
-                        target="_blank"
-                        rel="noreferrer"
                       >
                         Website
-                      </a>
+                      </SafeExternalLink>
                     ) : null}
 
                     {lead.google_maps_url ? (
-                      <a
+                      <SafeExternalLink
                         href={
                           lead.google_maps_url
                         }
-                        target="_blank"
-                        rel="noreferrer"
                       >
                         Google Maps
-                      </a>
+                      </SafeExternalLink>
                     ) : null}
 
                     {lead.facebook_url ? (
-                      <a
+                      <SafeExternalLink
                         href={
                           lead.facebook_url
                         }
-                        target="_blank"
-                        rel="noreferrer"
                       >
                         Facebook
-                      </a>
+                      </SafeExternalLink>
                     ) : null}
 
                     {lead.yelp_url ? (
-                      <a
+                      <SafeExternalLink
                         href={
                           lead.yelp_url
                         }
-                        target="_blank"
-                        rel="noreferrer"
                       >
                         Yelp
-                      </a>
+                      </SafeExternalLink>
                     ) : null}
                   </div>
 
