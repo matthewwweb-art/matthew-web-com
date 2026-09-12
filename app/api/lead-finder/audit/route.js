@@ -21,6 +21,9 @@ import {
    - Re-checks redirect destinations
    - Does not expose Supabase service credentials
    - Rate limited by authenticated admin identity
+   - Requires application/json request bodies
+   - Limits incoming request bodies to 8 KiB
+   - Limits website_url to 2048 characters
    - Burst limit: 10 audits / 15 minutes
    - Daily limit: 50 audits / 24 hours
 
@@ -49,20 +52,262 @@ const MAX_REDIRECTS = 5;
 const FETCH_TIMEOUT_MS = 12000;
 const MAX_HTML_LENGTH = 2_000_000;
 
+const MAX_REQUEST_BODY_BYTES = 8 * 1024;
+const MAX_WEBSITE_URL_LENGTH = 2048;
+
 const AUDIT_BURST_LIMIT = 10;
 const AUDIT_BURST_WINDOW_SECONDS = 15 * 60;
 
 const AUDIT_DAILY_LIMIT = 50;
-const AUDIT_DAILY_WINDOW_SECONDS = 24 * 60 * 60;
+const AUDIT_DAILY_WINDOW_SECONDS =
+  24 * 60 * 60;
+
+/* ============================================================
+   RESPONSE HELPERS
+============================================================ */
+
+function jsonError(
+  message,
+  status,
+  headers = {}
+) {
+  return Response.json(
+    {
+      ok: false,
+      error: message,
+    },
+    {
+      status,
+
+      headers: {
+        "Cache-Control": "no-store",
+
+        ...headers,
+      },
+    }
+  );
+}
+
+/* ============================================================
+   REQUEST VALIDATION
+============================================================ */
+
+function isPlainObject(value) {
+  return Boolean(
+    value &&
+      typeof value === "object" &&
+      !Array.isArray(value)
+  );
+}
+
+function isJsonContentType(request) {
+  const contentType = request.headers
+    .get("content-type")
+    ?.split(";", 1)[0]
+    ?.trim()
+    ?.toLowerCase();
+
+  return contentType === "application/json";
+}
+
+function getDeclaredContentLength(
+  request
+) {
+  const raw = request.headers
+    .get("content-length")
+    ?.trim();
+
+  if (
+    !raw ||
+    !/^\d+$/.test(raw)
+  ) {
+    return null;
+  }
+
+  const parsed = Number(raw);
+
+  return Number.isSafeInteger(
+    parsed
+  )
+    ? parsed
+    : null;
+}
+
+async function readValidatedAuditBody(
+  request
+) {
+  if (
+    !isJsonContentType(request)
+  ) {
+    return {
+      ok: false,
+
+      response: jsonError(
+        "Content-Type must be application/json.",
+        415
+      ),
+    };
+  }
+
+  const declaredLength =
+    getDeclaredContentLength(
+      request
+    );
+
+  if (
+    declaredLength !== null &&
+    declaredLength >
+      MAX_REQUEST_BODY_BYTES
+  ) {
+    return {
+      ok: false,
+
+      response: jsonError(
+        "Request body is too large.",
+        413
+      ),
+    };
+  }
+
+  let rawBody;
+
+  try {
+    rawBody =
+      await request.text();
+  } catch {
+    return {
+      ok: false,
+
+      response: jsonError(
+        "Invalid request body.",
+        400
+      ),
+    };
+  }
+
+  if (
+    Buffer.byteLength(
+      rawBody,
+      "utf8"
+    ) >
+    MAX_REQUEST_BODY_BYTES
+  ) {
+    return {
+      ok: false,
+
+      response: jsonError(
+        "Request body is too large.",
+        413
+      ),
+    };
+  }
+
+  if (!rawBody.trim()) {
+    return {
+      ok: false,
+
+      response: jsonError(
+        "Request body is required.",
+        400
+      ),
+    };
+  }
+
+  let body;
+
+  try {
+    body =
+      JSON.parse(rawBody);
+  } catch {
+    return {
+      ok: false,
+
+      response: jsonError(
+        "Invalid JSON request body.",
+        400
+      ),
+    };
+  }
+
+  if (!isPlainObject(body)) {
+    return {
+      ok: false,
+
+      response: jsonError(
+        "Request body must be a JSON object.",
+        400
+      ),
+    };
+  }
+
+  const suppliedUrl =
+    body.website_url;
+
+  if (
+    typeof suppliedUrl !==
+    "string"
+  ) {
+    return {
+      ok: false,
+
+      response: jsonError(
+        "website_url is required and must be a string.",
+        400
+      ),
+    };
+  }
+
+  const trimmedUrl =
+    suppliedUrl.trim();
+
+  if (!trimmedUrl) {
+    return {
+      ok: false,
+
+      response: jsonError(
+        "website_url is required.",
+        400
+      ),
+    };
+  }
+
+  if (
+    trimmedUrl.length >
+    MAX_WEBSITE_URL_LENGTH
+  ) {
+    return {
+      ok: false,
+
+      response: jsonError(
+        `website_url must be ${MAX_WEBSITE_URL_LENGTH} characters or fewer.`,
+        400
+      ),
+    };
+  }
+
+  return {
+    ok: true,
+
+    websiteUrl:
+      trimmedUrl,
+  };
+}
 
 /* ============================================================
    BASIC HELPERS
 ============================================================ */
 
-function clamp(number, min = 0, max = 100) {
+function clamp(
+  number,
+  min = 0,
+  max = 100
+) {
   return Math.max(
     min,
-    Math.min(max, Math.round(number))
+    Math.min(
+      max,
+      Math.round(number)
+    )
   );
 }
 
@@ -96,24 +341,36 @@ function stripHtml(html) {
         /<noscript\b[^>]*>[\s\S]*?<\/noscript>/gi,
         " "
       )
-      .replace(/<[^>]+>/g, " ")
+      .replace(
+        /<[^>]+>/g,
+        " "
+      )
   );
 }
 
-function countMatches(text, regex) {
+function countMatches(
+  text,
+  regex
+) {
   return (
-    String(text || "").match(regex) || []
+    String(text || "")
+      .match(regex) || []
   ).length;
 }
 
-function includesAny(text, terms) {
+function includesAny(
+  text,
+  terms
+) {
   const lower =
-    String(text || "").toLowerCase();
+    String(text || "")
+      .toLowerCase();
 
-  return terms.some((term) =>
-    lower.includes(
-      term.toLowerCase()
-    )
+  return terms.some(
+    (term) =>
+      lower.includes(
+        term.toLowerCase()
+      )
   );
 }
 
@@ -124,11 +381,15 @@ function extractTitle(html) {
     );
 
   return match
-    ? decodeBasicHtml(match[1])
+    ? decodeBasicHtml(
+        match[1]
+      )
     : "";
 }
 
-function extractMetaDescription(html) {
+function extractMetaDescription(
+  html
+) {
   const source =
     String(html || "");
 
@@ -149,7 +410,9 @@ function extractMetaDescription(html) {
     );
 
   return matchB
-    ? decodeBasicHtml(matchB[1])
+    ? decodeBasicHtml(
+        matchB[1]
+      )
     : "";
 }
 
@@ -166,27 +429,35 @@ function extractH1Count(html) {
   );
 }
 
-function extractLinksCount(html) {
+function extractLinksCount(
+  html
+) {
   return countMatches(
     html,
     /<a\b[^>]*href=/gi
   );
 }
 
-function extractImageCount(html) {
+function extractImageCount(
+  html
+) {
   return countMatches(
     html,
     /<img\b[^>]*>/gi
   );
 }
 
-function hasFaviconMarkup(html) {
+function hasFaviconMarkup(
+  html
+) {
   return /<link[^>]+rel=["'][^"']*(?:icon|shortcut icon)[^"']*["'][^>]*>/i.test(
     String(html || "")
   );
 }
 
-function hasSchemaMarkup(html) {
+function hasSchemaMarkup(
+  html
+) {
   return (
     /application\/ld\+json/i.test(
       html
@@ -212,7 +483,9 @@ function isPrivateIPv4(ip) {
     parts.length !== 4 ||
     parts.some(
       (part) =>
-        !Number.isInteger(part) ||
+        !Number.isInteger(
+          part
+        ) ||
         part < 0 ||
         part > 255
     )
@@ -222,9 +495,17 @@ function isPrivateIPv4(ip) {
 
   const [a, b] = parts;
 
-  if (a === 0) return true;
-  if (a === 10) return true;
-  if (a === 127) return true;
+  if (a === 0) {
+    return true;
+  }
+
+  if (a === 10) {
+    return true;
+  }
+
+  if (a === 127) {
+    return true;
+  }
 
   if (
     a === 169 &&
@@ -406,7 +687,8 @@ async function validatePublicUrl(
   let url;
 
   try {
-    url = new URL(value);
+    url =
+      new URL(value);
   } catch {
     throw new Error(
       "Invalid website URL."
@@ -452,11 +734,11 @@ async function validatePublicUrl(
     );
   }
 
-  if (
-    net.isIP(hostname)
-  ) {
+  if (net.isIP(hostname)) {
     if (
-      isPrivateIp(hostname)
+      isPrivateIp(
+        hostname
+      )
     ) {
       throw new Error(
         "Private or local network websites cannot be audited."
@@ -573,9 +855,7 @@ async function fetchWebsite(
           }
         );
     } finally {
-      clearTimeout(
-        timeout
-      );
+      clearTimeout(timeout);
     }
 
     const elapsedMs =
@@ -1064,14 +1344,10 @@ function analyzeHtml(
    SCORING
 ============================================================ */
 
-function scoreAudit(
-  signals
-) {
+function scoreAudit(signals) {
   let seo = 0;
 
-  if (
-    signals.has_https
-  ) {
+  if (signals.has_https) {
     seo += 15;
   }
 
@@ -1107,9 +1383,7 @@ function scoreAudit(
     seo += 10;
   }
 
-  if (
-    signals.has_h1
-  ) {
+  if (signals.has_h1) {
     seo += 10;
   }
 
@@ -1119,9 +1393,7 @@ function scoreAudit(
     seo += 5;
   }
 
-  if (
-    signals.has_schema
-  ) {
+  if (signals.has_schema) {
     seo += 10;
   }
 
@@ -1141,9 +1413,7 @@ function scoreAudit(
     conversion += 25;
   }
 
-  if (
-    signals.has_booking
-  ) {
+  if (signals.has_booking) {
     conversion += 15;
   }
 
@@ -1154,9 +1424,7 @@ function scoreAudit(
     conversion += 15;
   }
 
-  if (
-    signals.has_email
-  ) {
+  if (signals.has_email) {
     conversion += 10;
   }
 
@@ -1175,15 +1443,11 @@ function scoreAudit(
 
   let trust = 0;
 
-  if (
-    signals.has_https
-  ) {
+  if (signals.has_https) {
     trust += 20;
   }
 
-  if (
-    signals.has_reviews
-  ) {
+  if (signals.has_reviews) {
     trust += 20;
   }
 
@@ -1208,9 +1472,7 @@ function scoreAudit(
     trust += 10;
   }
 
-  if (
-    signals.has_email
-  ) {
+  if (signals.has_email) {
     trust += 5;
   }
 
@@ -1256,9 +1518,7 @@ function scoreAudit(
     technical -= 10;
   }
 
-  if (
-    !signals.has_h1
-  ) {
+  if (!signals.has_h1) {
     technical -= 15;
   }
 
@@ -1311,9 +1571,7 @@ function scoreAudit(
    ISSUE GENERATION
 ============================================================ */
 
-function buildIssues(
-  signals
-) {
+function buildIssues(signals) {
   const issues = [];
 
   if (
@@ -1390,9 +1648,7 @@ function buildIssues(
     );
   }
 
-  if (
-    !signals.has_h1
-  ) {
+  if (!signals.has_h1) {
     issues.push(
       "No H1 heading was detected."
     );
@@ -1794,22 +2050,9 @@ export async function POST(
       );
 
     if (!adminAuth.ok) {
-      return Response.json(
-        {
-          ok: false,
-
-          error:
-            adminAuth.error,
-        },
-        {
-          status:
-            adminAuth.status,
-
-          headers: {
-            "Cache-Control":
-              "no-store",
-          },
-        }
+      return jsonError(
+        adminAuth.error,
+        adminAuth.status
       );
     }
 
@@ -1827,29 +2070,36 @@ export async function POST(
         "Authorized admin audit request did not contain a usable identity."
       );
 
-      return Response.json(
-        {
-          ok: false,
-
-          error:
-            "Admin identity could not be verified.",
-        },
-        {
-          status: 403,
-
-          headers: {
-            "Cache-Control":
-              "no-store",
-          },
-        }
+      return jsonError(
+        "Admin identity could not be verified.",
+        403
       );
     }
 
     /* ========================================================
-       3. RATE LIMIT
+       3. VALIDATE REQUEST BODY
 
-       This runs after admin authorization and before any DNS
-       lookup or website fetch.
+       Reject malformed or oversized input before consuming the
+       authenticated admin's audit allowance or performing DNS.
+    ======================================================== */
+
+    const bodyResult =
+      await readValidatedAuditBody(
+        request
+      );
+
+    if (!bodyResult.ok) {
+      return bodyResult.response;
+    }
+
+    const suppliedUrl =
+      bodyResult.websiteUrl;
+
+    /* ========================================================
+       4. RATE LIMIT
+
+       Runs after authentication + cheap request validation and
+       before DNS lookup or any outbound website fetch.
     ======================================================== */
 
     const rateCheck =
@@ -1860,50 +2110,6 @@ export async function POST(
 
     if (!rateCheck.ok) {
       return rateCheck.response;
-    }
-
-    /* ========================================================
-       4. REQUEST BODY
-    ======================================================== */
-
-    let body;
-
-    try {
-      body =
-        await request.json();
-    } catch {
-      return Response.json(
-        {
-          ok: false,
-
-          error:
-            "Invalid request body.",
-        },
-        {
-          status: 400,
-        }
-      );
-    }
-
-    const suppliedUrl =
-      body?.website_url;
-
-    if (
-      !suppliedUrl ||
-      typeof suppliedUrl !==
-        "string"
-    ) {
-      return Response.json(
-        {
-          ok: false,
-
-          error:
-            "website_url is required.",
-        },
-        {
-          status: 400,
-        }
-      );
     }
 
     /* ========================================================
@@ -2001,8 +2207,6 @@ export async function POST(
     ======================================================== */
 
     const audit = {
-      /* Existing database-compatible fields */
-
       has_website:
         true,
 
@@ -2010,19 +2214,23 @@ export async function POST(
         signals.has_https,
 
       has_contact_form:
-        signals.has_contact_form,
+        signals
+          .has_contact_form,
 
       has_booking:
         signals.has_booking,
 
       has_phone_number:
-        signals.has_phone_number,
+        signals
+          .has_phone_number,
 
       has_meta_title:
-        signals.has_meta_title,
+        signals
+          .has_meta_title,
 
       has_meta_description:
-        signals.has_meta_description,
+        signals
+          .has_meta_description,
 
       has_favicon:
         signals.has_favicon,
@@ -2034,11 +2242,11 @@ export async function POST(
         signals.speed_issue,
 
       outdated_design:
-        signals.outdated_design,
+        signals
+          .outdated_design,
 
       issues_json: {
         issues,
-
         scores,
 
         signals: {
@@ -2055,28 +2263,34 @@ export async function POST(
             signals.h1_count,
 
           has_clear_cta:
-            signals.has_clear_cta,
+            signals
+              .has_clear_cta,
 
           has_reviews:
             signals.has_reviews,
 
           has_privacy_policy:
-            signals.has_privacy_policy,
+            signals
+              .has_privacy_policy,
 
           has_location_signal:
-            signals.has_location_signal,
+            signals
+              .has_location_signal,
 
           has_schema:
             signals.has_schema,
 
           has_social_links:
-            signals.has_social_links,
+            signals
+              .has_social_links,
 
           has_service_words:
-            signals.has_service_words,
+            signals
+              .has_service_words,
 
           has_local_keywords:
-            signals.has_local_keywords,
+            signals
+              .has_local_keywords,
 
           link_count:
             signals.link_count,
@@ -2091,10 +2305,12 @@ export async function POST(
             signals.title_length,
 
           meta_description:
-            signals.meta_description,
+            signals
+              .meta_description,
 
           meta_description_length:
-            signals.meta_description_length,
+            signals
+              .meta_description_length,
 
           load_time_ms:
             signals.load_time_ms,
@@ -2113,8 +2329,6 @@ export async function POST(
       audit_summary:
         auditSummary,
 
-      /* Additional fields available to newer UI */
-
       website_score:
         scores.website_score,
 
@@ -2122,7 +2336,8 @@ export async function POST(
         scores.seo_score,
 
       conversion_score:
-        scores.conversion_score,
+        scores
+          .conversion_score,
 
       trust_score:
         scores.trust_score,
@@ -2137,10 +2352,12 @@ export async function POST(
         sales.sales_angle,
 
       recommended_offer:
-        sales.recommended_offer,
+        sales
+          .recommended_offer,
 
       suggested_package:
-        sales.suggested_package,
+        sales
+          .suggested_package,
 
       final_url:
         fetched.finalUrl,

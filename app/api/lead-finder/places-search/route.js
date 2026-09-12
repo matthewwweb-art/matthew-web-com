@@ -3,7 +3,6 @@ import "server-only";
 import { NextResponse } from "next/server";
 
 import { requireAdminApi } from "@/lib/requireAdminApi";
-
 import {
   rateLimitRequest,
   getRateLimitHeaders,
@@ -19,6 +18,9 @@ import {
    - Requires user to exist in public.admin_users
    - Google API key stays server-side
    - Rate limited by authenticated admin identity
+   - Requires application/json request bodies
+   - Limits incoming request bodies to 8 KiB
+   - Limits search query to 200 characters
    - Burst limit: 20 searches / 15 minutes
    - Daily limit: 100 searches / 24 hours
 
@@ -47,18 +49,17 @@ const GOOGLE_PLACES_URL =
   "https://places.googleapis.com/v1/places:searchText";
 
 const MAX_QUERY_LENGTH = 200;
+const MAX_REQUEST_BODY_BYTES = 8 * 1024;
 
 /* ============================================================
    GOOGLE PLACES RATE LIMITS
 ============================================================ */
 
 const PLACES_BURST_LIMIT = 20;
-
 const PLACES_BURST_WINDOW_SECONDS =
   15 * 60;
 
 const PLACES_DAILY_LIMIT = 100;
-
 const PLACES_DAILY_WINDOW_SECONDS =
   24 * 60 * 60;
 
@@ -78,12 +79,266 @@ function jsonError(
     },
     {
       status,
+
       headers: {
         "Cache-Control": "no-store",
+
         ...headers,
       },
     }
   );
+}
+
+/* ============================================================
+   REQUEST VALIDATION
+============================================================ */
+
+function isPlainObject(value) {
+  return Boolean(
+    value &&
+      typeof value === "object" &&
+      !Array.isArray(value)
+  );
+}
+
+function isJsonContentType(request) {
+  const contentType =
+    request.headers
+      .get("content-type")
+      ?.split(";", 1)[0]
+      ?.trim()
+      ?.toLowerCase();
+
+  return (
+    contentType ===
+    "application/json"
+  );
+}
+
+function getDeclaredContentLength(
+  request
+) {
+  const raw =
+    request.headers
+      .get("content-length")
+      ?.trim();
+
+  if (
+    !raw ||
+    !/^\d+$/.test(raw)
+  ) {
+    return null;
+  }
+
+  const parsed =
+    Number(raw);
+
+  return Number.isSafeInteger(
+    parsed
+  )
+    ? parsed
+    : null;
+}
+
+async function readValidatedSearchBody(
+  request
+) {
+  /* --------------------------------------------------------
+     REQUIRE JSON CONTENT TYPE
+  --------------------------------------------------------- */
+
+  if (
+    !isJsonContentType(
+      request
+    )
+  ) {
+    return {
+      ok: false,
+
+      response:
+        jsonError(
+          "Content-Type must be application/json.",
+          415
+        ),
+    };
+  }
+
+  /* --------------------------------------------------------
+     EARLY CONTENT-LENGTH CHECK
+  --------------------------------------------------------- */
+
+  const declaredLength =
+    getDeclaredContentLength(
+      request
+    );
+
+  if (
+    declaredLength !== null &&
+    declaredLength >
+      MAX_REQUEST_BODY_BYTES
+  ) {
+    return {
+      ok: false,
+
+      response:
+        jsonError(
+          "Request body is too large.",
+          413
+        ),
+    };
+  }
+
+  /* --------------------------------------------------------
+     READ RAW BODY
+  --------------------------------------------------------- */
+
+  let rawBody;
+
+  try {
+    rawBody =
+      await request.text();
+  } catch {
+    return {
+      ok: false,
+
+      response:
+        jsonError(
+          "Invalid request body.",
+          400
+        ),
+    };
+  }
+
+  /* --------------------------------------------------------
+     ACTUAL UTF-8 BODY SIZE CHECK
+  --------------------------------------------------------- */
+
+  if (
+    Buffer.byteLength(
+      rawBody,
+      "utf8"
+    ) >
+    MAX_REQUEST_BODY_BYTES
+  ) {
+    return {
+      ok: false,
+
+      response:
+        jsonError(
+          "Request body is too large.",
+          413
+        ),
+    };
+  }
+
+  if (
+    !rawBody.trim()
+  ) {
+    return {
+      ok: false,
+
+      response:
+        jsonError(
+          "Request body is required.",
+          400
+        ),
+    };
+  }
+
+  /* --------------------------------------------------------
+     PARSE JSON
+  --------------------------------------------------------- */
+
+  let body;
+
+  try {
+    body =
+      JSON.parse(
+        rawBody
+      );
+  } catch {
+    return {
+      ok: false,
+
+      response:
+        jsonError(
+          "Invalid JSON request body.",
+          400
+        ),
+    };
+  }
+
+  if (
+    !isPlainObject(
+      body
+    )
+  ) {
+    return {
+      ok: false,
+
+      response:
+        jsonError(
+          "Request body must be a JSON object.",
+          400
+        ),
+    };
+  }
+
+  /* --------------------------------------------------------
+     QUERY VALIDATION
+  --------------------------------------------------------- */
+
+  if (
+    typeof body.query !==
+    "string"
+  ) {
+    return {
+      ok: false,
+
+      response:
+        jsonError(
+          "Search query must be text.",
+          400
+        ),
+    };
+  }
+
+  const query =
+    cleanText(
+      body.query
+    );
+
+  if (!query) {
+    return {
+      ok: false,
+
+      response:
+        jsonError(
+          "Search query is required.",
+          400
+        ),
+    };
+  }
+
+  if (
+    query.length >
+    MAX_QUERY_LENGTH
+  ) {
+    return {
+      ok: false,
+
+      response:
+        jsonError(
+          `Search query must be ${MAX_QUERY_LENGTH} characters or fewer.`,
+          400
+        ),
+    };
+  }
+
+  return {
+    ok: true,
+    query,
+  };
 }
 
 /* ============================================================
@@ -130,7 +385,9 @@ function findAddressComponent(
         Array.isArray(
           item?.types
         )
-          ? item.types.includes(type)
+          ? item.types.includes(
+              type
+            )
           : false
     );
 
@@ -238,10 +495,6 @@ function formatCategory(place) {
    - how much money the business is losing
    - how likely it is to purchase
    - how successful outreach will be
-
-   Higher scores mean the Google listing appears to present a
-   clearer website-service opportunity and/or usable contact
-   information.
 ============================================================ */
 
 function calculateLeadScore(place) {
@@ -275,19 +528,11 @@ function calculateLeadScore(place) {
         0
     );
 
-  /* ==========================================================
-     WEBSITE OPPORTUNITY
-  ========================================================== */
-
   if (!website) {
     score += 40;
   } else {
     score += 8;
   }
-
-  /* ==========================================================
-     CONTACTABILITY
-  ========================================================== */
 
   if (phone) {
     score += 15;
@@ -296,15 +541,6 @@ function calculateLeadScore(place) {
   if (maps) {
     score += 5;
   }
-
-  /* ==========================================================
-     ACTIVE BUSINESS SIGNALS
-
-     Ratings/reviews do not prove buying intent.
-
-     They only provide a small signal that the listing appears
-     to have customer activity.
-  ========================================================== */
 
   if (reviews > 0) {
     score += 5;
@@ -357,7 +593,9 @@ function buildProblemSummary(
     );
   }
 
-  if (issues.length === 0) {
+  if (
+    issues.length === 0
+  ) {
     return (
       "A website and phone number were found. Review the website manually " +
       "before outreach to identify a real, specific improvement opportunity."
@@ -423,17 +661,20 @@ function normalizePlace(place) {
 
   const googleMapsUrl =
     cleanText(
-      place?.googleMapsUri
+      place
+        ?.googleMapsUri
     );
 
   const city =
     getCity(
-      place?.addressComponents
+      place
+        ?.addressComponents
     );
 
   const state =
     getState(
-      place?.addressComponents
+      place
+        ?.addressComponents
     );
 
   const rating =
@@ -514,8 +755,6 @@ async function checkPlacesRateLimit(
 ) {
   /* --------------------------------------------------------
      SHORT / BURST LIMIT
-
-     20 searches every 15 minutes.
   --------------------------------------------------------- */
 
   const burst =
@@ -553,8 +792,6 @@ async function checkPlacesRateLimit(
 
   /* --------------------------------------------------------
      DAILY COST LIMIT
-
-     100 searches every 24 hours.
   --------------------------------------------------------- */
 
   const daily =
@@ -592,8 +829,6 @@ async function checkPlacesRateLimit(
 
   return {
     ok: true,
-    burst,
-    daily,
   };
 }
 
@@ -642,12 +877,28 @@ export async function POST(
     }
 
     /* ========================================================
-       3. RATE LIMIT
+       3. VALIDATE REQUEST
 
-       This runs AFTER authorization.
+       Reject malformed requests before consuming the admin's
+       Places allowance or making a Google API request.
+    ======================================================== */
 
-       Anonymous attackers therefore cannot consume an admin's
-       Google Places allowance simply by hitting the endpoint.
+    const bodyResult =
+      await readValidatedSearchBody(
+        request
+      );
+
+    if (!bodyResult.ok) {
+      return bodyResult.response;
+    }
+
+    const query =
+      bodyResult.query;
+
+    /* ========================================================
+       4. RATE LIMIT
+
+       Runs after authorization + cheap request validation.
     ======================================================== */
 
     const rateCheck =
@@ -661,7 +912,7 @@ export async function POST(
     }
 
     /* ========================================================
-       4. GOOGLE PLACES API KEY
+       5. GOOGLE PLACES API KEY
     ======================================================== */
 
     const googleApiKey =
@@ -682,70 +933,11 @@ export async function POST(
     }
 
     /* ========================================================
-       5. REQUEST BODY
-    ======================================================== */
-
-    let body;
-
-    try {
-      body =
-        await request.json();
-    } catch {
-      return jsonError(
-        "Invalid request body.",
-        400
-      );
-    }
-
-    if (
-      !body ||
-      typeof body !== "object" ||
-      Array.isArray(body)
-    ) {
-      return jsonError(
-        "Request body must be a JSON object.",
-        400
-      );
-    }
-
-    if (
-      typeof body.query !==
-      "string"
-    ) {
-      return jsonError(
-        "Search query must be text.",
-        400
-      );
-    }
-
-    const query =
-      cleanText(
-        body.query
-      );
-
-    if (!query) {
-      return jsonError(
-        "Search query is required.",
-        400
-      );
-    }
-
-    if (
-      query.length >
-      MAX_QUERY_LENGTH
-    ) {
-      return jsonError(
-        `Search query must be ${MAX_QUERY_LENGTH} characters or fewer.`,
-        400
-      );
-    }
-
-    /* ========================================================
        6. GOOGLE PLACES TEXT SEARCH
 
        Request only the fields actually used by Lead Finder.
 
-       Avoid using "*" because unnecessary fields can increase
+       Avoid "*" because unnecessary fields can increase
        processing and potentially affect Google Places billing.
     ======================================================== */
 
@@ -819,7 +1011,8 @@ export async function POST(
 
     try {
       googleData =
-        await googleResponse.json();
+        await googleResponse
+          .json();
     } catch {
       return jsonError(
         "Google Places returned an unreadable response.",
@@ -838,7 +1031,7 @@ export async function POST(
       );
 
       /*
-        Keep detailed Google error information in server logs.
+        Keep detailed Google error information server-side.
 
         Do not forward Google configuration/project details
         directly to the browser.
