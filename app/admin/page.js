@@ -126,7 +126,6 @@ export default function AdminPage() {
   const [session, setSession] = useState(null);
   const [loadingSession, setLoadingSession] = useState(true);
   const [loadingLeads, setLoadingLeads] = useState(false);
-  const [loggingIn, setLoggingIn] = useState(false);
 
   const [convertingLeadId, setConvertingLeadId] = useState(null);
   const [updatingLeadId, setUpdatingLeadId] = useState(null);
@@ -135,8 +134,6 @@ export default function AdminPage() {
   const [error, setError] = useState("");
   const [leads, setLeads] = useState([]);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -173,33 +170,6 @@ export default function AdminPage() {
       loadLeads();
     }
   }, [session]);
-
-  /* ==========================================================
-     LOGIN
-  ========================================================== */
-
-  async function handleLogin(e) {
-    e.preventDefault();
-
-    setLoggingIn(true);
-    setError("");
-
-    const { error: loginError } =
-      await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-    if (loginError) {
-      setError(loginError.message);
-      setLoggingIn(false);
-      return;
-    }
-
-    setEmail("");
-    setPassword("");
-    setLoggingIn(false);
-  }
 
   /* ==========================================================
      LOGOUT
@@ -687,137 +657,11 @@ export default function AdminPage() {
   }
 
   /* ==========================================================
-     LOGIN SCREEN
+     SIGNED-OUT FAIL-SAFE
   ========================================================== */
 
   if (!session) {
-    return (
-      <main className="mw-admin-page login-page">
-        <style>
-          {adminStyles}
-        </style>
-
-        <section className="login-shell">
-          <div className="login-brand">
-            <div className="login-brand-mark">
-              MW
-            </div>
-
-            <div>
-              <span className="eyebrow">
-                Matthew Web
-              </span>
-
-              <h1>
-                Mission Control
-              </h1>
-
-              <p>
-                Private business
-                operations, lead
-                management, sales
-                tools, and automation.
-              </p>
-            </div>
-          </div>
-
-          <div className="security-banner">
-            <ShieldCheck
-              size={20}
-            />
-
-            <span>
-              Protected private
-              administration system
-            </span>
-          </div>
-
-          {error ? (
-            <div className="error-box login-error">
-              {error}
-            </div>
-          ) : null}
-
-          <form
-            onSubmit={handleLogin}
-            className="login-form"
-          >
-            <label>
-              <span>
-                Admin Email
-              </span>
-
-              <input
-                type="email"
-                value={email}
-                placeholder="admin@example.com"
-                autoComplete="email"
-                onChange={(e) =>
-                  setEmail(
-                    e.target.value
-                  )
-                }
-                required
-              />
-            </label>
-
-            <label>
-              <span>
-                Password
-              </span>
-
-              <input
-                type="password"
-                value={password}
-                placeholder="Enter password"
-                autoComplete="current-password"
-                onChange={(e) =>
-                  setPassword(
-                    e.target.value
-                  )
-                }
-                required
-              />
-            </label>
-
-            <button
-              type="submit"
-              className="primary-button login-button"
-              disabled={loggingIn}
-            >
-              {loggingIn ? (
-                <>
-                  <LoaderCircle
-                    size={18}
-                    className="spin"
-                  />
-
-                  Signing In
-                </>
-              ) : (
-                <>
-                  <LockKeyhole
-                    size={18}
-                  />
-
-                  Enter Mission
-                  Control
-                </>
-              )}
-            </button>
-          </form>
-
-          <div className="login-footer">
-            <LockKeyhole
-              size={14}
-            />
-
-            Authorized Matthew Web
-            administration only
-          </div>
-        </section>
-      </main>
-    );
+    return null;
   }
 
   /* ==========================================================

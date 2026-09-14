@@ -7,6 +7,8 @@ import {
   useState,
 } from "react";
 
+import { usePathname, useRouter } from "next/navigation";
+
 import { supabase } from "../lib/supabaseClient";
 
 /* ============================================================
@@ -34,6 +36,9 @@ export default function AdminAccessGate({
     useState("");
 
   const mountedRef = useRef(true);
+
+  const router = useRouter();
+  const pathname = usePathname();
 
   /* ==========================================================
      VERIFY ADMIN ACCESS
@@ -287,17 +292,32 @@ export default function AdminAccessGate({
   }
 
   /* ==========================================================
-     SIGNED OUT
-
-     Allow children through so /admin can display its login form.
-
-     Individual admin pages already handle signed-out sessions,
-     while this gate prevents signed-in unauthorized accounts
-     from rendering private admin interfaces.
+     ADMIN ROUTE REDIRECTION
   ========================================================== */
 
+  useEffect(() => {
+    if (
+      status === "signed-out" &&
+      pathname !== "/admin/login"
+    ) {
+      router.replace("/admin/login");
+      return;
+    }
+
+    if (
+      status === "authorized" &&
+      pathname === "/admin/login"
+    ) {
+      router.replace("/admin");
+    }
+  }, [status, pathname, router]);
+
   if (status === "signed-out") {
-    return children;
+    if (pathname === "/admin/login") {
+      return children;
+    }
+
+    return null;
   }
 
   /* ==========================================================
@@ -305,6 +325,10 @@ export default function AdminAccessGate({
   ========================================================== */
 
   if (status === "authorized") {
+    if (pathname === "/admin/login") {
+      return null;
+    }
+
     return children;
   }
 
