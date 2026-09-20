@@ -606,10 +606,10 @@ const faqs = [
 
   {
     q:
-      "Should businesses respond to negative reviews?",
+      "How can review responses affect a business's reputation?",
 
     a:
-      "A professional response can be useful when it addresses a legitimate concern, corrects important information carefully, or provides an appropriate next step. Private customer information should remain private.",
+      "Public responses become part of the information future customers may see when researching a business. Professional, factual responses can show how the company handles feedback, while hostile, misleading, or privacy-violating responses can create additional reputation problems.",
   },
 
   {
