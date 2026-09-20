@@ -355,10 +355,10 @@ const redesignGoals = [
 const faqs = [
   {
     q:
-      "How often should a business redesign its website?",
+      "What are strong signs that a business website needs a redesign?",
 
     a:
-      "There is no universal redesign schedule. A website should be reviewed regularly, but a redesign is best justified by real problems or changed business requirements rather than age alone.",
+      "Strong signs include widespread mobile usability problems, slow or unstable performance, broken functionality, outdated information, weak customer paths, poor search structure, or major business changes that the current website no longer supports well.",
   },
 
   {
