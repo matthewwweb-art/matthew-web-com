@@ -908,6 +908,98 @@ export default function ServicesPage() {
            CORE SERVICE CARDS
         ===================================================== */
 
+        /* =====================================================
+           QUICK ANSWER / AEO
+        ===================================================== */
+
+        .mws-quick-answer {
+          padding: 70px clamp(20px, 5vw, 80px);
+
+          border-bottom:
+            1px solid rgba(255, 255, 255, 0.06);
+
+          background:
+            linear-gradient(
+              180deg,
+              #020304,
+              #04090d,
+              #020304
+            );
+        }
+
+        .mws-quick-answer-card {
+          max-width: 1100px;
+          margin: 0 auto;
+
+          padding: clamp(28px, 5vw, 46px);
+
+          border:
+            1px solid rgba(8, 185, 244, 0.22);
+
+          border-radius: 18px;
+
+          background:
+            linear-gradient(
+              145deg,
+              #09131a,
+              #04080b
+            );
+        }
+
+        .mws-quick-answer-card h2 {
+          margin: 0 0 17px;
+
+          font-size: clamp(31px, 4vw, 50px);
+
+          line-height: 1.05;
+          letter-spacing: -0.045em;
+        }
+
+        .mws-quick-answer-card p {
+          margin: 0;
+
+          color: var(--mws-muted);
+
+          font-size: clamp(15px, 1.3vw, 18px);
+
+          line-height: 1.75;
+        }
+
+        .mws-quick-answer-card strong {
+          color: white;
+        }
+
+        .mws-quick-links {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 9px;
+
+          margin-top: 23px;
+        }
+
+        .mws-quick-links a {
+          padding: 8px 12px;
+
+          border:
+            1px solid rgba(255, 255, 255, 0.1);
+
+          border-radius: 999px;
+
+          color: #dce7ec;
+
+          text-decoration: none;
+
+          background:
+            rgba(255, 255, 255, 0.025);
+
+          font-size: 11px;
+          font-weight: 850;
+        }
+
+        .mws-quick-links a:hover {
+          border-color:
+            rgba(8, 185, 244, 0.34);
+        }
         .mws-core-services {
           background:
             linear-gradient(
@@ -1633,6 +1725,105 @@ export default function ServicesPage() {
            MAINE FOCUS
         ===================================================== */
 
+        /* =====================================================
+           SERVICES FAQ / AEO
+        ===================================================== */
+
+        .mws-faq {
+          background:
+            linear-gradient(
+              180deg,
+              #020304,
+              #04090d,
+              #020304
+            );
+        }
+
+        .mws-faq-list {
+          max-width: 1000px;
+          margin: 0 auto;
+
+          display: grid;
+          gap: 11px;
+        }
+
+        .mws-faq-item {
+          overflow: hidden;
+
+          border:
+            1px solid
+            rgba(255, 255, 255, 0.09);
+
+          border-radius: 13px;
+
+          background:
+            rgba(255, 255, 255, 0.018);
+        }
+
+        .mws-faq-item summary {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          gap: 20px;
+
+          padding: 21px 23px;
+
+          cursor: pointer;
+
+          list-style: none;
+
+          color: white;
+
+          font-size: 15px;
+          font-weight: 850;
+        }
+
+        .mws-faq-item summary::-webkit-details-marker {
+          display: none;
+        }
+
+        .mws-faq-item summary::after {
+          content: "+";
+
+          flex: 0 0 auto;
+
+          color:
+            var(--mws-blue-light);
+
+          font-size: 24px;
+          font-weight: 400;
+        }
+
+        .mws-faq-item[open] summary::after {
+          content: "−";
+
+          color:
+            var(--mws-orange-light);
+        }
+
+        .mws-faq-answer {
+          padding:
+            0 23px 23px;
+
+          color:
+            var(--mws-muted);
+
+          font-size: 14px;
+
+          line-height: 1.75;
+        }
+
+        .mws-faq-answer a {
+          color:
+            var(--mws-blue-light);
+
+          text-decoration: none;
+        }
+
+        .mws-faq-answer a:hover {
+          text-decoration: underline;
+        }
         .mws-maine {
           padding:
             90px
@@ -1991,26 +2182,25 @@ export default function ServicesPage() {
 
             <h1>
               <span>
-                Technology That
+                Website Design,
               </span>
 
               <span className="mws-blue">
-                Solves Real
+                Custom Software
               </span>
 
               <span className="mws-orange">
-                Business Problems.
+                &amp; SEO Services
               </span>
             </h1>
 
             <p>
-              Matthew Web provides website
-              development, custom software,
-              search and indexing support,
-              maintenance, integrations and
-              practical digital services for
-              businesses that need technology
-              that actually works.
+              Matthew Web provides website design,
+              small-business websites, custom software,
+              CRM-style tools, forms, integrations,
+              technical SEO and indexing support for
+              businesses in Maine and across the
+              United States.
             </p>
 
             <div className="mws-button-row">
@@ -2087,6 +2277,61 @@ export default function ServicesPage() {
       {/* ======================================================
           CORE SERVICES
       ====================================================== */}
+      {/* ======================================================
+          QUICK ANSWER / AEO
+      ====================================================== */}
+
+      <section
+        className="mws-quick-answer"
+        id="what-services-does-matthew-web-provide"
+      >
+        <div className="mws-container">
+          <div className="mws-quick-answer-card">
+            <div className="mws-kicker">
+              Quick Answer
+            </div>
+
+            <h2>
+              What Services Does Matthew Web Provide?
+            </h2>
+
+            <p>
+              <strong>
+                Matthew Web provides website design,
+                custom software, technical SEO and
+                indexing support, and related business
+                technology services.
+              </strong>{" "}
+              Current work includes small-business
+              websites, redesigns, CRM-style tools,
+              dashboards, forms, integrations,
+              analytics, deployment, maintenance and
+              custom website functionality for
+              businesses in Maine and elsewhere in the
+              United States.
+            </p>
+
+            <div className="mws-quick-links">
+              <Link href="/website-design">
+                Website Design
+              </Link>
+
+              <Link href="/custom-software">
+                Custom Software
+              </Link>
+
+              <Link href="/seo-and-indexing">
+                SEO &amp; Indexing
+              </Link>
+
+              <Link href="/small-business-websites">
+                Small Business Websites
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
 
       <section
         className="mws-section mws-core-services"
@@ -2472,6 +2717,143 @@ export default function ServicesPage() {
       {/* ======================================================
           MAINE SMALL BUSINESS
       ====================================================== */}
+      {/* ======================================================
+          SERVICES FAQ / AEO
+      ====================================================== */}
+
+      <section
+        className="mws-section mws-faq"
+        id="services-faq"
+      >
+        <div className="mws-container">
+          <div className="mws-heading center">
+            <div className="mws-kicker">
+              Service Questions
+            </div>
+
+            <h2>
+              Frequently Asked{" "}
+              <span className="mws-blue">
+                Questions
+              </span>
+            </h2>
+
+            <p>
+              Clear answers about Matthew Web website,
+              software, SEO and small-business
+              technology services.
+            </p>
+          </div>
+
+          <div className="mws-faq-list">
+            <details className="mws-faq-item">
+              <summary>
+                What kinds of services does Matthew Web offer?
+              </summary>
+
+              <div className="mws-faq-answer">
+                Matthew Web provides website design,
+                small-business websites, custom
+                software, CRM-style tools, dashboards,
+                forms, integrations, technical SEO,
+                indexing support, analytics,
+                deployment, maintenance and related
+                website functionality.
+              </div>
+            </details>
+
+            <details className="mws-faq-item">
+              <summary>
+                Does Matthew Web only work with businesses in Maine?
+              </summary>
+
+              <div className="mws-faq-answer">
+                No. Matthew Web is based in Maine and
+                places an important focus on Maine
+                small businesses, but website and
+                software projects can also be completed
+                remotely for businesses elsewhere in
+                the United States.
+              </div>
+            </details>
+
+            <details className="mws-faq-item">
+              <summary>
+                Can Matthew Web improve an existing website?
+              </summary>
+
+              <div className="mws-faq-answer">
+                Yes. A project does not always require
+                a complete rebuild. Matthew Web can
+                work on specific issues such as mobile
+                usability, broken functionality,
+                forms, lead paths, analytics,
+                performance, indexing and added
+                website features.
+              </div>
+            </details>
+
+            <details className="mws-faq-item">
+              <summary>
+                Does Matthew Web build custom software?
+              </summary>
+
+              <div className="mws-faq-answer">
+                Yes. Current custom software work can
+                include dashboards, CRM-style tools,
+                lead tracking, custom forms,
+                database-backed functionality,
+                integrations, automation and
+                website-connected business systems.
+                You can learn more on the{" "}
+                <Link href="/custom-software">
+                  custom software page
+                </Link>.
+              </div>
+            </details>
+
+            <details className="mws-faq-item">
+              <summary>
+                Can Matthew Web help with Google indexing and SEO?
+              </summary>
+
+              <div className="mws-faq-answer">
+                Yes. Matthew Web provides technical SEO
+                and indexing support including
+                metadata, sitemaps, internal linking,
+                crawlability and indexing diagnostics.
+                Search rankings depend on many factors,
+                so specific ranking positions are not
+                guaranteed. More information is
+                available on the{" "}
+                <Link href="/seo-and-indexing">
+                  SEO and indexing page
+                </Link>.
+              </div>
+            </details>
+
+            <details className="mws-faq-item">
+              <summary>
+                How does a new Matthew Web project start?
+              </summary>
+
+              <div className="mws-faq-answer">
+                The first step is identifying the
+                business problem and defining the
+                project scope. From there, the solution
+                may be a new website, redesign, custom
+                feature, software tool or another
+                technical improvement.{" "}
+                <Link href="/contact-us">
+                  Contact Matthew Web
+                </Link>{" "}
+                to start discussing a project.
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+
 
       <section
         className="mws-maine"

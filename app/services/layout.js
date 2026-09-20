@@ -1,23 +1,30 @@
 import BreadcrumbSchema from "@/components/BreadcrumbSchema";
 
 export const metadata = {
-  title: "Website & Software Services",
+  title: "Website Design, Custom Software & SEO Services",
 
   description:
-    "Explore Matthew Web website design, custom software, CRM dashboards, lead forms, integrations, SEO-ready development, indexing support, and small-business technology services.",
+    "Website design, custom software, CRM dashboards, forms, integrations, technical SEO and indexing support for small businesses in Maine and across the U.S.",
 
   alternates: {
     canonical: "https://matthew-web.com/services",
   },
 
   openGraph: {
-    title: "Website & Software Services | Matthew Web",
+    title:
+      "Website Design, Custom Software & SEO Services | Matthew Web",
+
     description:
-      "Website design, custom software, CRM dashboards, forms, integrations, SEO-ready development, and business technology from Matthew Web.",
+      "Explore Matthew Web website design, custom software, CRM dashboards, forms, integrations, technical SEO, indexing support, and small-business technology services.",
+
     url: "https://matthew-web.com/services",
+
     siteName: "Matthew Web",
+
     locale: "en_US",
+
     type: "website",
+
     images: [
       {
         url: "/apple-touch-icon.png",
