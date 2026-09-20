@@ -32,10 +32,10 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Small Business Websites in Maine & Across the U.S.",
+    "Small Business Website Design in Maine & Across the U.S.",
 
   description:
-    "Matthew Web builds modern small business websites for Maine businesses and companies across the United States, including new websites, redesigns, mobile-friendly layouts, lead forms, SEO-ready structure, domains, analytics, and custom functionality.",
+    "Matthew Web designs and builds small business websites in Maine and across the U.S., including new sites, redesigns, mobile-friendly layouts, lead forms, SEO-ready structure, analytics, and custom functionality.",
 
   alternates: {
     canonical:
@@ -3078,29 +3078,26 @@ export default function SmallBusinessWebsitesPage() {
 
             <h1>
               <span>
-                Your Business
+                Small Business
               </span>
 
               <span className="mwsb-blue">
-                Works Hard.
-              </span>
-
-              <span>
-                Your Website
+                Website Design
               </span>
 
               <span className="mwsb-orange">
-                Should Too.
+                in Maine &amp; Across the U.S.
               </span>
             </h1>
 
             <p>
-              Matthew Web builds practical,
-              professional websites for small
-              businesses that need a stronger
-              online presence, clearer customer
-              path, better mobile experience, and
-              room to grow.
+              Matthew Web designs and builds
+              professional small-business websites,
+              including new sites, redesigns,
+              mobile-friendly layouts, lead forms,
+              SEO-ready structure and custom
+              functionality for businesses in Maine
+              and across the United States.
             </p>
 
             <div className="mwsb-button-row">
@@ -3174,6 +3171,64 @@ export default function SmallBusinessWebsitesPage() {
           </div>
         </div>
       </section>
+      {/* ======================================================
+          DIRECT ANSWER / AEO
+      ====================================================== */}
+
+      <section
+        className="mwsb-section mwsb-situations"
+        id="what-should-a-small-business-website-include"
+      >
+        <div className="mwsb-container">
+          <div className="mwsb-heading center">
+            <div className="mwsb-kicker">
+              <Globe2 />
+              Quick Answer
+            </div>
+
+            <h2>
+              What Should a Small Business{" "}
+              <span className="mwsb-blue">
+                Website Include?
+              </span>
+            </h2>
+
+            <p>
+              <strong>
+                A good small-business website should
+                clearly explain what the business does,
+                who it serves, where it operates and
+                how a customer can take the next step.
+              </strong>{" "}
+              It should also work well on phones,
+              include accurate contact and service
+              information, provide clear calls to
+              action, use a search-friendly structure
+              and support useful features such as lead
+              forms, analytics or custom functionality
+              when the business needs them.
+            </p>
+
+            <div className="mwsb-button-row">
+              <Link
+                href="/website-design"
+                className="mwsb-btn mwsb-btn-dark"
+              >
+                Website Design
+              </Link>
+
+              <Link
+                href="/contact-us"
+                className="mwsb-btn mwsb-btn-blue"
+              >
+                Start a Website Project
+                <ArrowRight />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
 
       {/* ======================================================
           BUSINESS SITUATIONS
