@@ -35,10 +35,10 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Custom Software for Small Businesses",
+    "Custom Software Development for Small Businesses",
 
   description:
-    "Matthew Web builds custom software for small businesses, including dashboards, CRM-style tools, lead tracking, custom forms, business workflows, integrations, automation, and website-specific functionality.",
+    "Matthew Web builds custom software for small businesses in Maine and across the U.S., including CRM-style tools, dashboards, lead tracking, forms, workflows, integrations, and automation.",
 
   alternates: {
     canonical:
@@ -2406,25 +2406,24 @@ export default function CustomSoftwarePage() {
 
             <h1>
               <span>
-                When Off-the-Shelf
+                Custom Software
               </span>
 
               <span className="mwcs-blue">
-                Software Doesn&apos;t Fit,
+                Development for
               </span>
 
               <span className="mwcs-orange">
-                Build What Does.
+                Small Businesses
               </span>
             </h1>
 
             <p>
-              Matthew Web builds custom
-              dashboards, lead systems, forms,
-              workflows, integrations, and
-              website-connected software around
-              the way a business actually
-              operates.
+              Matthew Web builds CRM-style tools,
+              business dashboards, lead-tracking
+              systems, forms, workflows, integrations
+              and automation for small businesses in
+              Maine and across the United States.
             </p>
 
             <div className="mwcs-button-row">
@@ -2554,6 +2553,65 @@ export default function CustomSoftwarePage() {
           </div>
         </div>
       </section>
+      {/* ======================================================
+          DIRECT ANSWER / AEO
+      ====================================================== */}
+
+      <section
+        className="mwcs-section mwcs-types"
+        id="what-is-custom-software"
+      >
+        <div className="mwcs-container">
+          <div className="mwcs-heading center">
+            <div className="mwcs-kicker">
+              <Code2 />
+              Quick Answer
+            </div>
+
+            <h2>
+              What Is Custom Software{" "}
+              <span className="mwcs-blue">
+                for a Small Business?
+              </span>
+            </h2>
+
+            <p>
+              <strong>
+                Custom software is software built
+                around a specific business process
+                instead of forcing the business to
+                adapt to a generic tool.
+              </strong>{" "}
+              Matthew Web can build focused systems
+              such as CRM-style tools, dashboards,
+              lead tracking, custom forms, workflow
+              tools, integrations, automation and
+              website-connected business software.
+              Projects can be developed for small
+              businesses in Maine and elsewhere in
+              the United States.
+            </p>
+
+            <div className="mwcs-button-row">
+              <Link
+                href="/services"
+                className="mwcs-btn mwcs-btn-dark"
+              >
+                View All Services
+              </Link>
+
+              <Link
+                href="/contact-us"
+                className="mwcs-btn mwcs-btn-blue"
+              >
+                Discuss a Software Project
+                <ArrowRight />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
 
       {/* ======================================================
           WHAT WE BUILD
