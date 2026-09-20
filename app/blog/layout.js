@@ -1,4 +1,5 @@
 import BreadcrumbSchema from "@/components/BreadcrumbSchema";
+import MonetagInPagePush from "@/components/MonetagInPagePush";
 
 export default function BlogLayout({ children }) {
   return (
@@ -15,6 +16,8 @@ export default function BlogLayout({ children }) {
           },
         ]}
       />
+
+      <MonetagInPagePush />
 
       {children}
     </>

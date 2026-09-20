@@ -3,6 +3,7 @@ import Script from "next/script";
 import ImageLightbox from "@/components/ImageLightbox";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import MonetagRouteIsolation from "@/components/MonetagRouteIsolation";
 
 /* ============================================================
    MATTHEW WEB — GLOBAL METADATA FOUNDATION
@@ -293,6 +294,8 @@ export default function RootLayout({
         <ImageLightbox />
 
         <Analytics />
+
+        <MonetagRouteIsolation />
 
         <SpeedInsights />
       </body>

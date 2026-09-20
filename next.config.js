@@ -3,13 +3,17 @@
 /* ============================================================
    MATTHEW WEB — CONTENT SECURITY POLICY
 
-   PHASE 1: REPORT-ONLY
+   ENFORCED CSP
 
-   This policy does NOT block resources yet.
-   It lets us observe CSP violations safely before enforcement.
+   This policy actively blocks resources that are not explicitly
+   allowed below.
+
+   Third-party advertising domains are added narrowly as they are
+   observed and verified. Do not use broad wildcards unless they
+   become absolutely necessary.
 ============================================================ */
 
-const contentSecurityPolicyReportOnly = [
+const contentSecurityPolicy = [
   "default-src 'self'",
 
   /*
@@ -19,12 +23,18 @@ const contentSecurityPolicyReportOnly = [
     site contains inline JSON-LD and inline Google Analytics code.
 
     We can remove this later with a nonce/hash migration.
+
+    Monetag:
+    - nap5k.com serves the In-Page Push loader.
+    - tzegilo.com serves Monetag statistics/script resources.
   */
   [
     "script-src",
     "'self'",
     "'unsafe-inline'",
     "https://www.googletagmanager.com",
+    "https://nap5k.com",
+    "https://tzegilo.com",
     "https://www.google.com/recaptcha/",
     "https://www.gstatic.com/recaptcha/",
     "https://va.vercel-scripts.com",
@@ -45,8 +55,12 @@ const contentSecurityPolicyReportOnly = [
   /*
     IMAGES
 
-    Includes existing Matthew Web assets, inline data/blob images,
-    testimonial CloudFront images, and Google resources.
+    Includes:
+    - Matthew Web assets
+    - inline data/blob images
+    - testimonial CloudFront images
+    - Google resources
+    - Monetag advertising image/impression resources
   */
   [
     "img-src",
@@ -57,6 +71,12 @@ const contentSecurityPolicyReportOnly = [
     "https://www.google.com",
     "https://www.gstatic.com",
     "https://www.google-analytics.com",
+
+    /*
+      Monetag In-Page Push
+    */
+    "https://aichouphaugn.com",
+    "https://jhnwr.com",
   ].join(" "),
 
   /*
@@ -69,6 +89,13 @@ const contentSecurityPolicyReportOnly = [
     - Google Analytics
     - Google reCAPTCHA
     - Vercel Analytics / Speed Insights
+    - Monetag In-Page Push network requests
+
+    Monetag domains currently observed:
+    - my.rtmark.net
+    - jhnwr.com
+    - fleraprt.com
+    - aichouphaugn.com
   */
   [
     "connect-src",
@@ -83,10 +110,24 @@ const contentSecurityPolicyReportOnly = [
     "https://www.googletagmanager.com",
     "https://vitals.vercel-insights.com",
     "https://va.vercel-scripts.com",
+
+    /*
+      Monetag In-Page Push
+    */
+    "https://my.rtmark.net",
+    "https://jhnwr.com",
+    "https://fleraprt.com",
+    "https://aichouphaugn.com",
   ].join(" "),
 
   /*
-    RECAPTCHA FRAMES
+    FRAMES
+
+    Google reCAPTCHA is currently the only allowed third-party
+    frame source.
+
+    If Monetag later requires a frame domain, we will add only
+    the exact domain reported by the browser.
   */
   [
     "frame-src",
@@ -104,7 +145,7 @@ const contentSecurityPolicyReportOnly = [
   ].join(" "),
 
   /*
-    MEDIA / WORKERS
+    MEDIA
   */
   [
     "media-src",
@@ -113,6 +154,9 @@ const contentSecurityPolicyReportOnly = [
     "blob:",
   ].join(" "),
 
+  /*
+    WORKERS
+  */
   [
     "worker-src",
     "'self'",
@@ -149,19 +193,22 @@ const nextConfig = {
           {
             key:
               "X-DNS-Prefetch-Control",
-            value: "on",
+            value:
+              "on",
           },
 
           {
             key:
               "X-Content-Type-Options",
-            value: "nosniff",
+            value:
+              "nosniff",
           },
 
           {
             key:
               "X-Frame-Options",
-            value: "SAMEORIGIN",
+            value:
+              "SAMEORIGIN",
           },
 
           {
@@ -186,9 +233,7 @@ const nextConfig = {
           },
 
           /* ====================================================
-             CSP PHASE 1 — REPORT ONLY
-
-             Does NOT enforce/block yet.
+             ENFORCED CONTENT SECURITY POLICY
           ==================================================== */
 
           {
@@ -196,7 +241,7 @@ const nextConfig = {
               "Content-Security-Policy",
 
             value:
-              contentSecurityPolicyReportOnly,
+              contentSecurityPolicy,
           },
         ],
       },
