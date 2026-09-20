@@ -298,10 +298,10 @@ const faqs = [
 
   {
     q:
-      "Is a Facebook page enough for a small business?",
+      "Can social media support a small business website?",
 
     a:
-      "A Facebook page can be useful, but it serves a different role. The business does not control the Facebook platform itself. A website provides greater control over content, structure, customer pathways, integrations, and long-term business functionality.",
+      "Yes. Social media can help a small business distribute content, share updates, interact with customers, and send people to useful website pages. The website can remain the controlled hub for business information, services, search visibility, inquiries, and future functionality.",
   },
 
   {
