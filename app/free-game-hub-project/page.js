@@ -42,6 +42,11 @@ export const metadata = {
       "https://matthew-web.com/free-game-hub-project",
   },
 
+  robots: {
+    index: false,
+    follow: true,
+  },
+
   openGraph: {
     title:
       "Free Game Hub Project | Matthew Web",

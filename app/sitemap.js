@@ -48,7 +48,6 @@ const servicePages = [
 ============================================================ */
 
 const projectPages = [
-  "/free-game-hub-project",
   "/code-of-ethics",
 ];
 
