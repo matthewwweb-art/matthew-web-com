@@ -31,10 +31,10 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Why DIY Website Builders Can Become Limiting for Small Businesses",
+    "How to Know When Your Small Business Has Outgrown a DIY Website Builder",
 
   description:
-    "DIY website builders can be useful for simple sites, but growing businesses may eventually need more control, custom functionality, integrations, SEO structure, performance options, and software capabilities.",
+    "Learn the signs that a small business has outgrown a DIY website builder, what limitations to evaluate, and how to plan a careful migration when more control or functionality is needed.",
 
   alternates: {
     canonical:
@@ -43,10 +43,10 @@ export const metadata = {
 
   openGraph: {
     title:
-      "Why DIY Website Builders Can Become Limiting for Small Businesses | Matthew Web",
+      "How to Know When Your Small Business Has Outgrown a DIY Website Builder | Matthew Web",
 
     description:
-      "Learn when DIY website builders make sense, where limitations can appear, and when a growing small business may benefit from custom website or software development.",
+      "Learn how to recognize when a small business is outgrowing a DIY website builder, evaluate platform limitations, and prepare for a careful website migration.",
 
     url:
       "https://matthew-web.com/why-diy-site-builders-are-bad-for-small-businesses",
@@ -601,10 +601,10 @@ const articleSchema = {
     "Article",
 
   headline:
-    "Why DIY Website Builders Can Become Limiting for Small Businesses",
+    "How to Know When Your Small Business Has Outgrown a DIY Website Builder",
 
   description:
-    "A balanced guide to when DIY website builders make sense, where limitations can appear, and when custom website or software development may become appropriate.",
+    "A practical guide to recognizing when a small business has outgrown a DIY website builder, evaluating platform limitations, and planning a careful website migration.",
 
   mainEntityOfPage: {
     "@type":
@@ -681,7 +681,7 @@ const breadcrumbSchema = {
         3,
 
       name:
-        "Why DIY Website Builders Can Become Limiting for Small Businesses",
+        "How to Know When Your Small Business Has Outgrown a DIY Website Builder",
 
       item:
         "https://matthew-web.com/why-diy-site-builders-are-bad-for-small-businesses",
@@ -2406,24 +2406,25 @@ export default function DIYWebsiteBuildersArticlePage() {
             </div>
 
             <h1>
-              Why DIY Website Builders Can Become{" "}
+              How to Know When Your{" "}
               <span className="mwdiy-orange">
-                Limiting
+                Small Business
               </span>{" "}
-              for{" "}
+              Has Outgrown a{" "}
               <span className="mwdiy-blue">
-                Small Businesses
+                DIY Website Builder
               </span>
             </h1>
 
             <p className="mwdiy-description">
-              DIY website builders are not
-              automatically bad. They can be a
-              practical way to launch a simple
-              website. The problem begins when
-              the business grows beyond what the
-              original platform was intended to
-              support.
+              DIY website builders can work well
+              for simple websites. As a small
+              business grows, however, it may need
+              functionality, integrations, control
+              or workflows that the original
+              platform no longer handles well.
+              These are the signs to watch for and
+              the steps to consider before moving.
             </p>
 
             <div className="mwdiy-meta">
@@ -2528,7 +2529,7 @@ export default function DIYWebsiteBuildersArticlePage() {
             </a>
 
             <a href="#comparison">
-              DIY vs Custom
+              Growth & Platform Limits
             </a>
 
             <a href="#seo">
@@ -2754,9 +2755,9 @@ export default function DIYWebsiteBuildersArticlePage() {
               id="comparison"
             >
               <h2>
-                DIY Builder vs{" "}
+                Where DIY Website Builders Can{" "}
                 <span className="mwdiy-blue">
-                  Custom Development
+                  Become Limiting as a Business Grows
                 </span>
               </h2>
 
