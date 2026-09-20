@@ -29,7 +29,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Website & Technology Pricing | Matthew Web",
+    "Website & Technology Pricing",
 
   description:
     "Matthew Web pricing for small business websites, website maintenance, custom software, SEO and indexing, forms, integrations, deployment, analytics, and additional business technology.",

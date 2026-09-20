@@ -33,7 +33,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "How Booking Forms, Quote Forms & Automation Help Local Businesses | Matthew Web",
+    "How Booking Forms, Quote Forms & Automation Help Local Businesses",
 
   description:
     "Learn how booking forms, quote forms, contact forms, CRM integration, notifications, and workflow automation can help local businesses organize inquiries, follow up consistently, and create a clearer customer process.",

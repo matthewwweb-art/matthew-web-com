@@ -33,7 +33,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Website Design vs Custom Software: What Does Your Business Need? | Matthew Web",
+    "Website Design vs Custom Software: What Does Your Business Need?",
 
   description:
     "Learn the difference between website design and custom software, when a business needs one or the other, and when a website should connect to dashboards, databases, automation, CRM tools, or other software.",

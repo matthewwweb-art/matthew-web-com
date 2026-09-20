@@ -32,7 +32,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Free Game Hub Project | Matthew Web",
+    "Free Game Hub Project",
 
   description:
     "The Matthew Web Free Game Hub Project is a planned web-based gaming and interactive-content hub for free games, experiments, educational projects, and future playable technology.",

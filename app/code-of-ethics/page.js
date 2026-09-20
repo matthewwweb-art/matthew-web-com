@@ -26,7 +26,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Code of Ethics | Matthew Web",
+    "Code of Ethics",
 
   description:
     "Read the Matthew Web Code of Ethics covering honesty, accountability, transparency, responsible technology, customer communication, and practical business conduct.",

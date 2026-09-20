@@ -181,6 +181,11 @@ const nextConfig = {
         destination: "/contact-us",
         permanent: true,
       },
+      {
+        source: "/how-to-respond-to-online-reviews",
+        destination: "/how-to-respond-to-online-reviews-good-and-bad",
+        permanent: true,
+      },
     ];
   },
 

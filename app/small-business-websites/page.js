@@ -32,7 +32,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Small Business Websites in Maine & Across the U.S. | Matthew Web",
+    "Small Business Websites in Maine & Across the U.S.",
 
   description:
     "Matthew Web builds modern small business websites for Maine businesses and companies across the United States, including new websites, redesigns, mobile-friendly layouts, lead forms, SEO-ready structure, domains, analytics, and custom functionality.",

@@ -30,7 +30,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Website Traffic Stats Explained | Matthew Web",
+    "Website Traffic Stats Explained",
 
   description:
     "Learn what website traffic metrics actually mean, including users, sessions, page views, landing pages, traffic sources, engagement, bounce behavior, conversions, leads, and business outcomes.",

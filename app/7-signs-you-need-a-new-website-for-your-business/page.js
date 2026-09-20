@@ -29,7 +29,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "7 Signs You Need a New Website for Your Business | Matthew Web",
+    "7 Signs You Need a New Website for Your Business",
 
   description:
     "Learn seven practical signs that a business website may need a redesign, including mobile problems, slow performance, broken features, outdated information, weak conversion paths, search problems, and business growth.",

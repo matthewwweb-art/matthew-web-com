@@ -30,7 +30,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Website Design for Small Businesses | Matthew Web",
+    "Website Design for Small Businesses",
 
   description:
     "Matthew Web builds modern, mobile-friendly websites for small businesses in Maine and across the United States, including new websites, redesigns, lead forms, SEO-ready structure, domain setup, analytics, and custom functionality.",

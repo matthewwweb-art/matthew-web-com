@@ -30,7 +30,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Why Custom-Coded Websites Beat DIY Website Builders | Matthew Web",
+    "Why Custom-Coded Websites Beat DIY Website Builders",
 
   description:
     "Compare custom-coded websites with DIY website builders such as Wix, GoDaddy, Squarespace, and similar platforms. Learn where custom development provides more flexibility, business functionality, performance control, and room to grow.",

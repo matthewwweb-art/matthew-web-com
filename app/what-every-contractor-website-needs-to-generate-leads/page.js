@@ -36,7 +36,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "What Every Contractor Website Needs to Generate Leads | Matthew Web",
+    "What Every Contractor Website Needs to Generate Leads",
 
   description:
     "Learn what a contractor website needs to help turn visitors into real inquiries, including clear services, service areas, project photos, trust signals, mobile design, quote forms, calls to action, SEO structure, and contact information.",

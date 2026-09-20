@@ -29,7 +29,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Privacy Policy | Matthew Web",
+    "Privacy Policy",
 
   description:
     "Read the Matthew Web Privacy Policy to learn what information may be collected, how it is used, which website technologies and service providers are involved, and how to contact Matthew Web about privacy.",

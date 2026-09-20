@@ -31,7 +31,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "How Much Should a Small Business Website Cost in 2026? | Matthew Web",
+    "How Much Should a Small Business Website Cost in 2026?",
 
   description:
     "Learn what affects small-business website pricing in 2026, including page count, design, forms, SEO setup, integrations, maintenance, and custom software. Matthew Web website projects can start at $499 for qualifying scopes.",

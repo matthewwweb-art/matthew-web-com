@@ -30,7 +30,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "How to Respond to Online Reviews: Good and Bad | Matthew Web",
+    "How to Respond to Online Reviews: Good and Bad",
 
   description:
     "Learn how small businesses can respond professionally to positive reviews, negative reviews, misunderstandings, complaints, and suspicious reviews while protecting customer relationships and business credibility.",

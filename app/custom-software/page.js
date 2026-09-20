@@ -35,7 +35,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Custom Software for Small Businesses | Matthew Web",
+    "Custom Software for Small Businesses",
 
   description:
     "Matthew Web builds custom software for small businesses, including dashboards, CRM-style tools, lead tracking, custom forms, business workflows, integrations, automation, and website-specific functionality.",

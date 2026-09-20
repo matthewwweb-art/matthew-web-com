@@ -32,7 +32,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Examples & Technology Projects | Matthew Web",
+    "Examples & Technology Projects",
 
   description:
     "Explore Matthew Web website work, custom software, educational technology, games, CPU architecture, FPGA research, and active technology projects.",

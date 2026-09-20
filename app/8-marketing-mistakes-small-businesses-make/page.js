@@ -30,7 +30,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "8 Marketing Mistakes Small Businesses Make | Matthew Web",
+    "8 Marketing Mistakes Small Businesses Make",
 
   description:
     "Learn eight common small-business marketing mistakes, including unclear targeting, generic outreach, weak websites, inconsistent follow-up, poor tracking, disconnected content, premature paid advertising, and failing to test what actually works.",

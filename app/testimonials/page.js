@@ -28,7 +28,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Customer Feedback & Reviews | Matthew Web",
+    "Customer Feedback & Reviews",
 
   description:
     "Learn how Matthew Web approaches customer work, communication, project delivery, support, and verified customer feedback.",

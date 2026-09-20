@@ -28,7 +28,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "7 Reasons Why Small Business Websites Are Vital | Matthew Web",
+    "7 Reasons Why Small Business Websites Are Vital",
 
   description:
     "Learn seven practical reasons a small business website matters, including credibility, search visibility, lead generation, customer information, marketing support, business control, and future growth.",

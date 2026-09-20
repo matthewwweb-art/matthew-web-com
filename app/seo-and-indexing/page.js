@@ -35,7 +35,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "SEO & Search Engine Indexing Help | Matthew Web",
+    "SEO & Search Engine Indexing Help",
 
   description:
     "Matthew Web helps small businesses with SEO-ready website structure, Google Search Console, Bing Webmaster Tools, sitemaps, robots.txt, metadata, internal linking, indexing diagnostics, and search visibility.",

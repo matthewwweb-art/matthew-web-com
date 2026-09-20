@@ -29,7 +29,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Raw Code vs WordPress vs Wix vs GoDaddy: Which Website Platform Is Best? | Matthew Web",
+    "Raw Code vs WordPress vs Wix vs GoDaddy: Which Website Platform Is Best?",
 
   description:
     "Compare raw custom code, WordPress, Wix, and GoDaddy Website Builder for small-business websites. Learn how they differ in flexibility, ease of use, performance control, SEO, functionality, maintenance, and growth.",

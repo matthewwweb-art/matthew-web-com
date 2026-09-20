@@ -29,7 +29,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Terms of Use | Matthew Web",
+    "Terms of Use",
 
   description:
     "Read the Matthew Web Terms of Use covering public website use, service information, pricing, project inquiries, intellectual property, third-party services, acceptable use, and general limitations.",

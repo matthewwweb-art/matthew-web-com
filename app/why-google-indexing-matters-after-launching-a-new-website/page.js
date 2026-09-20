@@ -33,7 +33,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Why Google Indexing Matters After Launching a New Website | Matthew Web",
+    "Why Google Indexing Matters After Launching a New Website",
 
   description:
     "Learn the difference between launching, crawling, indexing, and ranking a website. See how sitemaps, Google Search Console, internal links, canonicals, robots rules, and useful content support website discovery.",

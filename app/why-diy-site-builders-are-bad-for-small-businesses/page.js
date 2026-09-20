@@ -31,7 +31,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Why DIY Website Builders Can Become Limiting for Small Businesses | Matthew Web",
+    "Why DIY Website Builders Can Become Limiting for Small Businesses",
 
   description:
     "DIY website builders can be useful for simple sites, but growing businesses may eventually need more control, custom functionality, integrations, SEO structure, performance options, and software capabilities.",

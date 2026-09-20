@@ -33,7 +33,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "How Matthew Web Builds SEO-Ready Small Business Websites | Matthew Web",
+    "How Matthew Web Builds SEO-Ready Small Business Websites",
 
   description:
     "Learn how Matthew Web builds SEO-ready small business websites using clear site architecture, useful content, metadata, internal links, mobile design, performance, sitemaps, indexing preparation, structured data, and measurement.",

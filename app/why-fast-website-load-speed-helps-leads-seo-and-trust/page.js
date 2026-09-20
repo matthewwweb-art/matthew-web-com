@@ -29,7 +29,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Why Fast Website Load Speed Helps Leads, SEO, and Trust | Matthew Web",
+    "Why Fast Website Load Speed Helps Leads, SEO, and Trust",
 
   description:
     "Learn why website performance matters for small businesses, including mobile usability, customer experience, lead conversion paths, search quality, Core Web Vitals, images, scripts, hosting, and technical trust.",

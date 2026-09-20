@@ -34,7 +34,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "How CRM Dashboards Help Small Businesses Stop Losing Leads | Matthew Web",
+    "How CRM Dashboards Help Small Businesses Stop Losing Leads",
 
   description:
     "Learn how CRM dashboards can help small businesses organize leads, track follow-ups, manage sales stages, record communication, identify overdue opportunities, and connect website inquiries to a clearer sales process.",

@@ -28,7 +28,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "How Often Should You Redesign Your Website? | Matthew Web",
+    "How Often Should You Redesign Your Website?",
 
   description:
     "Learn when a business website should be redesigned based on mobile usability, performance, content accuracy, search structure, functionality, branding, customer needs, and business growth—not an arbitrary calendar.",

@@ -30,7 +30,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "8 Things Every Small Business Website Needs | Matthew Web",
+    "8 Things Every Small Business Website Needs",
 
   description:
     "Learn eight things a strong small-business website needs, including a clear business message, service information, contact paths, mobile usability, trust signals, local information, performance, and search-ready structure.",

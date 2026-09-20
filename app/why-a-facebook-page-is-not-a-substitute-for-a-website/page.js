@@ -31,7 +31,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Why a Facebook Page Is Not a Substitute for a Website | Matthew Web",
+    "Why a Facebook Page Is Not a Substitute for a Website",
 
   description:
     "Learn why a Facebook business page can be useful for social reach and customer interaction but should not automatically replace a business website you control.",

@@ -31,7 +31,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Why Reputation Management & Online Reviews Matter | Matthew Web",
+    "Why Reputation Management & Online Reviews Matter",
 
   description:
     "Learn why online reputation matters for small businesses, including customer reviews, accurate business information, public responses, trust, feedback patterns, websites, local visibility, and customer experience.",
