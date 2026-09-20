@@ -30,7 +30,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title:
-    "Why Custom-Coded Websites Beat DIY Website Builders",
+    "Custom-Coded Websites vs DIY Website Builders",
 
   description:
     "Compare custom-coded websites with DIY website builders such as Wix, GoDaddy, Squarespace, and similar platforms. Learn where custom development provides more flexibility, business functionality, performance control, and room to grow.",
@@ -42,7 +42,7 @@ export const metadata = {
 
   openGraph: {
     title:
-      "Why Custom-Coded Websites Beat DIY Website Builders | Matthew Web",
+      "Custom-Coded Websites vs DIY Website Builders | Matthew Web",
 
     description:
       "DIY website builders can work for simple sites, but custom-coded development gives businesses greater control over design, functionality, integrations, performance, and future growth.",
@@ -261,7 +261,7 @@ const articleSchema = {
     "Article",
 
   headline:
-    "Why Custom-Coded Websites Beat DIY Website Builders",
+    "Custom-Coded Websites vs DIY Website Builders",
 
   description:
     "A practical comparison of custom-coded websites and DIY website-building platforms for small businesses.",
@@ -341,7 +341,7 @@ const breadcrumbSchema = {
         3,
 
       name:
-        "Why Custom-Coded Websites Beat DIY Website Builders",
+        "Custom-Coded Websites vs DIY Website Builders",
 
       item:
         "https://matthew-web.com/why-custom-coded-websites-beat-diy-website-builders",
@@ -2619,11 +2619,10 @@ export default function CustomCodeVsDIYPage() {
             </div>
 
             <h1>
-              Why{" "}
               <span className="mwa-blue">
                 Custom-Coded
               </span>{" "}
-              Websites Beat{" "}
+              Websites vs{" "}
               <span className="mwa-orange">
                 DIY Builders
               </span>
