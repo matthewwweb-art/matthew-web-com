@@ -281,11 +281,11 @@ const relatedArticles = [
   },
   {
     title:
-      "Why Custom-Coded Websites Beat DIY Website Builders",
+      "Raw Code vs WordPress vs Wix vs GoDaddy",
     href:
-      "/why-custom-coded-websites-beat-diy-website-builders",
+      "/raw-code-vs-wordpress-vs-wix-vs-godaddy",
     text:
-      "Learn why greater technical control can become useful as a website grows.",
+      "Compare common website platforms and the technical control available with different development approaches.",
   },
 ];
 

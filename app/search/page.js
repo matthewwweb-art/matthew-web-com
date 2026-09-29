@@ -354,25 +354,6 @@ const searchLinks = [
       "blog articles guides website business software seo games education cpu fpga research development",
   },
 
-  {
-    title:
-      "Why Custom-Coded Websites Beat DIY Website Builders",
-
-    href:
-      "/why-custom-coded-websites-beat-diy-website-builders",
-
-    category:
-      "ARTICLE",
-
-    icon:
-      BookOpen,
-
-    description:
-      "Compare custom-coded website development with DIY website builders for control, customization, lead capture, software functionality, and growth.",
-
-    keywords:
-      "custom coded websites diy website builders wix godaddy control ownership flexibility small business",
-  },
 
   {
     title:

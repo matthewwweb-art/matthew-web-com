@@ -455,13 +455,13 @@ const faqs = [
 const relatedArticles = [
   {
     title:
-      "Why Custom-Coded Websites Beat DIY Website Builders",
+      "When Has a Small Business Outgrown a DIY Website Builder?",
 
     href:
-      "/why-custom-coded-websites-beat-diy-website-builders",
+      "/why-diy-site-builders-are-bad-for-small-businesses",
 
     text:
-      "Explore why custom development becomes valuable when a business outgrows ordinary page-building tools.",
+      "Learn the signs that a growing business may be reaching the limits of its current DIY website platform.",
   },
 
   {

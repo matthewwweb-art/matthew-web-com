@@ -246,16 +246,6 @@ const pricingQuestions = [
 ============================================================ */
 
 const relatedArticles = [
-  {
-    title:
-      "Why Custom-Coded Websites Beat DIY Website Builders",
-
-    href:
-      "/why-custom-coded-websites-beat-diy-website-builders",
-
-    text:
-      "Compare custom development with visual DIY website-building platforms.",
-  },
 
   {
     title:

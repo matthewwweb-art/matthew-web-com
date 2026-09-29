@@ -555,16 +555,6 @@ const faqs = [
 ============================================================ */
 
 const relatedArticles = [
-  {
-    title:
-      "Why Custom-Coded Websites Beat DIY Website Builders",
-
-    href:
-      "/why-custom-coded-websites-beat-diy-website-builders",
-
-    text:
-      "Explore where custom development can provide additional control while still recognizing situations where DIY tools are sufficient.",
-  },
 
   {
     title:

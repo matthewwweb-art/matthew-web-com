@@ -186,6 +186,16 @@ const nextConfig = {
         destination: "/how-to-respond-to-online-reviews-good-and-bad",
         permanent: true,
       },
+      {
+        source: "/why-custom-coded-websites-beat-diy-website-builders",
+        destination: "/raw-code-vs-wordpress-vs-wix-vs-godaddy",
+        permanent: true,
+      },
+      {
+        source: "/why-reputation-management-and-online-reviews-are-important-in-business",
+        destination: "/how-to-respond-to-online-reviews-good-and-bad",
+        permanent: true,
+      },
     ];
   },
 

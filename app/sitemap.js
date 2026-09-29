@@ -61,11 +61,10 @@ const legalPages = [
 ];
 
 /* ============================================================
-   BLOG ARTICLES — 20 TOTAL
+   BLOG ARTICLES — 18 TOTAL
 ============================================================ */
 
 const blogArticles = [
-  "/why-custom-coded-websites-beat-diy-website-builders",
 
   "/how-much-should-a-small-business-website-cost-in-2026",
 
@@ -103,7 +102,6 @@ const blogArticles = [
 
   "/why-diy-site-builders-are-bad-for-small-businesses",
 
-  "/why-reputation-management-and-online-reviews-are-important-in-business",
 ];
 
 /* ============================================================
@@ -123,7 +121,7 @@ const LAST_MODIFIED = {
   "/about-us": "2026-09-10",
   "/services": "2026-09-20",
   "/examples": "2026-09-20",
-  "/blog": "2026-09-10",
+  "/blog": "2026-09-29",
   "/testimonials": "2026-09-20",
   "/pricing": "2026-09-20",
   "/contact-us": "2026-09-10",
@@ -134,13 +132,12 @@ const LAST_MODIFIED = {
   "/code-of-ethics": "2026-09-20",
   "/privacy-policy": "2026-09-20",
   "/terms": "2026-09-20",
-  "/why-custom-coded-websites-beat-diy-website-builders": "2026-09-20",
-  "/how-much-should-a-small-business-website-cost-in-2026": "2026-09-20",
+  "/how-much-should-a-small-business-website-cost-in-2026": "2026-09-29",
   "/what-every-contractor-website-needs-to-generate-leads": "2026-09-20",
-  "/website-design-vs-custom-software-what-does-your-business-need": "2026-09-20",
+  "/website-design-vs-custom-software-what-does-your-business-need": "2026-09-29",
   "/how-crm-dashboards-help-small-businesses-stop-losing-leads": "2026-09-20",
-  "/why-google-indexing-matters-after-launching-a-new-website": "2026-09-20",
-  "/raw-code-vs-wordpress-vs-wix-vs-godaddy": "2026-09-20",
+  "/why-google-indexing-matters-after-launching-a-new-website": "2026-09-29",
+  "/raw-code-vs-wordpress-vs-wix-vs-godaddy": "2026-09-29",
   "/how-matthew-web-builds-seo-ready-small-business-websites": "2026-09-20",
   "/why-fast-website-load-speed-helps-leads-seo-and-trust": "2026-09-20",
   "/how-booking-forms-quote-forms-and-automation-help-local-businesses": "2026-09-20",
@@ -149,11 +146,10 @@ const LAST_MODIFIED = {
   "/8-marketing-mistakes-small-businesses-make": "2026-09-20",
   "/8-things-every-small-business-website-needs": "2026-09-20",
   "/how-often-should-you-redesign-your-website": "2026-09-20",
-  "/how-to-respond-to-online-reviews-good-and-bad": "2026-09-20",
+  "/how-to-respond-to-online-reviews-good-and-bad": "2026-09-29",
   "/website-traffic-stats-explained": "2026-09-20",
   "/why-a-facebook-page-is-not-a-substitute-for-a-website": "2026-09-20",
-  "/why-diy-site-builders-are-bad-for-small-businesses": "2026-09-20",
-  "/why-reputation-management-and-online-reviews-are-important-in-business": "2026-09-20",
+  "/why-diy-site-builders-are-bad-for-small-businesses": "2026-09-29",
 };
 /* ============================================================
    GENERATE SITEMAP

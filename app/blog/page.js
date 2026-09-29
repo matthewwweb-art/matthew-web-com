@@ -147,39 +147,14 @@ const pillars = [
 ];
 
 /* ============================================================
-   ALL 20 ARTICLES
+   ALL 18 ARTICLES
 ============================================================ */
 
 const articles = [
+
   {
     number:
       "01",
-
-    icon:
-      Code2,
-
-    category:
-      "Website & Business Education",
-
-    title:
-      "Why Custom-Coded Websites Beat DIY Website Builders",
-
-    description:
-      "Learn where custom development provides real advantages, where DIY platforms can make sense, and why the best choice depends on the actual business problem.",
-
-    href:
-      "/why-custom-coded-websites-beat-diy-website-builders",
-
-    tags: [
-      "Custom Code",
-      "Website Design",
-      "DIY",
-    ],
-  },
-
-  {
-    number:
-      "02",
 
     icon:
       DollarSign,
@@ -205,7 +180,7 @@ const articles = [
 
   {
     number:
-      "03",
+      "02",
 
     icon:
       HardHat,
@@ -231,7 +206,7 @@ const articles = [
 
   {
     number:
-      "04",
+      "03",
 
     icon:
       LayoutTemplate,
@@ -257,7 +232,7 @@ const articles = [
 
   {
     number:
-      "05",
+      "04",
 
     icon:
       Database,
@@ -283,7 +258,7 @@ const articles = [
 
   {
     number:
-      "06",
+      "05",
 
     icon:
       SearchCheck,
@@ -309,7 +284,7 @@ const articles = [
 
   {
     number:
-      "07",
+      "06",
 
     icon:
       Code2,
@@ -335,7 +310,7 @@ const articles = [
 
   {
     number:
-      "08",
+      "07",
 
     icon:
       SearchCheck,
@@ -361,7 +336,7 @@ const articles = [
 
   {
     number:
-      "09",
+      "08",
 
     icon:
       Gauge,
@@ -387,7 +362,7 @@ const articles = [
 
   {
     number:
-      "10",
+      "09",
 
     icon:
       Workflow,
@@ -413,7 +388,7 @@ const articles = [
 
   {
     number:
-      "11",
+      "10",
 
     icon:
       Building2,
@@ -439,7 +414,7 @@ const articles = [
 
   {
     number:
-      "12",
+      "11",
 
     icon:
       RefreshCw,
@@ -465,7 +440,7 @@ const articles = [
 
   {
     number:
-      "13",
+      "12",
 
     icon:
       MessageSquare,
@@ -491,7 +466,7 @@ const articles = [
 
   {
     number:
-      "14",
+      "13",
 
     icon:
       LayoutTemplate,
@@ -517,7 +492,7 @@ const articles = [
 
   {
     number:
-      "15",
+      "14",
 
     icon:
       RefreshCw,
@@ -543,7 +518,7 @@ const articles = [
 
   {
     number:
-      "16",
+      "15",
 
     icon:
       MessageSquare,
@@ -569,7 +544,7 @@ const articles = [
 
   {
     number:
-      "17",
+      "16",
 
     icon:
       BarChart3,
@@ -595,7 +570,7 @@ const articles = [
 
   {
     number:
-      "18",
+      "17",
 
     icon:
       Share2,
@@ -621,7 +596,7 @@ const articles = [
 
   {
     number:
-      "19",
+      "18",
 
     icon:
       Boxes,
@@ -645,31 +620,6 @@ const articles = [
     ],
   },
 
-  {
-    number:
-      "20",
-
-    icon:
-      Star,
-
-    category:
-      "Website & Business Education",
-
-    title:
-      "Why Reputation Management & Online Reviews Matter in Business",
-
-    description:
-      "Learn how real customer experiences, reviews, public responses, accurate information, websites, search visibility, and feedback patterns shape business reputation.",
-
-    href:
-      "/why-reputation-management-and-online-reviews-are-important-in-business",
-
-    tags: [
-      "Reputation",
-      "Reviews",
-      "Customer Trust",
-    ],
-  },
 ];
 
 /* ============================================================
@@ -2861,7 +2811,7 @@ export default function BlogPage() {
 
             <p>
               The featured guide appears above.
-              The remaining nineteen articles
+              The remaining seventeen articles
               continue the connected website,
               software, business, analytics,
               SEO, marketing, and customer-system
