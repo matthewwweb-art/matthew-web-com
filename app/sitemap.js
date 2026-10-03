@@ -117,7 +117,7 @@ const publicRoutes = [
 ];
 
 const LAST_MODIFIED = {
-  "/": "2026-09-10",
+  "/": "2026-10-03",
   "/about-us": "2026-09-10",
   "/services": "2026-09-20",
   "/examples": "2026-09-20",

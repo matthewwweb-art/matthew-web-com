@@ -4154,35 +4154,35 @@ export default function HomePage() {
 
             <h1>
               <span className="line">
-                Building
+                Professional Websites.
               </span>
 
               <span className="line blue">
-                Practical Technology
+                Clear for Customers.
               </span>
 
               <span className="line">
-                for Today.
+                Easy to Contact.
               </span>
 
               <span className="line orange">
-                Researching Tomorrow.
+                Built to Grow.
               </span>
             </h1>
 
             <p>
-              Matthew Web builds websites,
-              custom software, games and
-              educational technology while
-              developing a growing research
-              program in CPUs, FPGA hardware
-              and future computer systems.
+              Matthew Web builds websites and
+              custom business tools that help
+              customers understand your services,
+              trust your business, and take the
+              next step—while giving you a stronger
+              online presence you control.
             </p>
 
             <div className="mwh-hero-mini">
               <span>
                 <CheckCircle2 />
-                Small-business solutions
+                Professional business websites
               </span>
 
               <span>
@@ -4205,12 +4205,12 @@ export default function HomePage() {
                 <ArrowRight />
               </Link>
 
-              <a
-                href="#what-we-build"
+              <Link
+                href="/pricing"
                 className="mwh-btn mwh-btn-dark"
               >
-                Explore What We Build
-              </a>
+                View Pricing
+              </Link>
             </div>
           </div>
 
