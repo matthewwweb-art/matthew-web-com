@@ -44,7 +44,7 @@ export const metadata = {
       "Website & Technology Pricing | Matthew Web",
 
     description:
-      "Straightforward starting prices for website development and maintenance, with custom quotes for software, integrations, SEO, and additional functionality.",
+      "Clear pricing for Matthew Web's $499 standard website, $49/month website care, and custom-quoted software, integrations, SEO, and additional functionality.",
 
     url:
       "https://matthew-web.com/pricing",
@@ -79,24 +79,24 @@ const pricingCards = [
       "$499",
 
     priceNote:
-      "starting point",
+      "one-time build",
 
     billing:
       "One-time project",
 
     description:
-      "A practical starting package for small businesses that need a professional, mobile-friendly website with a clear customer path and modern technical foundation.",
+      "A professional standard website package for small businesses that need a clear, modern, mobile-friendly online presence.",
 
     includes: [
-      "Standard small-business website scope",
-      "Up to 5 core pages for qualifying projects",
-      "Responsive desktop, tablet & mobile design",
-      "Business-focused page structure",
-      "Contact and lead-capture options",
-      "Domain connection assistance",
-      "Basic metadata & search-ready structure",
-      "Sitemap and indexing preparation",
-      "Launch and deployment assistance",
+      "Professional custom website design",
+      "Up to 5 agreed pages",
+      "Mobile-responsive desktop, tablet & phone layout",
+      "Properly licensed imagery where appropriate",
+      "Scoped and client-approved website content",
+      "Social-profile links",
+      "Basic SEO setup",
+      "Cross-browser testing",
+      "Domain connection",
     ],
 
     note:
@@ -114,10 +114,10 @@ const pricingCards = [
       LifeBuoy,
 
     label:
-      "ONGOING SERVICE",
+      "WEBSITE CARE",
 
     title:
-      "Maintenance & Support",
+      "Website Care",
 
     price:
       "$49",
@@ -126,25 +126,25 @@ const pricingCards = [
       "/ month",
 
     billing:
-      "Starting monthly service",
+      "Monthly website care",
 
     description:
-      "Ongoing website help for businesses that want updates, maintenance, technical support, monitoring, deployment assistance, and continued help after launch.",
+      "Ongoing website care covering hosting, maintenance, support, compatibility, analytics where implemented, and covered minor edits after launch.",
 
     includes: [
-      "Routine website updates",
-      "Content changes",
+      "Website hosting",
+      "HTTPS/SSL",
       "Technical maintenance",
-      "Responsive-layout checks",
-      "Deployment oversight",
-      "Domain and SSL checks",
-      "Basic website monitoring",
+      "Desktop, tablet & mobile compatibility",
+      "Browser compatibility",
+      "Analytics where implemented",
+      "Up to 30 covered minor edits per monthly cycle",
       "Direct Matthew Web support",
-      "Room for additional services",
+      "One covered edit = one discrete change to an existing agreed page",
     ],
 
     note:
-      "The exact monthly scope depends on the website and service arrangement. Large additions or new functionality may be quoted separately.",
+      "New pages, redesigns, major rewrites, custom integrations, software, and major new functionality are outside covered minor edits and are priced separately.",
 
     accent:
       "orange",
@@ -230,6 +230,34 @@ const additionalServices = [
 
   {
     icon:
+      Sparkles,
+
+    title:
+      "Basic Logo",
+
+    price:
+      "$399",
+
+    text:
+      "Basic logo design for businesses that need a simple visual identity for their website and business presence.",
+  },
+
+  {
+    icon:
+      SearchCheck,
+
+    title:
+      "Standalone Indexing Assistance",
+
+    price:
+      "$15",
+
+    text:
+      "Standalone indexing assistance for a specific indexing task. Broader SEO, technical search work, and ongoing optimization are priced separately.",
+  },
+
+  {
+    icon:
       FileText,
 
     title:
@@ -261,13 +289,13 @@ const additionalServices = [
       Layers3,
 
     title:
-      "Additional Pages",
+      "Additional Standard Pages",
 
     price:
-      "Quoted before work",
+      "$100 each",
 
     text:
-      "New service pages, landing pages, FAQs, examples, content sections, business information, and other website expansion.",
+      "Extra standard pages beyond the agreed package are $100 each. Larger, unusually complex, or custom page work may be priced separately.",
   },
 
   {
@@ -295,10 +323,10 @@ const pricingPrinciples = [
       BadgeDollarSign,
 
     title:
-      "Clear Starting Price",
+      "Clear Standard Price",
 
     text:
-      "Standard website work can begin from a defined starting point instead of forcing every customer into a high-cost agency package.",
+      "The $499 standard website package gives small businesses a defined price and scope, while work outside that scope is priced separately.",
   },
 
   {
@@ -414,26 +442,26 @@ const paymentSteps = [
 const faqs = [
   {
     q:
-      "Is every website exactly $499?",
+      "What does the $499 standard website include?",
 
     a:
-      "$499 is Matthew Web's standard starting point for a qualifying small-business website scope. Larger websites, advanced functionality, complex integrations, extensive content work, or unusual project requirements may cost more. The scope should be established before work begins.",
+      "The $499 standard website includes up to five agreed pages, professional custom design, mobile-responsive layout, properly licensed imagery where appropriate, scoped and client-approved content, social-profile links, basic SEO setup, cross-browser testing, and domain connection. Domain registration and renewal are separate.",
   },
 
   {
     q:
-      "What is included in the $499 website starting package?",
+      "What work is outside the $499 standard website package?",
 
     a:
-      "A qualifying standard project can include up to five core pages, responsive design, business-focused structure, contact or lead-capture options, domain connection assistance, search-ready metadata and structure, sitemap preparation, and launch assistance.",
+      "Extra standard pages are $100 each. New pages beyond the agreed scope, redesigns, major rewrites, custom software or features, unusual integrations, major new functionality, premium assets, and advanced or custom animations are priced separately or quoted according to scope.",
   },
 
   {
     q:
-      "Is the $49 monthly service required?",
+      "What does the $49 monthly website care include?",
 
     a:
-      "Monthly maintenance and support is an available ongoing service rather than something that should be assumed for every project. The exact ongoing arrangement depends on the website, customer needs, and agreed service terms.",
+      "The $49 monthly website care includes hosting, HTTPS/SSL, maintenance, support, desktop/tablet/mobile and browser compatibility, analytics where implemented, and up to 30 covered minor edits per monthly cycle.",
   },
 
   {
@@ -2803,7 +2831,7 @@ export default function PricingPage() {
               </span>
 
               <span className="mwp-blue">
-                Starting Prices.
+                Clear Pricing.
               </span>
 
               <span>
@@ -2817,10 +2845,10 @@ export default function PricingPage() {
 
             <p>
               Start with what your business
-              actually needs. Standard website
-              projects have a clear starting
-              point, while larger websites,
-              software, integrations, and custom
+              actually needs. The standard website
+              package has a defined $499 price,
+              while larger websites, software,
+              integrations, and custom
               functionality are priced according
               to scope.
             </p>
@@ -2850,7 +2878,7 @@ export default function PricingPage() {
             <div className="mwp-price-display">
               <div className="mwp-price-display-top">
                 <strong>
-                  WEBSITE STARTING POINT
+                  STANDARD WEBSITE
                 </strong>
 
                 <div className="mwp-live-dot">
@@ -2869,15 +2897,15 @@ export default function PricingPage() {
                 </div>
 
                 <div className="mwp-price-caption">
-                  Standard qualifying
-                  small-business website scope
+                  Up to five agreed
+                  pages
                 </div>
               </div>
 
               <div className="mwp-price-mini-grid">
                 <div className="mwp-price-mini">
                   <span>
-                    ONGOING SERVICE
+                    WEBSITE CARE
                   </span>
 
                   <strong>
@@ -2918,7 +2946,7 @@ export default function PricingPage() {
             <h2>
               Choose the{" "}
               <span className="mwp-blue">
-                Right Starting Point
+                Right Service
               </span>
             </h2>
 
@@ -3204,24 +3232,23 @@ export default function PricingPage() {
 
           <div className="mwp-note-copy">
             <h2>
-              Starting Price Does Not Mean{" "}
+              Standard Price Does Not Mean{" "}
               <span className="mwp-orange">
                 Every Project Is Identical.
               </span>
             </h2>
 
             <p>
-              The $499 website price is a useful
-              starting point for a standard
-              qualifying small-business website.
+              The $499 website price applies to the
+              defined standard website package.
               A project requiring substantial
-              custom development, many additional
+              custom development, additional
               pages, advanced integrations,
               specialized software, unusual
               content work, or other expanded
-              requirements may receive a
-              different quote before that work is
-              started.
+              requirements is priced separately
+              or receives a custom quote before
+              that work is started.
             </p>
           </div>
         </div>
@@ -3300,9 +3327,9 @@ export default function PricingPage() {
             Tell Matthew Web about your business,
             website, software need, or technical
             problem. We can determine whether the
-            standard website starting package
-            fits or whether the project needs a
-            custom scope.
+            standard website package fits or
+            whether the project needs a custom
+            scope.
           </p>
 
           <div className="mwp-button-row">

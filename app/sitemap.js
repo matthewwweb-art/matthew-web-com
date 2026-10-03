@@ -123,7 +123,7 @@ const LAST_MODIFIED = {
   "/examples": "2026-09-20",
   "/blog": "2026-09-29",
   "/testimonials": "2026-09-20",
-  "/pricing": "2026-09-20",
+  "/pricing": "2026-10-03",
   "/contact-us": "2026-09-10",
   "/website-design": "2026-09-20",
   "/custom-software": "2026-09-20",
