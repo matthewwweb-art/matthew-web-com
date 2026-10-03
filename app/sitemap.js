@@ -132,7 +132,7 @@ const LAST_MODIFIED = {
   "/code-of-ethics": "2026-09-20",
   "/privacy-policy": "2026-09-20",
   "/terms": "2026-09-20",
-  "/how-much-should-a-small-business-website-cost-in-2026": "2026-09-29",
+  "/how-much-should-a-small-business-website-cost-in-2026": "2026-10-02",
   "/what-every-contractor-website-needs-to-generate-leads": "2026-09-20",
   "/website-design-vs-custom-software-what-does-your-business-need": "2026-09-29",
   "/how-crm-dashboards-help-small-businesses-stop-losing-leads": "2026-09-20",

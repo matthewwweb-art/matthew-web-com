@@ -34,7 +34,7 @@ export const metadata = {
     "How Much Should a Small Business Website Cost in 2026?",
 
   description:
-    "Learn what affects small-business website pricing in 2026, including page count, design, forms, SEO setup, integrations, maintenance, and custom software. Matthew Web website projects can start at $499 for qualifying scopes.",
+    "Learn what affects small-business website pricing in 2026, what Matthew Web's $499 standard website includes, why website care is $49/month, and when custom quoting applies.",
 
   alternates: {
     canonical:
@@ -46,7 +46,7 @@ export const metadata = {
       "How Much Should a Small Business Website Cost in 2026? | Matthew Web",
 
     description:
-      "Website pricing depends on scope, pages, functionality, content, integrations, maintenance, and business requirements. Learn how to evaluate what you are actually paying for.",
+      "Learn how website scope affects cost, what Matthew Web includes in its $499 standard website and $49/month care, and when custom software or added work requires a quote.",
 
     url:
       "https://matthew-web.com/how-much-should-a-small-business-website-cost-in-2026",
@@ -144,7 +144,7 @@ const projectTypes = [
       "Best for a small business that needs a professional online presence, essential pages, clear contact information, responsive design, and a straightforward customer path.",
 
     pricing:
-      "Matthew Web qualifying website projects can start at $499.",
+      "Matthew Web's standard website package is $499 one-time for up to five agreed pages.",
 
     accent:
       "blue",
@@ -234,10 +234,10 @@ const pricingQuestions = [
 
   {
     q:
-      "Is the price a starting point or a final quote?",
+      "Is the price fixed or does the project need a custom quote?",
 
     a:
-      "A starting price is useful for understanding the entry point, but the final price should match the actual scope being requested.",
+      "Matthew Web's standard website package is $499 one-time for up to five agreed pages. Work outside that standard scope is priced separately or quoted according to the project requirements.",
   },
 ];
 
@@ -285,7 +285,7 @@ const articleSchema = {
     "How Much Should a Small Business Website Cost in 2026?",
 
   description:
-    "A practical guide to the factors that affect small-business website pricing in 2026.",
+    "A practical guide to small-business website pricing in 2026, including Matthew Web's standard website package, monthly care, and custom-quote work.",
 
   mainEntityOfPage: {
     "@type":
@@ -315,7 +315,7 @@ const articleSchema = {
   },
 
   dateModified:
-    "2026-09-09",
+    "2026-10-02",
 };
 
 const breadcrumbSchema = {
@@ -2715,7 +2715,7 @@ export default function SmallBusinessWebsiteCostPage() {
               </span>
 
               <span>
-                Updated September 9, 2026
+                Updated October 2, 2026
               </span>
             </div>
           </div>
@@ -2737,7 +2737,7 @@ export default function SmallBusinessWebsiteCostPage() {
 
               <div className="mwc-price-main">
                 <span>
-                  Qualifying Website Projects
+                  Standard Website
                 </span>
 
                 <strong>
@@ -2745,9 +2745,7 @@ export default function SmallBusinessWebsiteCostPage() {
                 </strong>
 
                 <p>
-                  Matthew Web starting point.
-                  Final pricing depends on the
-                  actual project scope.
+                  One-time build for up to five agreed pages. Work outside the standard scope is quoted separately.
                 </p>
               </div>
 
@@ -2758,7 +2756,7 @@ export default function SmallBusinessWebsiteCostPage() {
                   </span>
 
                   <strong>
-                    STARTING POINT
+                    UP TO 5 PAGES
                   </strong>
                 </div>
 
@@ -2768,7 +2766,7 @@ export default function SmallBusinessWebsiteCostPage() {
                   </span>
 
                   <strong>
-                    FROM $49/MO
+                    $49/MO
                   </strong>
                 </div>
 
@@ -2874,22 +2872,13 @@ export default function SmallBusinessWebsiteCostPage() {
                   The price should match the
                   actual scope of the project.
                 </strong>{" "}
-                A simple business website should
-                not be priced like a custom
-                software platform, while a site
-                with databases, automation,
-                customer systems, complex
-                integrations, or many pages
-                should not be treated like a
-                basic brochure website. Matthew
-                Web currently offers qualifying
-                website projects starting at
-                <strong>
-                  {" "}
-                  $499
-                </strong>
-                , with more complex work priced
-                according to the requirements.
+                Matthew Web&apos;s standard website
+                package is $499 one-time for up to
+                five agreed pages. Larger websites,
+                added pages, custom software,
+                advanced integrations, and other
+                work outside the standard scope are
+                priced separately.
               </p>
             </section>
 
@@ -3130,15 +3119,14 @@ export default function SmallBusinessWebsiteCostPage() {
               </p>
 
               <p>
-                Matthew Web currently offers
-                ongoing website maintenance and
-                support starting at
-                <strong>
-                  {" "}
-                  $49 per month
-                </strong>{" "}
-                for applicable service
-                arrangements.
+                Matthew Web&apos;s website care is
+                $49 per month. It includes hosting,
+                HTTPS/SSL, maintenance, support,
+                desktop/tablet/mobile and browser
+                compatibility, analytics where
+                implemented, and up to 30 covered
+                minor edits per monthly cycle. Domain
+                registration and renewal are separate.
               </p>
 
               <p>
@@ -3370,46 +3358,64 @@ export default function SmallBusinessWebsiteCostPage() {
               </h2>
 
               <p>
-                Matthew Web&apos;s current
-                approach is to keep a clear
-                starting point for standard
-                small-business website work while
-                using custom pricing when a
-                project becomes substantially
-                larger or more technical.
+                Matthew Web uses a clear fixed price
+                for the current standard website
+                package and custom quoting when a
+                project goes beyond that defined
+                scope.
               </p>
 
               <p>
                 <strong>
-                  Qualifying website projects
-                  can start at $499.
-                </strong>
-              </p>
-
-              <p>
-                <strong>
-                  Ongoing maintenance and support
-                  can start at $49 per month
+                  The standard website build is
+                  $499 one-time for up to five
+                  agreed pages.
                 </strong>{" "}
-                depending on the applicable
-                service arrangement.
+                It includes professional custom
+                design, mobile-responsive layout,
+                properly licensed imagery where
+                appropriate, scoped/client-approved
+                content, social-profile links, basic
+                SEO setup, cross-browser testing,
+                and domain connection. Domain
+                registration and renewal are
+                separate.
               </p>
 
               <p>
-                Custom software, advanced
-                integrations, specialized
-                systems, larger websites, and
-                other work outside the standard
-                scope should be quoted based on
-                the actual requirements.
+                <strong>
+                  Monthly website care is $49 per
+                  month.
+                </strong>{" "}
+                It includes hosting, HTTPS/SSL,
+                maintenance, support, device and
+                browser compatibility, analytics
+                where implemented, and up to 30
+                covered minor edits per monthly
+                cycle. One covered minor edit is
+                one discrete change to an existing
+                agreed page.
               </p>
 
               <p>
-                This makes the starting price
-                useful without pretending that
-                every possible website can or
-                should cost exactly the same
-                amount.
+                Extra standard pages are $100 each.
+                New pages beyond the agreed scope,
+                redesigns, major rewrites, custom
+                software or features, unusual
+                integrations, major new
+                functionality, premium assets, and
+                advanced/custom animations are
+                priced separately or quoted
+                according to scope.
+              </p>
+
+              <p>
+                This article explains why website
+                costs vary and what changes project
+                scope. The pricing page remains
+                Matthew Web&apos;s current price
+                sheet for published packages and
+                optional extras.
               </p>
 
               <div className="mwc-button-row">
