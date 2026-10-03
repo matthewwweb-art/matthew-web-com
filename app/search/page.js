@@ -589,10 +589,10 @@ const searchLinks = [
       Tag,
 
     description:
-      "Standard qualifying small-business website projects begin from a $499 starting point.",
+      "Matthew Web's standard website package is $499 one-time for up to five agreed pages. Work outside the standard scope is priced separately.",
 
     keywords:
-      "499 website design setup price starting point five pages small business",
+      "499 website design setup standard package five agreed pages small business",
   },
 
   {
@@ -609,7 +609,7 @@ const searchLinks = [
       LifeBuoy,
 
     description:
-      "Ongoing website maintenance and support is available starting at $49 per month depending on the service arrangement.",
+      "$49/month website care includes hosting, HTTPS/SSL, maintenance, support, compatibility, analytics where implemented, and up to 30 covered minor edits per monthly cycle.",
 
     keywords:
       "49 month monthly website maintenance support updates monitoring service",
