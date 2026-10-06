@@ -1,6 +1,6 @@
 import "./globals.css";
-import Script from "next/script";
 import ImageLightbox from "@/components/ImageLightbox";
+import CookieAnalyticsConsent from "@/components/CookieAnalyticsConsent";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import MonetagRouteIsolation from "@/components/MonetagRouteIsolation";
@@ -246,40 +246,6 @@ export default function RootLayout({
           }}
         />
 
-        {/* ====================================================
-            GOOGLE ANALYTICS
-        ==================================================== */}
-
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-4HBVKXBRL2"
-          strategy="afterInteractive"
-        />
-
-        <Script
-          id="google-analytics"
-          strategy="afterInteractive"
-        >
-          {`
-            window.dataLayer =
-              window.dataLayer || [];
-
-            function gtag() {
-              dataLayer.push(arguments);
-            }
-
-            window.gtag = gtag;
-
-            gtag(
-              "js",
-              new Date()
-            );
-
-            gtag(
-              "config",
-              "G-4HBVKXBRL2"
-            );
-          `}
-        </Script>
 
         {/* ====================================================
             WEBSITE CONTENT
@@ -293,6 +259,7 @@ export default function RootLayout({
 
         <ImageLightbox />
 
+        <CookieAnalyticsConsent />
         <Analytics />
 
         <MonetagRouteIsolation />

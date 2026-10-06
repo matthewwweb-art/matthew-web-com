@@ -130,7 +130,7 @@ const LAST_MODIFIED = {
   "/seo-and-indexing": "2026-09-20",
   "/small-business-websites": "2026-09-20",
   "/code-of-ethics": "2026-09-20",
-  "/privacy-policy": "2026-09-20",
+  "/privacy-policy": "2026-10-05",
   "/terms": "2026-09-20",
   "/how-much-should-a-small-business-website-cost-in-2026": "2026-10-05",
   "/what-every-contractor-website-needs-to-generate-leads": "2026-09-20",

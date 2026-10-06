@@ -2762,6 +2762,17 @@ export default function PrivacyPolicyPage() {
                   problems, and improve the
                   website over time.
                 </p>
+                <p>
+                  Google Analytics is optional on
+                  this website. It is not loaded
+                  until you select Accept Analytics
+                  in the Cookie &amp; Analytics
+                  Settings control. If you reject
+                  analytics, Google Analytics remains
+                  disabled. You can reopen Cookie
+                  Settings to change your choice.
+                </p>
+
               </section>
 
               {/* ==============================================
@@ -2818,6 +2829,17 @@ export default function PrivacyPolicyPage() {
                   security, fraud prevention,
                   preferences, and related
                   technical purposes.
+                </p>
+
+                <p>
+                  On your first visit, the website
+                  provides a Cookie &amp; Analytics
+                  Settings control for optional Google
+                  Analytics. Your analytics preference
+                  is stored in local storage so the
+                  website can remember your choice.
+                  You can reopen Cookie Settings at
+                  any time to change that choice.
                 </p>
 
                 <p>
