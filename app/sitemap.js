@@ -117,14 +117,14 @@ const publicRoutes = [
 ];
 
 const LAST_MODIFIED = {
-  "/": "2026-10-03",
+  "/": "2026-10-05",
   "/about-us": "2026-09-10",
   "/services": "2026-10-05",
   "/examples": "2026-09-20",
   "/blog": "2026-09-29",
   "/testimonials": "2026-09-20",
   "/pricing": "2026-10-05",
-  "/contact-us": "2026-09-10",
+  "/contact-us": "2026-10-05",
   "/website-design": "2026-09-20",
   "/custom-software": "2026-09-20",
   "/seo-and-indexing": "2026-09-20",

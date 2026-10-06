@@ -516,7 +516,7 @@ export default function HomePage() {
       }
 
       setStatus(
-        "Thank you! We received your message and will be in contact within 48 hours."
+        "Thank you! We received your message and will be in contact as soon as possible."
       );
 
       setStatusType("success");

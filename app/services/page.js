@@ -108,7 +108,7 @@ const coreServices = [
     title: "Electronics & Tech Repair",
     status: "LIMITED AVAILABILITY",
     text:
-      "Bench-based repair and technical work for selected electronics and computer hardware. Work is completed at Matthew Web's workspace; Maine pickup is available, while outside-Maine customers must arrange delivery or shipping.",
+      "Bench-based repair and technical work for selected electronics and computer hardware. Work is completed at Matthew Web's workspace. Pickup is available anywhere within Maine for a flat $100 pickup fee. Matthew Web does not provide pickup outside Maine; outside-Maine customers must arrange delivery or shipping.",
     href: "/contact-us",
     accent: "blue",
     items: [
@@ -116,7 +116,8 @@ const coreServices = [
       "Resoldering, simple switches, jacks & connectors",
       "Known-fault small PCB replacement",
       "Cleaning, inspection, minor computer hardware repair & custom wiring",
-      "Maine pickup: $100 pickup fee only",
+      "Pickup anywhere within Maine: $100 flat pickup fee only",
+      "No Matthew Web pickup outside Maine",
       "Repair labor quoted by job and scope",
       "Parts and return/delivery costs are separate",
     ],

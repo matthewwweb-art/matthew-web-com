@@ -144,7 +144,7 @@ const projectTypes = [
       "Best for a small business that needs a professional online presence, essential pages, clear contact information, responsive design, and a straightforward customer path.",
 
     pricing:
-      "Matthew Web's standard website package is $499 one-time for up to five agreed pages.",
+      "Matthew Web's standard website package is $499 one-time for up to five agreed pages, plus required $49/month Website Care.",
 
     accent:
       "blue",
@@ -2874,7 +2874,8 @@ export default function SmallBusinessWebsiteCostPage() {
                 </strong>{" "}
                 Matthew Web&apos;s standard website
                 package is $499 one-time for up to
-                five agreed pages. Larger websites,
+                five agreed pages, plus required
+                $49/month Website Care. Larger websites,
                 added pages, custom software,
                 advanced integrations, and other
                 work outside the standard scope are

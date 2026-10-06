@@ -589,7 +589,7 @@ const searchLinks = [
       Tag,
 
     description:
-      "Matthew Web's standard website package is $499 one-time for up to five agreed pages. Work outside the standard scope is priced separately.",
+      "Matthew Web's standard website package is $499 one-time for up to five agreed pages, plus required $49/month Website Care. Work outside the standard scope is priced separately.",
 
     keywords:
       "499 website design setup standard package five agreed pages small business",
@@ -597,7 +597,7 @@ const searchLinks = [
 
   {
     title:
-      "Maintenance & Support Pricing",
+      "Required Website Care Pricing",
 
     href:
       "/pricing#monthly-service",
@@ -609,7 +609,7 @@ const searchLinks = [
       LifeBuoy,
 
     description:
-      "$49/month website care includes hosting, HTTPS/SSL, maintenance, support, compatibility, analytics where implemented, and up to 30 covered minor edits per monthly cycle.",
+      "Required $49/month Website Care for the standard website includes hosting, HTTPS/SSL, maintenance, support, compatibility, analytics where implemented, and up to 30 covered minor edits per monthly cycle.",
 
     keywords:
       "49 month monthly website maintenance support updates monitoring service",

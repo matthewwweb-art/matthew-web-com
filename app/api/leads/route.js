@@ -628,7 +628,7 @@ export async function POST(request) {
 
         <p>
           We received your message and will be
-          in contact within 48 hours.
+          in contact as soon as possible.
         </p>
 
         <p>

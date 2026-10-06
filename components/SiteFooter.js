@@ -12,6 +12,7 @@ import {
   Globe2,
   GraduationCap,
   Heart,
+  Mail,
   MapPin,
   Phone,
   Search,
@@ -1450,6 +1451,24 @@ export default function SiteFooter() {
                     <div className="mwf-contact-value">
                       <a href="tel:2076317793">
                         (207) 631-7793
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mwf-contact-item">
+                  <div className="mwf-contact-icon">
+                    <Mail />
+                  </div>
+
+                  <div>
+                    <span className="mwf-contact-label">
+                      Email
+                    </span>
+
+                    <div className="mwf-contact-value">
+                      <a href="mailto:matthewwweb@gmail.com">
+                        matthewwweb@gmail.com
                       </a>
                     </div>
                   </div>

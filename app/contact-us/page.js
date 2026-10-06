@@ -12,6 +12,7 @@ import {
   FileText,
   Globe2,
   LifeBuoy,
+  Mail,
   MapPin,
   MessageSquare,
   MonitorSmartphone,
@@ -216,7 +217,7 @@ export default function ContactUsPage() {
       }
 
       setStatus(
-        "Thank you! We received your message and will be in contact within 48 hours."
+        "Thank you! We received your message and will be in contact as soon as possible."
       );
 
       setStatusType(
@@ -2668,6 +2669,20 @@ export default function ContactUsPage() {
               </div>
 
               <div className="mwc-contact-line">
+                <Mail />
+
+                <div>
+                  <strong>
+                    Email
+                  </strong>
+
+                  <a href="mailto:matthewwweb@gmail.com">
+                    matthewwweb@gmail.com
+                  </a>
+                </div>
+              </div>
+
+              <div className="mwc-contact-line">
                 <MapPin />
 
                 <div>
@@ -2989,7 +3004,7 @@ export default function ContactUsPage() {
               Use the online form whenever
               possible so the project information
               can be reviewed in one place, but
-              phone contact is also available.
+              phone and email contact are also available.
             </p>
           </div>
 
@@ -3003,6 +3018,18 @@ export default function ContactUsPage() {
 
               <a href="tel:2076317793">
                 (207) 631-7793
+              </a>
+            </div>
+
+            <div className="mwc-location-card">
+              <Mail />
+
+              <h3>
+                Email
+              </h3>
+
+              <a href="mailto:matthewwweb@gmail.com">
+                matthewwweb@gmail.com
               </a>
             </div>
 
