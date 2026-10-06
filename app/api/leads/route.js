@@ -119,7 +119,26 @@ async function verifyRecaptcha(token, recaptchaSecretKey) {
 
   const data = await response.json();
 
-  return Boolean(data?.success);
+  const hostname =
+    typeof data?.hostname === "string"
+      ? data.hostname.trim().toLowerCase()
+      : "";
+
+  const allowedHostnames =
+    new Set([
+      "matthew-web.com",
+      "www.matthew-web.com",
+    ]);
+
+  if (process.env.NODE_ENV !== "production") {
+    allowedHostnames.add("localhost");
+    allowedHostnames.add("127.0.0.1");
+  }
+
+  return Boolean(
+    data?.success &&
+      allowedHostnames.has(hostname)
+  );
 }
 
 /* ============================================================
@@ -515,14 +534,9 @@ export async function POST(request) {
       status: "new",
     };
 
-    const {
-      data: lead,
-      error: leadError,
-    } = await supabase
+    const { error: leadError } = await supabase
       .from("leads")
-      .insert([leadData])
-      .select()
-      .single();
+      .insert([leadData]);
 
     if (leadError) {
       console.error(
@@ -692,7 +706,6 @@ export async function POST(request) {
     return NextResponse.json(
       {
         ok: true,
-        lead,
         adminEmailSent,
         customerEmailSent,
         customerEmailWarning,
