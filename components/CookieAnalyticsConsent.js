@@ -109,8 +109,20 @@ export default function CookieAnalyticsConsent() {
               window.gtag = gtag;
 
               gtag(
-                "js",
-                new Date()
+                "consent",
+                "default",
+                {
+                  analytics_storage: "granted",
+                  ad_storage: "denied",
+                  ad_user_data: "denied",
+                  ad_personalization: "denied",
+                }
+              );
+
+              gtag(
+                "set",
+                "ads_data_redaction",
+                true
               );
 
               gtag(
@@ -123,6 +135,11 @@ export default function CookieAnalyticsConsent() {
                 "set",
                 "allow_ad_personalization_signals",
                 false
+              );
+
+              gtag(
+                "js",
+                new Date()
               );
 
               gtag(
