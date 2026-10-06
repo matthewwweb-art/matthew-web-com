@@ -103,6 +103,24 @@ const coreServices = [
       "Business information cleanup",
     ],
   },
+  {
+    icon: Wrench,
+    title: "Electronics & Tech Repair",
+    status: "LIMITED AVAILABILITY",
+    text:
+      "Bench-based repair and technical work for selected electronics and computer hardware. Work is completed at Matthew Web's workspace; Maine pickup is available, while outside-Maine customers must arrange delivery or shipping.",
+    href: "/contact-us",
+    accent: "blue",
+    items: [
+      "Wire, cable & connector repair",
+      "Resoldering, simple switches, jacks & connectors",
+      "Known-fault small PCB replacement",
+      "Cleaning, inspection, minor computer hardware repair & custom wiring",
+      "Maine pickup: $100 pickup fee only",
+      "Repair labor quoted by job and scope",
+      "Parts and return/delivery costs are separate",
+    ],
+  },
 ];
 
 /* ============================================================
@@ -2198,9 +2216,9 @@ export default function ServicesPage() {
               Matthew Web provides website design,
               small-business websites, custom software,
               CRM-style tools, forms, integrations,
-              technical SEO and indexing support for
-              businesses in Maine and across the
-              United States.
+              technical SEO and indexing support, plus
+              limited bench-based electronics and tech
+              repair for selected hardware.
             </p>
 
             <div className="mws-button-row">
@@ -2299,14 +2317,17 @@ export default function ServicesPage() {
               <strong>
                 Matthew Web provides website design,
                 custom software, technical SEO and
-                indexing support, and related business
-                technology services.
+                indexing support, plus limited
+                electronics and tech repair for
+                selected hardware.
               </strong>{" "}
               Current work includes small-business
               websites, redesigns, CRM-style tools,
               dashboards, forms, integrations,
-              analytics, deployment, maintenance and
-              custom website functionality for
+              analytics, deployment, maintenance,
+              custom website functionality, and
+              selected bench-based electronics repair.
+              Website and software projects can serve
               businesses in Maine and elsewhere in the
               United States.
             </p>
@@ -2753,12 +2774,13 @@ export default function ServicesPage() {
 
               <div className="mws-faq-answer">
                 Matthew Web provides website design,
-                small-business websites, custom
-                software, CRM-style tools, dashboards,
-                forms, integrations, technical SEO,
-                indexing support, analytics,
-                deployment, maintenance and related
-                website functionality.
+                small-business websites, custom software,
+                CRM-style tools, dashboards, forms,
+                integrations, technical SEO, indexing
+                support, analytics, deployment, maintenance,
+                related website functionality, and limited
+                bench-based electronics and tech repair for
+                selected hardware.
               </div>
             </details>
 

@@ -4,7 +4,7 @@ export const metadata = {
   title: "Website Design, Custom Software & SEO Services",
 
   description:
-    "Website design, custom software, CRM dashboards, forms, integrations, technical SEO and indexing support for small businesses in Maine and across the U.S.",
+    "Website design, custom software, CRM dashboards, forms, integrations, technical SEO and indexing support for businesses in Maine and across the U.S., plus limited bench-based electronics and tech repair.",
 
   alternates: {
     canonical: "https://matthew-web.com/services",
@@ -15,7 +15,7 @@ export const metadata = {
       "Website Design, Custom Software & SEO Services | Matthew Web",
 
     description:
-      "Explore Matthew Web website design, custom software, CRM dashboards, forms, integrations, technical SEO, indexing support, and small-business technology services.",
+      "Explore Matthew Web website design, custom software, CRM dashboards, forms, integrations, technical SEO, indexing support, and limited bench-based electronics and tech repair.",
 
     url: "https://matthew-web.com/services",
 

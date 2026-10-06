@@ -44,7 +44,7 @@ export const metadata = {
       "Website & Technology Pricing | Matthew Web",
 
     description:
-      "Clear pricing for Matthew Web's $499 standard website, $49/month website care, and custom-quoted software, integrations, SEO, and additional functionality.",
+      "Clear pricing for Matthew Web's $499 standard website with required $49/month website care, plus custom-quoted software, integrations, SEO, and additional functionality.",
 
     url:
       "https://matthew-web.com/pricing",
@@ -82,10 +82,10 @@ const pricingCards = [
       "one-time build",
 
     billing:
-      "One-time project",
+      "One-time build + required $49/month care",
 
     description:
-      "A professional standard website package for small businesses that need a clear, modern, mobile-friendly online presence.",
+      "A professional standard website package for small businesses that need a clear, modern, mobile-friendly online presence. The standard package is paired with required $49/month Website Care.",
 
     includes: [
       "Professional custom website design",
@@ -126,10 +126,10 @@ const pricingCards = [
       "/ month",
 
     billing:
-      "Monthly website care",
+      "Required with the standard website",
 
     description:
-      "Ongoing website care covering hosting, maintenance, support, compatibility, analytics where implemented, and covered minor edits after launch.",
+      "Required ongoing website care for the standard website package, covering hosting, maintenance, support, compatibility, analytics where implemented, and covered minor edits.",
 
     includes: [
       "Website hosting",
@@ -431,7 +431,7 @@ const paymentSteps = [
       "Launch & Ongoing Service",
 
     text:
-      "After payment and completion requirements are satisfied, the project can launch and ongoing maintenance or support can continue if desired.",
+      "After payment and completion requirements are satisfied, the project can launch or be delivered. Standard website packages continue with the required $49/month Website Care; custom or separately scoped work follows the written project arrangement.",
   },
 ];
 
@@ -445,7 +445,7 @@ const faqs = [
       "What does the $499 standard website include?",
 
     a:
-      "The $499 standard website includes up to five agreed pages, professional custom design, mobile-responsive layout, properly licensed imagery where appropriate, scoped and client-approved content, social-profile links, basic SEO setup, cross-browser testing, and domain connection. Domain registration and renewal are separate.",
+      "The $499 standard website includes up to five agreed pages, professional custom design, mobile-responsive layout, properly licensed imagery where appropriate, scoped and client-approved content, social-profile links, basic SEO setup, cross-browser testing, and domain connection. Domain registration and renewal are separate. The standard website package also requires $49/month Website Care.",
   },
 
   {
@@ -461,7 +461,7 @@ const faqs = [
       "What does the $49 monthly website care include?",
 
     a:
-      "The $49 monthly website care includes hosting, HTTPS/SSL, maintenance, support, desktop/tablet/mobile and browser compatibility, analytics where implemented, and up to 30 covered minor edits per monthly cycle.",
+      "The required $49 monthly website care includes hosting, HTTPS/SSL, maintenance, support, desktop/tablet/mobile and browser compatibility, analytics where implemented, and up to 30 covered minor edits per monthly cycle.",
   },
 
   {
@@ -490,10 +490,10 @@ const faqs = [
 
   {
     q:
-      "Can I add maintenance later?",
+      "Is the $49 monthly website care required with the standard website?",
 
     a:
-      "Yes, when Matthew Web has capacity and the website is supportable. Ongoing service can include updates, maintenance, monitoring, technical help, and additional work.",
+      "Yes. The standard website package is $499 for the one-time build plus required $49/month Website Care. The monthly care covers hosting, HTTPS/SSL, maintenance, support, compatibility, analytics where implemented, and up to 30 covered minor edits per monthly cycle.",
   },
 
   {
