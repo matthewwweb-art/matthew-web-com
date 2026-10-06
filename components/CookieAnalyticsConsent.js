@@ -114,6 +114,18 @@ export default function CookieAnalyticsConsent() {
               );
 
               gtag(
+                "set",
+                "allow_google_signals",
+                false
+              );
+
+              gtag(
+                "set",
+                "allow_ad_personalization_signals",
+                false
+              );
+
+              gtag(
                 "config",
                 "${GA_ID}"
               );
