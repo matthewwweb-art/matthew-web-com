@@ -440,6 +440,17 @@ const paymentSteps = [
 ============================================================ */
 
 const faqs = [
+  // PILOT OFFER:
+  // Keep this wording synchronized with Home and Contact.
+  // Detailed billing/legal terms remain in the customer agreement.
+  {
+    q:
+      "Is there a lower-upfront website option?",
+
+    a:
+      "Limited pilot availability may include a streamlined one-page website with $0 upfront and $49/month. The pilot is a limited alternative and does not replace the standard $499 website package.",
+  },
+
   {
     q:
       "What does the $499 standard website include?",
@@ -2850,7 +2861,10 @@ export default function PricingPage() {
               while larger websites, software,
               integrations, and custom
               functionality are priced according
-              to scope.
+              to scope. Limited pilot availability
+              may also provide a streamlined
+              one-page option with $0 upfront and
+              $49/month.
             </p>
 
             <div className="mwp-button-row">

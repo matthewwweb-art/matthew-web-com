@@ -37,7 +37,7 @@ const contactOptions = [
     icon: MonitorSmartphone,
     title: "Website Project",
     text:
-      "New website, redesign, mobile improvements, additional pages, lead capture, or other website work.",
+      "New website, redesign, mobile improvements, additional pages, lead capture, or other website work. Ask about limited one-page pilot availability with $0 upfront and $49/month.",
     accent: "blue",
   },
 
@@ -74,10 +74,10 @@ const contactOptions = [
   },
 
   {
-    icon: MessageSquare,
-    title: "Something Else",
+    icon: Wrench,
+    title: "Electronics & Tech Repair",
     text:
-      "Have another technology or business project in mind? Explain what you are trying to accomplish.",
+      "Bench-based electronics and computer hardware repair for selected work. Maine pickup is available for a flat $100 pickup fee; labor, parts, and return arrangements are separate.",
     accent: "orange",
   },
 ];
@@ -89,6 +89,7 @@ const contactOptions = [
 const helpfulDetails = [
   "What your business does",
   "What you need help with",
+  "For repair requests, the device, known fault, and pickup or delivery preference",
   "Whether you already have a website",
   "Your current website address, if applicable",
   "The problem you are trying to solve",

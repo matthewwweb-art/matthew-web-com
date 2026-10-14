@@ -4177,6 +4177,9 @@ export default function HomePage() {
               trust your business, and take the
               next step—while giving you a stronger
               online presence you control.
+              Limited one-page pilot availability
+              may also be available with $0 upfront
+              and $49/month.
             </p>
 
             <div className="mwh-hero-mini">
@@ -4193,6 +4196,11 @@ export default function HomePage() {
               <span>
                 <CircuitBoard />
                 Technology R&amp;D
+              </span>
+
+              <span>
+                <Wrench />
+                Electronics &amp; Tech Repair
               </span>
             </div>
 

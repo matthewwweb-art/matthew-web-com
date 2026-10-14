@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 import {
@@ -40,7 +41,7 @@ const coreServices = [
     title: "Website Design",
     status: "AVAILABLE NOW",
     text:
-      "Modern, responsive websites built around your business, your customers and the actions you want visitors to take.",
+      "Modern, responsive websites built around your business, your customers and the actions you want visitors to take. Limited pilot availability may also provide a streamlined one-page option with $0 upfront and $49/month.",
     href: "/website-design",
     accent: "blue",
     items: [
@@ -103,6 +104,9 @@ const coreServices = [
       "Business information cleanup",
     ],
   },
+  // REPAIR SCOPE:
+  // Keep this wording conservative and aligned with current capability.
+  // Do not imply advanced microsoldering, BGA work, or on-site repair.
   {
     icon: Wrench,
     title: "Electronics & Tech Repair",
@@ -111,6 +115,10 @@ const coreServices = [
       "Bench-based repair and technical work for selected electronics and computer hardware. Work is completed at Matthew Web's workspace. Pickup is available anywhere within Maine for a flat $100 pickup fee. Matthew Web does not provide pickup outside Maine; outside-Maine customers must arrange delivery or shipping.",
     href: "/contact-us",
     accent: "blue",
+    image:
+      "/media/matthew-web/electronics-board.webp",
+    imageAlt:
+      "Electronics circuit board being inspected at the Matthew Web workbench.",
     items: [
       "Wire, cable & connector repair",
       "Resoldering, simple switches, jacks & connectors",
@@ -1136,6 +1144,17 @@ export default function ServicesPage() {
         .mws-core-icon svg {
           width: 30px;
           height: 30px;
+        }
+
+        .mws-service-photo {
+          display: block;
+          width: 100%;
+          height: auto;
+          aspect-ratio: 16 / 9;
+          object-fit: cover;
+          border-radius: 14px;
+          margin-bottom: 18px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .mws-service-status {
@@ -2390,6 +2409,17 @@ export default function ServicesPage() {
                   className={`mws-core-card ${service.accent}`}
                   key={service.title}
                 >
+                  {service.image && (
+                    <Image
+                      src={service.image}
+                      alt={service.imageAlt}
+                      width={1536}
+                      height={864}
+                      className="mws-service-photo"
+                      sizes="(max-width: 760px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                  )}
+
                   <div className="mws-core-icon">
                     <Icon />
                   </div>

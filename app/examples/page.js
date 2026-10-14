@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import {
@@ -249,6 +250,32 @@ const projects = [
       "orange",
     visual:
       "cpu",
+    gallery: [
+      {
+        src:
+          "/media/matthew-web/tankcpu-faults-none.webp",
+        alt:
+          "TankCPU32 FPGA hardware diagnostic displayed on a monitor during physical testing.",
+        label:
+          "FPGA Hardware Test",
+      },
+      {
+        src:
+          "/media/matthew-web/tang-nano-20k-board.webp",
+        alt:
+          "Tang Nano 20K FPGA development board used for TankCPU physical hardware testing.",
+        label:
+          "Tang Nano 20K",
+      },
+      {
+        src:
+          "/media/matthew-web/tankcpu-hdmi-color-bars.webp",
+        alt:
+          "FPGA-generated HDMI color bars displayed during TankCPU video-output development.",
+        label:
+          "HDMI Output Test",
+      },
+    ],
   },
 
   {
@@ -1748,6 +1775,57 @@ export default function ExamplesPage() {
             uppercase;
         }
 
+        .mwex-project-gallery {
+          position: relative;
+          z-index: 2;
+          width: calc(100% - 36px);
+          height: 218px;
+          margin-top: 34px;
+          display: grid;
+          grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+          grid-template-rows: repeat(2, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .mwex-project-gallery-item {
+          position: relative;
+          overflow: hidden;
+          min-width: 0;
+          min-height: 0;
+          margin: 0;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          background: #020507;
+        }
+
+        .mwex-project-gallery-item:first-child {
+          grid-row: 1 / span 2;
+        }
+
+        .mwex-project-gallery-image {
+          display: block;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .mwex-project-gallery-item figcaption {
+          position: absolute;
+          left: 8px;
+          bottom: 8px;
+          max-width: calc(100% - 16px);
+          padding: 5px 7px;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 7px;
+          background: rgba(2, 5, 7, 0.82);
+          color: #f5f8fa;
+          font-size: 9px;
+          font-weight: 900;
+          letter-spacing: 0.08em;
+          line-height: 1.2;
+          text-transform: uppercase;
+        }
+
         .mwex-project-status::before {
           content:
             "";
@@ -2772,13 +2850,41 @@ export default function ExamplesPage() {
                       {project.category}
                     </div>
 
-                    <div className="mwex-visual-orbit">
-                      <div className="mwex-orbit-dot" />
-                    </div>
+                    {project.gallery ? (
+                      <div className="mwex-project-gallery">
+                        {project.gallery.map(
+                          (image) => (
+                            <figure
+                              key={image.src}
+                              className="mwex-project-gallery-item"
+                            >
+                              <Image
+                                src={image.src}
+                                alt={image.alt}
+                                width={1280}
+                                height={720}
+                                className="mwex-project-gallery-image"
+                                sizes="(max-width: 760px) 90vw, 44vw"
+                              />
 
-                    <div className="mwex-project-icon">
-                      <Icon />
-                    </div>
+                              <figcaption>
+                                {image.label}
+                              </figcaption>
+                            </figure>
+                          )
+                        )}
+                      </div>
+                    ) : (
+                      <>
+                        <div className="mwex-visual-orbit">
+                          <div className="mwex-orbit-dot" />
+                        </div>
+
+                        <div className="mwex-project-icon">
+                          <Icon />
+                        </div>
+                      </>
+                    )}
                   </div>
 
                   <div className="mwex-project-body">
