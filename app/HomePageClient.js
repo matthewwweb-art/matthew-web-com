@@ -2932,7 +2932,7 @@ export default function HomePage() {
           background:
             var(--mwh-orange);
 
-          color: white;
+          color: #071015;
         }
 
         /* =====================================================
@@ -4909,6 +4909,7 @@ export default function HomePage() {
                 <input
                   type="text"
                   name="name"
+                  aria-label="Your name (required)"
                   placeholder="Your Name *"
                   value={form.name}
                   onChange={updateField}
@@ -4918,6 +4919,7 @@ export default function HomePage() {
                 <input
                   type="email"
                   name="email"
+                  aria-label="Your email address (required)"
                   placeholder="Your Email Address *"
                   value={form.email}
                   onChange={updateField}
@@ -4929,6 +4931,7 @@ export default function HomePage() {
                 <input
                   type="tel"
                   name="phone"
+                  aria-label="Your phone number (required)"
                   placeholder="Your Phone Number *"
                   value={form.phone}
                   onChange={updateField}
@@ -4938,6 +4941,7 @@ export default function HomePage() {
                 <input
                   type="text"
                   name="business_name"
+                  aria-label="Business or organization name (required)"
                   placeholder="Business / Organization *"
                   value={form.business_name}
                   onChange={updateField}
@@ -4947,6 +4951,7 @@ export default function HomePage() {
 
               <textarea
                 name="message"
+                aria-label="Project details"
                 placeholder="Tell us about the project"
                 rows="6"
                 value={form.message}
