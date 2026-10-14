@@ -925,7 +925,7 @@ export default function SiteFooter() {
           background:
             rgba(255, 255, 255, 0.018);
 
-          font-size: 10px;
+          font-size: 12px;
           line-height: 1.6;
         }
 
@@ -961,7 +961,7 @@ export default function SiteFooter() {
           background:
             rgba(255, 121, 0, 0.025);
 
-          font-size: 10px;
+          font-size: 12px;
           line-height: 1.6;
         }
 
@@ -1004,7 +1004,7 @@ export default function SiteFooter() {
         .mwf-copyright {
           margin: 0;
           color: #71818b;
-          font-size: 10px;
+          font-size: 12px;
           line-height: 1.6;
         }
 
@@ -1019,7 +1019,7 @@ export default function SiteFooter() {
         .mwf-bottom-links a {
           color: #8998a2;
           text-decoration: none;
-          font-size: 10px;
+          font-size: 12px;
 
           transition:
             color 0.18s ease;
