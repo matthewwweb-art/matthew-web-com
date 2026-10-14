@@ -617,7 +617,7 @@ export default function SiteFooter() {
             10px;
 
           color: #70828d;
-          font-size: 9px;
+          font-size: 11px;
           font-weight: 900;
           letter-spacing: 0.12em;
           text-transform: uppercase;
@@ -812,7 +812,7 @@ export default function SiteFooter() {
           display: block;
           margin-top: 4px;
           color: #72838d;
-          font-size: 9px;
+          font-size: 11px;
           line-height: 1.45;
         }
 
@@ -893,7 +893,7 @@ export default function SiteFooter() {
           display: block;
           margin-bottom: 4px;
           color: #71818c;
-          font-size: 9px;
+          font-size: 11px;
           font-weight: 850;
           letter-spacing: 0.1em;
           text-transform: uppercase;

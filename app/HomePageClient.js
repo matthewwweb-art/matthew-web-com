@@ -1539,7 +1539,7 @@ export default function HomePage() {
 
           color: #92a3af;
 
-          font-size: 9px;
+          font-size: 11px;
           font-weight: 900;
 
           letter-spacing: 0.15em;
@@ -1879,7 +1879,7 @@ export default function HomePage() {
 
           border-radius: 999px;
 
-          font-size: 9px;
+          font-size: 11px;
           font-weight: 900;
 
           letter-spacing: 0.13em;
