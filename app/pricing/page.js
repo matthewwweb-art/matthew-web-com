@@ -1302,7 +1302,7 @@ export default function PricingPage() {
             #a8bac4;
 
           font-size:
-            8px;
+            11px;
 
           font-weight:
             900;
@@ -1347,7 +1347,7 @@ export default function PricingPage() {
             #81929c;
 
           font-size:
-            9px;
+            11px;
 
           font-weight:
             900;
@@ -1651,7 +1651,7 @@ export default function PricingPage() {
             #7d8e98;
 
           font-size:
-            8px;
+            11px;
 
           font-weight:
             950;
@@ -1721,7 +1721,7 @@ export default function PricingPage() {
             var(--mwp-blue-light);
 
           font-size:
-            10px;
+            11px;
 
           font-weight:
             900;
@@ -1878,7 +1878,7 @@ export default function PricingPage() {
             );
 
           font-size:
-            10px;
+            12px;
 
           line-height:
             1.6;
@@ -1984,7 +1984,7 @@ export default function PricingPage() {
             var(--mwp-orange-light);
 
           font-size:
-            10px;
+            11px;
 
           font-weight:
             900;
