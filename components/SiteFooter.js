@@ -1152,6 +1152,11 @@ export default function SiteFooter() {
             display: grid;
             gap: 8px;
           }
+          .mwf-bottom-links a {
+            min-height: 28px;
+            display: inline-flex;
+            align-items: center;
+          }
 
           .mwf-social-row {
             display: grid;
