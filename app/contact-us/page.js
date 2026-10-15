@@ -1022,7 +1022,7 @@ export default function ContactUsPage() {
             #a8bac4;
 
           font-size:
-            8px;
+            11px;
 
           font-weight:
             900;
@@ -1142,7 +1142,7 @@ export default function ContactUsPage() {
             #82939d;
 
           font-size:
-            10px;
+            12px;
 
           text-decoration:
             none;
@@ -1673,7 +1673,7 @@ export default function ContactUsPage() {
             #c7d2d8;
 
           font-size:
-            10px;
+            12px;
 
           font-weight:
             900;
