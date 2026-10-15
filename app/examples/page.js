@@ -1216,7 +1216,7 @@ export default function ExamplesPage() {
             #71828d;
 
           font-size:
-            9px;
+            11px;
 
           font-weight:
             800;
@@ -1541,7 +1541,7 @@ export default function ExamplesPage() {
             );
 
           font-size:
-            8px;
+            11px;
 
           font-weight:
             900;
@@ -1763,7 +1763,7 @@ export default function ExamplesPage() {
             #8c9da7;
 
           font-size:
-            9px;
+            11px;
 
           font-weight:
             900;
@@ -1819,7 +1819,7 @@ export default function ExamplesPage() {
           border-radius: 7px;
           background: rgba(2, 5, 7, 0.82);
           color: #f5f8fa;
-          font-size: 9px;
+          font-size: 11px;
           font-weight: 900;
           letter-spacing: 0.08em;
           line-height: 1.2;
