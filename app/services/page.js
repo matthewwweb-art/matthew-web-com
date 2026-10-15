@@ -1168,7 +1168,7 @@ export default function ServicesPage() {
 
           color: #8999a3;
 
-          font-size: 9px;
+          font-size: 11px;
           font-weight: 900;
 
           letter-spacing: 0.13em;
@@ -1411,7 +1411,7 @@ export default function ServicesPage() {
           background:
             rgba(8, 185, 244, 0.045);
 
-          font-size: 9px;
+          font-size: 11px;
           font-weight: 900;
 
           letter-spacing: 0.08em;
