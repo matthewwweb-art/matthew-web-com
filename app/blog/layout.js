@@ -17,6 +17,19 @@ export default function BlogLayout({ children }) {
         ]}
       />
 
+      {/*
+        MONETAG SERVER BOOTSTRAP:
+        Keep Monetag's official zone bootstrap in the initial /blog HTML
+        so its installation verifier can detect the integration.
+        MonetagInPagePush remains below as the client-navigation fallback.
+      */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html:
+            "(function(s){s.dataset.zone='11798258',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))",
+        }}
+      />
+
       <MonetagInPagePush />
 
       {children}
