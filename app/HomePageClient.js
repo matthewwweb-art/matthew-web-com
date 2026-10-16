@@ -1,8 +1,9 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
-import Script from "next/script";
+// HOMEPAGE PERFORMANCE:
+// This legacy-named module is intentionally a Server Component.
+// Only the testimonial carousel and contact form hydrate on the client.
 import Link from "next/link";
+import HomeContactFormClient from "@/components/HomeContactFormClient";
+import HomeTestimonialsClient from "@/components/HomeTestimonialsClient";
 import {
   ArrowRight,
   BarChart3,
@@ -404,178 +405,8 @@ function ProjectVisual({ type }) {
 ============================================================ */
 
 export default function HomePage() {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    business_name: "",
-    message: "",
-  });
-
-  const [status, setStatus] = useState("");
-  const [statusType, setStatusType] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [testimonialIndex, setTestimonialIndex] = useState(0);
-
-  const recaptchaSiteKey =
-    process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-
-  const contactSectionRef = useRef(null);
-  const [recaptchaShouldLoad, setRecaptchaShouldLoad] = useState(false);
-
-  // RECAPTCHA PERFORMANCE:
-  // The contact form is far below the initial viewport, so avoid loading
-  // Google's reCAPTCHA runtime during the critical homepage render.
-  // Server-side token verification remains the security boundary.
-  useEffect(() => {
-    const contactSection = contactSectionRef.current;
-
-    if (!contactSection) {
-      return;
-    }
-
-    if (!("IntersectionObserver" in window)) {
-      setRecaptchaShouldLoad(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          setRecaptchaShouldLoad(true);
-          observer.disconnect();
-        }
-      },
-      {
-        rootMargin: "600px 0px",
-      }
-    );
-
-    observer.observe(contactSection);
-
-    return () => observer.disconnect();
-  }, []);
-
-  const currentTestimonial =
-    homeTestimonials[testimonialIndex];
-
-  function updateField(event) {
-    const { name, value } = event.target;
-
-    setForm((current) => ({
-      ...current,
-      [name]: value,
-    }));
-  }
-
-  function previousTestimonial() {
-    setTestimonialIndex((current) =>
-      current === 0
-        ? homeTestimonials.length - 1
-        : current - 1
-    );
-  }
-
-  function nextTestimonial() {
-    setTestimonialIndex((current) =>
-      current === homeTestimonials.length - 1
-        ? 0
-        : current + 1
-    );
-  }
-
-  async function handleSubmit(event) {
-    event.preventDefault();
-
-    setStatus("");
-    setStatusType("");
-
-    if (
-      !form.name ||
-      !form.email ||
-      !form.phone ||
-      !form.business_name
-    ) {
-      setStatus("Please fill out all required fields.");
-      setStatusType("error");
-      return;
-    }
-
-    const recaptchaToken =
-      typeof window !== "undefined" &&
-      window.grecaptcha
-        ? window.grecaptcha.getResponse()
-        : "";
-
-    if (!recaptchaToken) {
-      setStatus("Please complete the reCAPTCHA.");
-      setStatusType("error");
-      return;
-    }
-
-    try {
-      setSubmitting(true);
-
-      const response = await fetch("/api/leads", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...form,
-          page_source: "Home Page",
-          recaptchaToken,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok || !data.ok) {
-        throw new Error(
-          data.error || "Something went wrong."
-        );
-      }
-
-      setForm({
-        name: "",
-        email: "",
-        phone: "",
-        business_name: "",
-        message: "",
-      });
-
-      if (
-        typeof window !== "undefined" &&
-        window.grecaptcha
-      ) {
-        window.grecaptcha.reset();
-      }
-
-      setStatus(
-        "Thank you! We received your message and will be in contact as soon as possible."
-      );
-
-      setStatusType("success");
-    } catch (error) {
-      setStatus(
-        error.message ||
-          "Something went wrong. Please try again."
-      );
-
-      setStatusType("error");
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
   return (
     <main className="mw-home">
-      {recaptchaSiteKey && recaptchaShouldLoad ? (
-        <Script
-          src="https://www.google.com/recaptcha/api.js"
-          strategy="afterInteractive"
-        />
-      ) : null}
 
       <SiteHeader />
 
@@ -1102,64 +933,7 @@ export default function HomePage() {
           TESTIMONIALS
       ====================================================== */}
 
-      <section
-        className="mwh-section mwh-testimonials"
-        id="testimonials"
-      >
-        <div className="mwh-container">
-          <div className="mwh-section-heading center">
-            <div className="mwh-section-kicker orange">
-              <MessageSquare />
-              Client Feedback
-            </div>
-
-            <h2>
-              What Clients{" "}
-              <span className="mwh-orange-text">
-                Say
-              </span>
-            </h2>
-          </div>
-
-          <div className="mwh-testimonial-carousel">
-            <button
-              type="button"
-              className="mwh-testimonial-arrow"
-              onClick={previousTestimonial}
-              aria-label="Previous testimonial"
-            >
-              ◀
-            </button>
-
-            <div className="mwh-testimonial-card">
-              <div className="mwh-testimonial-avatar">
-                {currentTestimonial.initials}
-              </div>
-
-              <div className="mwh-stars">
-                ★ ★ ★ ★ ★
-              </div>
-
-              <blockquote>
-                “{currentTestimonial.quote}”
-              </blockquote>
-
-              <strong>
-                — {currentTestimonial.name}
-              </strong>
-            </div>
-
-            <button
-              type="button"
-              className="mwh-testimonial-arrow"
-              onClick={nextTestimonial}
-              aria-label="Next testimonial"
-            >
-              ▶
-            </button>
-          </div>
-        </div>
-      </section>
+      <HomeTestimonialsClient testimonials={homeTestimonials} />
 
       {/* ======================================================
           PRICING
@@ -1297,7 +1071,6 @@ export default function HomePage() {
       ====================================================== */}
 
       <section
-        ref={contactSectionRef}
         className="mwh-section mwh-contact-section"
         id="contact-form"
       >
@@ -1348,98 +1121,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <form
-              className="mwh-contact-form"
-              onSubmit={handleSubmit}
-            >
-              <div className="mwh-form-row">
-                <input
-                  type="text"
-                  name="name"
-                  aria-label="Your name (required)"
-                  placeholder="Your Name *"
-                  value={form.name}
-                  onChange={updateField}
-                  required
-                />
-
-                <input
-                  type="email"
-                  name="email"
-                  aria-label="Your email address (required)"
-                  placeholder="Your Email Address *"
-                  value={form.email}
-                  onChange={updateField}
-                  required
-                />
-              </div>
-
-              <div className="mwh-form-row">
-                <input
-                  type="tel"
-                  name="phone"
-                  aria-label="Your phone number (required)"
-                  placeholder="Your Phone Number *"
-                  value={form.phone}
-                  onChange={updateField}
-                  required
-                />
-
-                <input
-                  type="text"
-                  name="business_name"
-                  aria-label="Business or organization name (required)"
-                  placeholder="Business / Organization *"
-                  value={form.business_name}
-                  onChange={updateField}
-                  required
-                />
-              </div>
-
-              <textarea
-                name="message"
-                aria-label="Project details"
-                placeholder="Tell us about the project"
-                rows="6"
-                value={form.message}
-                onChange={updateField}
-              />
-
-              <div className="mwh-recaptcha-wrap">
-                {recaptchaSiteKey ? (
-                  <div
-                    className="g-recaptcha"
-                    data-sitekey={
-                      recaptchaSiteKey
-                    }
-                  />
-                ) : (
-                  <div className="mwh-form-status error">
-                    Missing
-                    NEXT_PUBLIC_RECAPTCHA_SITE_KEY
-                    in .env.local
-                  </div>
-                )}
-              </div>
-
-              {status ? (
-                <div
-                  className={`mwh-form-status ${statusType}`}
-                >
-                  {status}
-                </div>
-              ) : null}
-
-              <button
-                type="submit"
-                className="mwh-form-button"
-                disabled={submitting}
-              >
-                {submitting
-                  ? "Sending..."
-                  : "Send Project Details"}
-              </button>
-            </form>
+            <HomeContactFormClient />
           </div>
         </div>
       </section>
