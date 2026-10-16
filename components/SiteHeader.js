@@ -125,7 +125,7 @@ export default function SiteHeader() {
           transition: "opacity 0.12s ease",
         }}
       >
-        <section className="mwx-hero">
+        <div className="mwx-hero">
           <div
             className="mwx-particles"
             aria-hidden="true"
@@ -199,7 +199,6 @@ export default function SiteHeader() {
 
               <div
                 className="mwx-wordmark"
-                aria-label="matthew-web"
               >
                 <span className="mwx-word-blue">
                   {blueLetters.map(
@@ -253,7 +252,7 @@ export default function SiteHeader() {
 
             <div className="mwx-side-line" />
           </div>
-        </section>
+        </div>
 
         <div className="mwx-mobile-bar">
           <div className="mwx-mobile-label">
