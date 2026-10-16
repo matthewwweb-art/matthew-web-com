@@ -77,9 +77,10 @@ export default function HomeContactFormClient() {
   }, []);
 
   // RECAPTCHA NAVIGATION:
-  // Render explicitly after both the Google API and the form's
-  // container are ready. This also handles Next.js client-side
-  // navigation where the Google script may already be cached.
+  // api.js can finish before Google's full widget runtime is ready,
+  // especially on slower connections. Wait for grecaptcha.ready()
+  // and keep a short bounded retry fallback so the widget also
+  // survives Next.js client-side navigation and cached script reuse.
   useEffect(() => {
     if (
       !recaptchaShouldLoad ||
@@ -96,18 +97,43 @@ export default function HomeContactFormClient() {
     if (
       !container ||
       typeof window === "undefined" ||
-      !window.grecaptcha ||
-      typeof window.grecaptcha.render !== "function"
+      !window.grecaptcha
     ) {
       return;
     }
 
+    let cancelled = false;
+    let retryTimer = null;
+    let retryCount = 0;
+
     const renderWidget = () => {
       if (
+        cancelled ||
         recaptchaWidgetIdRef.current !== null ||
         !container.isConnected
       ) {
         return;
+      }
+
+      if (
+        typeof window.grecaptcha.render !==
+        "function"
+      ) {
+        if (retryCount < 100) {
+          retryCount += 1;
+
+          retryTimer = window.setTimeout(
+            renderWidget,
+            100
+          );
+        }
+
+        return;
+      }
+
+      if (retryTimer !== null) {
+        window.clearTimeout(retryTimer);
+        retryTimer = null;
       }
 
       recaptchaWidgetIdRef.current =
@@ -124,9 +150,18 @@ export default function HomeContactFormClient() {
     ) {
       window.grecaptcha.ready(renderWidget);
     }
-    else {
-      renderWidget();
-    }
+
+    // Also start the bounded readiness check immediately.
+    // The widget-id guard prevents duplicate rendering.
+    renderWidget();
+
+    return () => {
+      cancelled = true;
+
+      if (retryTimer !== null) {
+        window.clearTimeout(retryTimer);
+      }
+    };
   }, [
     recaptchaShouldLoad,
     recaptchaApiReady,
