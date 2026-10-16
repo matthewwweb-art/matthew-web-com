@@ -26,10 +26,17 @@ export default function HomeContactFormClient() {
     process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
   const contactFormRef = useRef(null);
+  const recaptchaContainerRef = useRef(null);
+  const recaptchaWidgetIdRef = useRef(null);
 
   const [
     recaptchaShouldLoad,
     setRecaptchaShouldLoad,
+  ] = useState(false);
+
+  const [
+    recaptchaApiReady,
+    setRecaptchaApiReady,
   ] = useState(false);
 
   // RECAPTCHA PERFORMANCE:
@@ -69,6 +76,63 @@ export default function HomeContactFormClient() {
     return () => observer.disconnect();
   }, []);
 
+  // RECAPTCHA NAVIGATION:
+  // Render explicitly after both the Google API and the form's
+  // container are ready. This also handles Next.js client-side
+  // navigation where the Google script may already be cached.
+  useEffect(() => {
+    if (
+      !recaptchaShouldLoad ||
+      !recaptchaApiReady ||
+      !recaptchaSiteKey ||
+      recaptchaWidgetIdRef.current !== null
+    ) {
+      return;
+    }
+
+    const container =
+      recaptchaContainerRef.current;
+
+    if (
+      !container ||
+      typeof window === "undefined" ||
+      !window.grecaptcha ||
+      typeof window.grecaptcha.render !== "function"
+    ) {
+      return;
+    }
+
+    const renderWidget = () => {
+      if (
+        recaptchaWidgetIdRef.current !== null ||
+        !container.isConnected
+      ) {
+        return;
+      }
+
+      recaptchaWidgetIdRef.current =
+        window.grecaptcha.render(
+          container,
+          {
+            sitekey: recaptchaSiteKey,
+          }
+        );
+    };
+
+    if (
+      typeof window.grecaptcha.ready === "function"
+    ) {
+      window.grecaptcha.ready(renderWidget);
+    }
+    else {
+      renderWidget();
+    }
+  }, [
+    recaptchaShouldLoad,
+    recaptchaApiReady,
+    recaptchaSiteKey,
+  ]);
+
   function updateField(event) {
     const { name, value } = event.target;
 
@@ -99,8 +163,11 @@ export default function HomeContactFormClient() {
 
     const recaptchaToken =
       typeof window !== "undefined" &&
-      window.grecaptcha
-        ? window.grecaptcha.getResponse()
+      window.grecaptcha &&
+      recaptchaWidgetIdRef.current !== null
+        ? window.grecaptcha.getResponse(
+            recaptchaWidgetIdRef.current
+          )
         : "";
 
     if (!recaptchaToken) {
@@ -142,9 +209,12 @@ export default function HomeContactFormClient() {
 
       if (
         typeof window !== "undefined" &&
-        window.grecaptcha
+        window.grecaptcha &&
+        recaptchaWidgetIdRef.current !== null
       ) {
-        window.grecaptcha.reset();
+        window.grecaptcha.reset(
+          recaptchaWidgetIdRef.current
+        );
       }
 
       setStatus(
@@ -171,8 +241,15 @@ export default function HomeContactFormClient() {
       {recaptchaSiteKey &&
       recaptchaShouldLoad ? (
         <Script
-          src="https://www.google.com/recaptcha/api.js"
+          id="matthew-web-recaptcha"
+          src="https://www.google.com/recaptcha/api.js?render=explicit"
           strategy="afterInteractive"
+          onLoad={() =>
+            setRecaptchaApiReady(true)
+          }
+          onReady={() =>
+            setRecaptchaApiReady(true)
+          }
         />
       ) : null}
 
@@ -236,10 +313,7 @@ export default function HomeContactFormClient() {
 
         <div className="mwh-recaptcha-wrap">
           {recaptchaSiteKey ? (
-            <div
-              className="g-recaptcha"
-              data-sitekey={recaptchaSiteKey}
-            />
+            <div ref={recaptchaContainerRef} />
           ) : (
             <div className="mwh-form-status error">
               Missing NEXT_PUBLIC_RECAPTCHA_SITE_KEY
