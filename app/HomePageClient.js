@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Script from "next/script";
 import Link from "next/link";
 import {
@@ -420,6 +420,42 @@ export default function HomePage() {
   const recaptchaSiteKey =
     process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
+  const contactSectionRef = useRef(null);
+  const [recaptchaShouldLoad, setRecaptchaShouldLoad] = useState(false);
+
+  // RECAPTCHA PERFORMANCE:
+  // The contact form is far below the initial viewport, so avoid loading
+  // Google's reCAPTCHA runtime during the critical homepage render.
+  // Server-side token verification remains the security boundary.
+  useEffect(() => {
+    const contactSection = contactSectionRef.current;
+
+    if (!contactSection) {
+      return;
+    }
+
+    if (!("IntersectionObserver" in window)) {
+      setRecaptchaShouldLoad(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setRecaptchaShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      {
+        rootMargin: "600px 0px",
+      }
+    );
+
+    observer.observe(contactSection);
+
+    return () => observer.disconnect();
+  }, []);
+
   const currentTestimonial =
     homeTestimonials[testimonialIndex];
 
@@ -534,10 +570,12 @@ export default function HomePage() {
 
   return (
     <main className="mw-home">
-      <Script
-        src="https://www.google.com/recaptcha/api.js"
-        strategy="afterInteractive"
-      />
+      {recaptchaSiteKey && recaptchaShouldLoad ? (
+        <Script
+          src="https://www.google.com/recaptcha/api.js"
+          strategy="afterInteractive"
+        />
+      ) : null}
 
       <SiteHeader />
 
@@ -1259,6 +1297,7 @@ export default function HomePage() {
       ====================================================== */}
 
       <section
+        ref={contactSectionRef}
         className="mwh-section mwh-contact-section"
         id="contact-form"
       >
