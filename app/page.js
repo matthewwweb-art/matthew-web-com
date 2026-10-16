@@ -1,4 +1,5 @@
 import HomePageClient from "./HomePageClient";
+import "./home-page.css";
 
 export const metadata = {
   title: {

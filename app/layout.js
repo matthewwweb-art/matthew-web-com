@@ -1,4 +1,5 @@
 import "./globals.css";
+import "./site-header.css";
 import ImageLightbox from "@/components/ImageLightbox";
 import CookieAnalyticsConsent from "@/components/CookieAnalyticsConsent";
 import { Analytics } from "@vercel/analytics/next";
