@@ -13,7 +13,7 @@
    become absolutely necessary.
 ============================================================ */
 
-const contentSecurityPolicy = [
+const blogContentSecurityPolicy = [
   "default-src 'self'",
 
   /*
@@ -172,6 +172,31 @@ const contentSecurityPolicy = [
   "frame-ancestors 'self'",
   "manifest-src 'self'",
 ].join("; ");
+/*
+  DEFAULT SITE CSP
+
+  Monetag is mounted only on /blog. The default policy therefore
+  removes its advertising/runtime origins so unrelated pages do not
+  grant those third parties script, image, or connection permission.
+
+  /blog receives the full policy below through a route-specific
+  Content-Security-Policy header.
+*/
+const monetagCspSources = [
+  "https://nap5k.com",
+  "https://tzegilo.com",
+  "https://aichouphaugn.com",
+  "https://jhnwr.com",
+  "https://fleraprt.com",
+  "https://my.rtmark.net",
+];
+
+const contentSecurityPolicy =
+  monetagCspSources.reduce(
+    (policy, source) =>
+      policy.split(` ${source}`).join(""),
+    blogContentSecurityPolicy
+  );
 
 const nextConfig = {
   async redirects() {
@@ -261,6 +286,27 @@ const nextConfig = {
         ],
       },
 
+      {
+        source:
+          "/blog",
+
+        /*
+          BLOG-ONLY ADVERTISING CSP
+
+          The global rule above applies the tighter default CSP.
+          This later rule intentionally restores the verified Monetag
+          origins only for /blog, where MonetagInPagePush is mounted.
+        */
+        headers: [
+          {
+            key:
+              "Content-Security-Policy",
+
+            value:
+              blogContentSecurityPolicy,
+          },
+        ],
+      },
       {
         source:
           "/admin/:path*",
