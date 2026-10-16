@@ -376,15 +376,18 @@
             mwxExtraSmokeMove 5s ease-in-out 1.8s infinite alternate;
         }
 
+        /* HEADER ANIMATION PERFORMANCE:
+           Keep blur/drop-shadow static instead of animating filter.
+           Entrance effects sharing a target with spin/drift use opacity only.
+           This avoids non-composited animation work during initial rendering.
+        */
         @keyframes mwxFogAppear {
           from {
             opacity: 0;
-            transform: scale(0.45);
           }
 
           to {
             opacity: 1;
-            transform: scale(1);
           }
         }
 
@@ -625,32 +628,20 @@
         @keyframes mwxGearEntrance {
           from {
             opacity: 0;
-            transform:
-              scale(0.14)
-              rotate(340deg);
           }
 
           to {
             opacity: 1;
-            transform:
-              scale(1)
-              rotate(0);
           }
         }
 
         @keyframes mwxDiscEntrance {
           from {
             opacity: 0;
-            transform:
-              scale(0.18)
-              rotate(-300deg);
           }
 
           to {
             opacity: 1;
-            transform:
-              scale(1)
-              rotate(0);
           }
         }
 
@@ -779,7 +770,6 @@
             transform:
               rotate(-190deg)
               scale(1.3);
-            filter: blur(11px);
           }
 
           45% {
@@ -787,7 +777,6 @@
             transform:
               rotate(-28deg)
               scale(1.03);
-            filter: blur(3px);
           }
 
           100% {
@@ -795,7 +784,6 @@
             transform:
               rotate(48deg)
               scale(0.48);
-            filter: blur(1px);
           }
         }
 
@@ -805,7 +793,6 @@
             transform:
               rotate(200deg)
               scale(1.32);
-            filter: blur(11px);
           }
 
           45% {
@@ -813,7 +800,6 @@
             transform:
               rotate(32deg)
               scale(1.04);
-            filter: blur(3px);
           }
 
           100% {
@@ -821,7 +807,6 @@
             transform:
               rotate(-32deg)
               scale(0.5);
-            filter: blur(1px);
           }
         }
 
@@ -906,7 +891,6 @@
             transform:
               scale(0.08)
               rotate(-340deg);
-            filter: blur(11px);
           }
 
           65% {
@@ -914,7 +898,6 @@
             transform:
               scale(1.09)
               rotate(8deg);
-            filter: blur(0);
           }
 
           82% {
@@ -928,7 +911,6 @@
             transform:
               scale(1)
               rotate(0);
-            filter: blur(0);
           }
         }
 
@@ -938,7 +920,6 @@
             transform:
               scale(0.1)
               rotate(360deg);
-            filter: blur(11px);
           }
 
           65% {
@@ -946,7 +927,6 @@
             transform:
               scale(1.08)
               rotate(-7deg);
-            filter: blur(0);
           }
 
           82% {
@@ -960,7 +940,6 @@
             transform:
               scale(1)
               rotate(0);
-            filter: blur(0);
           }
         }
 
@@ -971,7 +950,6 @@
               translateY(28px)
               scale(0.2)
               rotate(-160deg);
-            filter: blur(8px);
           }
 
           68% {
@@ -980,7 +958,6 @@
               translateY(-2px)
               scale(1.05)
               rotate(4deg);
-            filter: blur(0);
           }
 
           100% {
@@ -989,7 +966,6 @@
               translateY(0)
               scale(1)
               rotate(0);
-            filter: blur(0);
           }
         }
 
@@ -1098,9 +1074,6 @@
               rotate(-300deg)
               scale(0.08);
 
-            filter:
-              blur(14px)
-              brightness(2);
           }
 
           48% {
@@ -1112,9 +1085,6 @@
               rotate(24deg)
               scale(1.17);
 
-            filter:
-              blur(1px)
-              brightness(1.35);
           }
 
           72% {
@@ -1126,9 +1096,6 @@
               rotate(-8deg)
               scale(0.96);
 
-            filter:
-              blur(0)
-              brightness(1.05);
           }
 
           100% {
@@ -1140,9 +1107,6 @@
               rotate(0)
               scale(1);
 
-            filter:
-              blur(0)
-              brightness(1);
           }
         }
 
@@ -1156,9 +1120,6 @@
               rotate(300deg)
               scale(0.08);
 
-            filter:
-              blur(14px)
-              brightness(2);
           }
 
           48% {
@@ -1170,9 +1131,6 @@
               rotate(-24deg)
               scale(1.17);
 
-            filter:
-              blur(1px)
-              brightness(1.35);
           }
 
           72% {
@@ -1184,9 +1142,6 @@
               rotate(8deg)
               scale(0.96);
 
-            filter:
-              blur(0)
-              brightness(1.05);
           }
 
           100% {
@@ -1198,9 +1153,6 @@
               rotate(0)
               scale(1);
 
-            filter:
-              blur(0)
-              brightness(1);
           }
         }
 
@@ -1228,13 +1180,11 @@
           from {
             opacity: 0;
             transform: translateY(10px);
-            filter: blur(5px);
           }
 
           to {
             opacity: 1;
             transform: none;
-            filter: none;
           }
         }
 
