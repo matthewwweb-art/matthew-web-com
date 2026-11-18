@@ -426,58 +426,58 @@ export default function HomePage() {
           <div className="mwh-hero-copy">
             <div className="mwh-hero-badge">
               <span />
-              Maine-Based Technology Company
+              Maine Small-Business Website Design
             </div>
 
             <h1>
               <span className="line">
-                Professional Websites.
+                Affordable Website Design.
               </span>
 
               <span className="line blue">
-                Clear for Customers.
+                For Maine Small Businesses.
               </span>
 
               <span className="line">
-                Easy to Contact.
+                Mobile-Friendly &amp; Clear.
               </span>
 
               <span className="line orange">
-                Built to Grow.
+                Built to Generate Leads.
               </span>
             </h1>
 
             <p>
-              Matthew Web builds websites and
-              custom business tools that help
-              customers understand your services,
-              trust your business, and take the
-              next step—while giving you a stronger
-              online presence you control.
-              Limited one-page pilot availability
-              may also be available with $0 upfront
-              and $49/month.
+              Matthew Web builds affordable, mobile-friendly
+              websites for Maine small businesses. Make it
+              easy for customers to understand your services,
+              trust your business, call, send a message, or
+              request a quote. Standard website builds are
+              $499 plus $49/month for Website Care. A limited
+              one-page pilot may be available with $0 upfront;
+              the first $49 payment is due 14 days after
+              development starts.
             </p>
 
             <div className="mwh-hero-mini">
               <span>
                 <CheckCircle2 />
-                Professional business websites
+                Affordable business websites
               </span>
 
               <span>
                 <Code2 />
-                Custom development
+                Mobile-friendly &amp; SEO-ready
               </span>
 
               <span>
                 <CircuitBoard />
-                Technology R&amp;D
+                Lead forms &amp; clear calls to action
               </span>
 
               <span>
                 <Wrench />
-                Electronics &amp; Tech Repair
+                Ongoing Website Care
               </span>
             </div>
 
@@ -486,7 +486,7 @@ export default function HomePage() {
                 href="/contact-us"
                 className="mwh-btn mwh-btn-primary"
               >
-                Start a Project
+                Request a Website Quote
                 <ArrowRight />
               </Link>
 
@@ -494,7 +494,7 @@ export default function HomePage() {
                 href="/pricing"
                 className="mwh-btn mwh-btn-dark"
               >
-                View Pricing
+                View Website Pricing
               </Link>
             </div>
           </div>

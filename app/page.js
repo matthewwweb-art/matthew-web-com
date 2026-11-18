@@ -4,11 +4,11 @@ import "./home-page.css";
 export const metadata = {
   title: {
     absolute:
-      "Affordable Website Design & Custom Software Coding | Matthew Web",
+      "Maine Small Business Website Design | Matthew Web",
   },
 
   description:
-    "Matthew Web builds affordable small-business websites, SEO-ready pages, custom software, CRM dashboards, lead forms, integrations, and business automation for clients in Maine and across the United States.",
+    "Affordable website design for Maine small businesses. Mobile-friendly, SEO-ready websites with clear calls to action, lead forms, and easy quote requests.",
 
   alternates: {
     canonical:
@@ -17,10 +17,10 @@ export const metadata = {
 
   openGraph: {
     title:
-      "Affordable Website Design & Custom Software Coding | Matthew Web",
+      "Maine Small Business Website Design | Matthew Web",
 
     description:
-      "Matthew Web builds websites, custom software, business tools, games, educational technology, and conducts CPU and FPGA research.",
+      "Affordable website design for Maine small businesses, with mobile-friendly layouts, clear calls to action, lead forms, and easy quote requests.",
 
     url:
       "https://matthew-web.com",
@@ -37,10 +37,10 @@ export const metadata = {
       "summary_large_image",
 
     title:
-      "Affordable Website Design & Custom Software Coding | Matthew Web",
+      "Maine Small Business Website Design | Matthew Web",
 
     description:
-      "Websites, custom software, business technology, games, education, and computing R&D from Matthew Web.",
+      "Affordable, mobile-friendly website design for Maine small businesses, built to generate calls, messages, and quote requests.",
   },
 };
 
