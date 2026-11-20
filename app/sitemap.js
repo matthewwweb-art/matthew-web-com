@@ -38,6 +38,7 @@ const mainPages = [
 
 const servicePages = [
   "/website-design",
+  "/bangor-website-design",
   "/custom-software",
   "/seo-and-indexing",
   "/small-business-websites",
